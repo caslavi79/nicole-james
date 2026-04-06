@@ -18,9 +18,9 @@ window.addEventListener('scroll', function () {
         var offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * speed;
         el.style.transform = 'translateY(' + offset + 'px)';
       });
-      // Hero content parallax (subtle)
+      // Hero content parallax (subtle, desktop only)
       var heroContent = document.querySelector('.hero-content');
-      if (heroContent && scrollY < window.innerHeight) {
+      if (heroContent && scrollY < window.innerHeight && window.innerWidth >= 768) {
         heroContent.style.transform = 'translateY(' + (scrollY * 0.15) + 'px)';
         heroContent.style.opacity = 1 - (scrollY / (window.innerHeight * 0.8));
       }
@@ -78,6 +78,45 @@ var scrollObserver = new IntersectionObserver(function (entries) {
 document.querySelectorAll('.animate-on-scroll').forEach(function (el) {
   scrollObserver.observe(el);
 });
+
+// === SCROLL-DRIVEN PARALLAX ===
+(function() {
+  var slideEls = document.querySelectorAll('.slide-from-left, .slide-from-right, .slide-from-bottom, .slide-from-top');
+  if (!slideEls.length) return;
+
+  function update() {
+    // Disable parallax on mobile
+    if (window.innerWidth < 768) {
+      slideEls.forEach(function(el) {
+        el.style.transform = '';
+        el.style.opacity = 1;
+      });
+      requestAnimationFrame(update);
+      return;
+    }
+    var vh = window.innerHeight;
+    slideEls.forEach(function(el) {
+      var rect = el.getBoundingClientRect();
+      var center = rect.top + rect.height / 2;
+      // progress: 0 when element center is at viewport center, 1 when at viewport bottom
+      var progress = (center - vh / 2) / (vh / 2);
+      progress = Math.max(0, Math.min(1, progress));
+
+      var tx = 0, ty = 0;
+      var maxH = Math.min(300, window.innerWidth * 0.3);
+
+      if (el.classList.contains('slide-from-left')) tx = -progress * maxH;
+      else if (el.classList.contains('slide-from-right')) tx = progress * maxH;
+      else if (el.classList.contains('slide-from-bottom')) ty = progress * 80;
+      else if (el.classList.contains('slide-from-top')) ty = -(progress * 120);
+
+      el.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
+      el.style.opacity = 1;
+    });
+    requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+})();
 
 // === STATS COUNTER ===
 var statsCounted = false;
