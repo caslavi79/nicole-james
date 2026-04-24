@@ -1063,9 +1063,11 @@ section .shell { position: relative; z-index: 1; }
 
 /* -- JOURNAL WINDOW -- */
 /* The metaphor: a framed window looking INTO the journal entry.
-   Hairline outer frame + lifted pane + clipped body + bottom CTA bar. */
+   Scrollable pane + bottom fade + CTA footer.
+   On click, grows to fullscreen as transition into the entry page. */
 .journal-window {
-  display: block;
+  display: flex;
+  flex-direction: column;
   position: relative;
   background: var(--bone);
   border: 1px solid var(--ink);
@@ -1074,24 +1076,62 @@ section .shell { position: relative; z-index: 1; }
   color: var(--ink);
   max-width: 820px;
   margin: 0 auto 48px;
-  transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-out),
+              box-shadow var(--dur-base) var(--ease-out);
   box-shadow: 0 1px 0 var(--line);
 }
 .journal-window:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 32px -18px rgba(18,16,14,0.35), 0 1px 0 var(--ink);
 }
+.journal-window:focus-visible {
+  outline: 2px solid var(--terra);
+  outline-offset: 4px;
+}
 
-/* Corner ticks removed — rounded frame doesn't need them. */
+/* Expansion transition — JS adds .jw-expanding + sets fixed coords, then
+   inline transition runs the grow. .jw-open fades the window contents to
+   bone just before navigation to hide the browser load flash. */
+.journal-window.jw-expanding {
+  will-change: top, left, width, height, border-radius;
+  z-index: 200;
+  cursor: default;
+  box-shadow: 0 24px 80px -20px rgba(18,16,14,0.45);
+}
+.journal-window.jw-expanding:hover { transform: none; }
+.journal-window.jw-fading .jw-pane,
+.journal-window.jw-fading .jw-footer,
+.journal-window.jw-fading .jw-fade {
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+/* Corner ticks removed */
 .jw-corners { display: none; }
 
-/* The 'pane' — the actual view through the window */
+/* The 'pane' — the scrollable viewport into the entry */
 .jw-pane {
   position: relative;
-  padding: clamp(32px, 4.5vw, 64px) clamp(28px, 4vw, 64px) clamp(80px, 10vw, 140px);
-  background: var(--bone-lift, var(--bone));
-  overflow: hidden;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   max-height: clamp(440px, 52vw, 620px);
+  background: var(--bone-lift, var(--bone));
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(18,16,14,0.15) transparent;
+}
+.jw-pane::-webkit-scrollbar { width: 6px; }
+.jw-pane::-webkit-scrollbar-track { background: transparent; }
+.jw-pane::-webkit-scrollbar-thumb {
+  background: rgba(18,16,14,0.12);
+  border-radius: 3px;
+}
+.jw-pane::-webkit-scrollbar-thumb:hover { background: rgba(18,16,14,0.25); }
+
+.jw-pane-inner {
+  padding: clamp(32px, 4.5vw, 64px) clamp(28px, 4vw, 64px) clamp(80px, 10vw, 140px);
 }
 
 /* Meta row at top of pane — mimics the real entry page */
@@ -1162,13 +1202,15 @@ section .shell { position: relative; z-index: 1; }
   margin-bottom: 16px;
 }
 
-/* The crucial fade — crops the view and implies 'more below' */
+/* The crucial fade — sits above the footer, hinting at content below.
+   Now that pane is scrollable, the fade tells the user "keep scrolling". */
 .jw-fade {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  height: 220px;
+  bottom: 56px; /* clears the footer bar */
+  height: 140px;
+  z-index: 2;
   background: linear-gradient(
     to bottom,
     rgba(250, 246, 239, 0) 0%,
@@ -1177,6 +1219,7 @@ section .shell { position: relative; z-index: 1; }
   );
   pointer-events: none;
 }
+@media (max-width: 720px) { .jw-fade { bottom: 48px; height: 100px; } }
 
 /* Bottom bar — the 'threshold' of the window */
 .jw-footer {

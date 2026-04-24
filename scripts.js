@@ -141,6 +141,75 @@
     startAuto();
   }
 
+  // -- JOURNAL WINDOW click-to-expand-then-navigate
+  const journalWindow = document.querySelector('.journal-window');
+  if (journalWindow) {
+    const targetHref = journalWindow.dataset.href;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const expandAndGo = () => {
+      if (!targetHref) return;
+      if (journalWindow.classList.contains('jw-expanding')) return;
+
+      // Respect reduced motion — just navigate
+      if (reducedMotion) {
+        window.location.href = targetHref;
+        return;
+      }
+
+      const rect = journalWindow.getBoundingClientRect();
+
+      // Pin the window at its current on-screen coordinates
+      journalWindow.style.position = 'fixed';
+      journalWindow.style.top = rect.top + 'px';
+      journalWindow.style.left = rect.left + 'px';
+      journalWindow.style.width = rect.width + 'px';
+      journalWindow.style.height = rect.height + 'px';
+      journalWindow.style.margin = '0';
+      journalWindow.style.maxWidth = 'none';
+      journalWindow.classList.add('jw-expanding');
+
+      // Lock body scroll while animation plays
+      document.body.style.overflow = 'hidden';
+
+      // Force reflow so the starting rect is committed before the transition
+      void journalWindow.offsetHeight;
+
+      // Grow to fullscreen
+      journalWindow.style.transition =
+        'top 620ms cubic-bezier(0.7, 0, 0.2, 1),' +
+        ' left 620ms cubic-bezier(0.7, 0, 0.2, 1),' +
+        ' width 620ms cubic-bezier(0.7, 0, 0.2, 1),' +
+        ' height 620ms cubic-bezier(0.7, 0, 0.2, 1),' +
+        ' border-radius 620ms ease';
+      journalWindow.style.top = '0';
+      journalWindow.style.left = '0';
+      journalWindow.style.width = '100vw';
+      journalWindow.style.height = '100vh';
+      journalWindow.style.borderRadius = '0';
+
+      // Near the end of the grow, fade the inner chrome so the browser
+      // load flash to the entry page reads as one continuous motion.
+      setTimeout(() => journalWindow.classList.add('jw-fading'), 520);
+
+      // Navigate after the fade begins
+      setTimeout(() => { window.location.href = targetHref; }, 860);
+    };
+
+    journalWindow.addEventListener('click', (e) => {
+      // Let nested <a> elements do their own thing
+      if (e.target.closest('a')) return;
+      expandAndGo();
+    });
+
+    journalWindow.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        expandAndGo();
+      }
+    });
+  }
+
   // -- FAQ accordion (on journal page)
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item) => {
