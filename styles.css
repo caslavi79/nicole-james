@@ -424,7 +424,7 @@ section .shell { position: relative; z-index: 1; }
 
 /* -- HERO -- */
 .hero {
-  padding-top: clamp(48px, 7vw, 96px);
+  padding-top: clamp(16px, 2.5vw, 40px);
   padding-bottom: clamp(64px, 8vw, 120px);
 }
 .hero-grid {
