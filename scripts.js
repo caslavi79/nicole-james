@@ -17,30 +17,70 @@
     onScroll();
   }
 
-  // -- MOBILE HERO STICKY OFFSET
-  // On mobile the hero is often taller than the viewport, so a positive
-  // `top` would crop the bottom (the portrait). Pin at the smaller of
-  // 92px (mobile nav height) and (viewport - hero height). The latter is
-  // negative when the hero overflows, which parks the hero's bottom at
-  // the viewport bottom once sticky engages. Desktop keeps its CSS
-  // `top: 113px` from the base rule.
+  // -- MOBILE HERO STICKY (manual translate)
+  // Desktop keeps native `position: sticky; top: 113px`. On mobile the
+  // hero is taller than the viewport, and iOS Safari's native sticky
+  // visibly lags during momentum scroll — the headline renders at its
+  // natural scrolled position for a frame before snapping to the pin,
+  // producing a visible downward bump. We drop native sticky on mobile
+  // (CSS sets position: relative) and manually apply `translate3d` on
+  // every scroll event so the hero's visual position stays in sync with
+  // scroll. No rAF throttle: each scroll event directly writes the
+  // transform, which runs on the compositor thread and stays pixel-tight
+  // even during iOS momentum scroll.
   const heroSticky = document.querySelector('.hero.hero-stuck');
-  if (heroSticky) {
+  const heroStage = heroSticky ? heroSticky.closest('.sticky-stage') : null;
+  if (heroSticky && heroStage) {
     const mobileMql = window.matchMedia('(max-width: 820px)');
-    const updateHeroSticky = () => {
+    let heroDocTop = 0;
+    let stageDocBottom = 0;
+    let heroH = 0;
+    let vh = 0;
+
+    const measure = () => {
+      const prev = heroSticky.style.transform;
+      heroSticky.style.transform = '';
+      // Force layout so the next getBoundingClientRect reflects the
+      // untransformed position.
+      void heroSticky.offsetHeight;
+      const y = window.scrollY;
+      heroDocTop = heroSticky.getBoundingClientRect().top + y;
+      heroH = heroSticky.offsetHeight;
+      stageDocBottom = heroStage.getBoundingClientRect().bottom + y;
+      vh = window.innerHeight;
+      heroSticky.style.transform = prev;
+    };
+
+    const apply = () => {
       if (!mobileMql.matches) {
-        heroSticky.style.removeProperty('--hero-sticky-top');
+        heroSticky.style.transform = '';
         return;
       }
-      const offset = Math.min(92, window.innerHeight - heroSticky.offsetHeight);
-      heroSticky.style.setProperty('--hero-sticky-top', `${offset}px`);
+      const y = window.scrollY;
+      const pin = Math.min(92, vh - heroH);
+      const natural = heroDocTop - y;
+      // Native sticky release: once stage's bottom rises above hero's
+      // pinned bottom, the effective pin follows it up.
+      const stageLimit = stageDocBottom - heroH - y;
+      const effectivePin = Math.min(pin, stageLimit);
+      const target = Math.max(natural, effectivePin);
+      const tx = target - natural;
+      heroSticky.style.transform = tx > 0.5 ? `translate3d(0, ${tx}px, 0)` : '';
     };
-    updateHeroSticky();
-    window.addEventListener('resize', updateHeroSticky, { passive: true });
-    window.addEventListener('orientationchange', updateHeroSticky);
-    window.addEventListener('load', updateHeroSticky);
+
+    const remeasure = () => { measure(); apply(); };
+
+    measure();
+    apply();
+    window.addEventListener('scroll', apply, { passive: true });
+    window.addEventListener('resize', remeasure, { passive: true });
+    window.addEventListener('orientationchange', remeasure);
+    window.addEventListener('load', remeasure);
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(remeasure).observe(heroSticky);
+    }
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(updateHeroSticky);
+      document.fonts.ready.then(remeasure);
     }
   }
 
