@@ -141,25 +141,30 @@
     startAuto();
   }
 
-  // -- JOURNAL WINDOW click-to-expand-then-navigate
+  // -- JOURNAL WINDOW click-to-expand → SPA-style swap
+  // Click pins the window at its current rect, animates it to fullscreen,
+  // fetches the entry page in parallel, replaces <body> underneath the
+  // expanded window once both are ready, pushes the URL, then fades the
+  // window out to reveal the real entry DOM.
   const journalWindow = document.querySelector('.journal-window');
   if (journalWindow) {
     const targetHref = journalWindow.dataset.href;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const expandAndGo = () => {
+    const expandAndGo = async () => {
       if (!targetHref) return;
       if (journalWindow.classList.contains('jw-expanding')) return;
 
-      // Respect reduced motion — just navigate
-      if (reducedMotion) {
-        window.location.href = targetHref;
-        return;
-      }
+      if (reducedMotion) { window.location.href = targetHref; return; }
+
+      // Kick off the fetch immediately — done well before the animation ends
+      const fetchPromise = fetch(targetHref, { credentials: 'same-origin' })
+        .then(r => r.ok ? r.text() : null)
+        .catch(() => null);
 
       const rect = journalWindow.getBoundingClientRect();
 
-      // Pin the window at its current on-screen coordinates
+      // Pin window at its current on-screen coords
       journalWindow.style.position = 'fixed';
       journalWindow.style.top = rect.top + 'px';
       journalWindow.style.left = rect.left + 'px';
@@ -169,10 +174,7 @@
       journalWindow.style.maxWidth = 'none';
       journalWindow.classList.add('jw-expanding');
 
-      // Lock body scroll while animation plays
       document.body.style.overflow = 'hidden';
-
-      // Force reflow so the starting rect is committed before the transition
       void journalWindow.offsetHeight;
 
       // Grow to fullscreen
@@ -188,17 +190,48 @@
       journalWindow.style.height = '100vh';
       journalWindow.style.borderRadius = '0';
 
-      // Near the end of the grow, fade the inner chrome so the browser
-      // load flash to the entry page reads as one continuous motion.
-      setTimeout(() => journalWindow.classList.add('jw-fading'), 520);
+      // Fade the inner chrome near the end so the swap is invisible
+      setTimeout(() => journalWindow.classList.add('jw-fading'), 480);
 
-      // Navigate after the fade begins
-      setTimeout(() => { window.location.href = targetHref; }, 860);
+      // Wait for the expand animation to finish, then swap the body
+      await new Promise(r => setTimeout(r, 640));
+      const html = await fetchPromise;
+
+      if (!html) { window.location.href = targetHref; return; }
+
+      // Parse fetched document
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Push URL + update title FIRST so relative paths in the new DOM
+      // resolve against the entry URL (e.g. ../assets/... on /journal/X)
+      history.pushState({ spa: true, from: location.href }, '', targetHref);
+      document.title = doc.title || document.title;
+
+      // Move the expanded window OUT of body so it survives the swap
+      document.documentElement.appendChild(journalWindow);
+
+      // Replace body children with the fetched body's children
+      document.body.innerHTML = doc.body.innerHTML;
+
+      // Scroll to top and restore overflow
+      window.scrollTo(0, 0);
+      document.body.style.overflow = '';
+
+      // Fade the overlay out
+      journalWindow.style.transition = 'opacity 320ms ease';
+      journalWindow.style.opacity = '0';
+      setTimeout(() => { journalWindow.remove(); }, 340);
+
+      // Re-run scripts.js so nav hamburger/FAQ/etc. attach to the new DOM.
+      // Cache-bust so the browser actually re-executes it.
+      const s = document.createElement('script');
+      s.src = 'scripts.js?r=' + Date.now();
+      document.body.appendChild(s);
     };
 
     journalWindow.addEventListener('click', (e) => {
-      // Let nested <a> elements do their own thing
-      if (e.target.closest('a')) return;
+      if (e.target.closest('a')) return; // nested links do their own thing
       expandAndGo();
     });
 
@@ -208,6 +241,9 @@
         expandAndGo();
       }
     });
+
+    // Back/forward after a SPA swap: simplest reliable path is a full reload
+    window.addEventListener('popstate', () => { window.location.reload(); });
   }
 
   // -- FAQ accordion (on journal page)

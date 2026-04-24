@@ -1131,7 +1131,7 @@ section .shell { position: relative; z-index: 1; }
 .jw-pane::-webkit-scrollbar-thumb:hover { background: rgba(18,16,14,0.25); }
 
 .jw-pane-inner {
-  padding: clamp(32px, 4.5vw, 64px) clamp(28px, 4vw, 64px) clamp(80px, 10vw, 140px);
+  padding: clamp(32px, 4.5vw, 64px) clamp(28px, 4vw, 64px) clamp(24px, 3vw, 48px);
 }
 
 /* Meta row at top of pane — mimics the real entry page */
