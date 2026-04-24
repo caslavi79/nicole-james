@@ -175,7 +175,7 @@ section + section {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 0;
+  padding: 18px var(--shell-pad);
 }
 .nav-logo {
   display: inline-flex;
@@ -231,7 +231,6 @@ section + section {
   align-items: center;
   justify-content: center;
   color: var(--ink);
-  margin-right: -10px; /* optical align to shell edge */
 }
 .nav-toggle-lines {
   display: block;
@@ -297,7 +296,6 @@ section + section {
   align-items: center;
   justify-content: center;
   color: var(--ink);
-  margin-right: -10px; /* optical align to shell edge */
   transition: color var(--dur-fast) var(--ease-out);
 }
 .nav-close:hover { color: var(--terra); }
@@ -308,7 +306,7 @@ section + section {
   align-items: center;
   justify-content: center;
   gap: 28px;
-  padding: clamp(48px, 12vh, 96px) 0;
+  padding: clamp(40px, 10vh, 80px) 0 clamp(24px, 4vh, 40px);
 }
 .nav-overlay-link {
   font-family: var(--font-serif);
@@ -324,6 +322,51 @@ section + section {
 .nav-overlay-link:hover,
 .nav-overlay-link:active,
 .nav-overlay-link:focus-visible { color: var(--terra); }
+.nav-overlay-link.is-active { color: var(--terra); }
+
+/* -- NAV: overlay contact block (phone + email) -- */
+.nav-overlay-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: clamp(24px, 4vh, 40px);
+  border-top: 1px solid var(--line);
+}
+.nav-overlay-contact-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 18px;
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  color: var(--ink);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.nav-overlay-contact-btn:active,
+.nav-overlay-contact-btn:hover {
+  background: var(--ink);
+  color: var(--bone);
+}
+.nav-overlay-contact-label {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+.nav-overlay-contact-btn:active .nav-overlay-contact-label,
+.nav-overlay-contact-btn:hover .nav-overlay-contact-label { color: var(--bone-2); }
+.nav-overlay-contact-value {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.nav-overlay-contact-btn[data-kind="email"] .nav-overlay-contact-value {
+  font-size: 14px;
+  font-weight: 400;
+  word-break: break-all;
+}
 .nav-overlay-inquire {
   margin-top: 16px;
   background: var(--ink);
@@ -413,7 +456,7 @@ section .shell { position: relative; z-index: 1; }
   width: 16%;
   background-image: url('assets/nj-logo.png');
   background-position: right center;
-  opacity: 0.05;
+  opacity: 0.035;
 }
 @media (max-width: 820px) {
   .credentials-watermark {
@@ -423,7 +466,7 @@ section .shell { position: relative; z-index: 1; }
     width: 28%;
     height: 22%;
     background-position: right bottom;
-    opacity: 0.04;
+    opacity: 0.028;
   }
 }
 
@@ -440,8 +483,10 @@ section .shell { position: relative; z-index: 1; }
   z-index: 1;
   background: var(--bone);
 }
-@media (max-width: 720px) {
-  .hero.hero-stuck { top: 92px; } /* mobile nav: 56px logo + 36px padding */
+/* On mobile, hero stacks (text + portrait) and is taller than the viewport,
+   which makes sticky crop the portrait. Fall back to normal flow. */
+@media (max-width: 820px) {
+  .hero.hero-stuck { position: static; top: auto; }
 }
 #about {
   position: relative;
@@ -872,7 +917,7 @@ section .shell { position: relative; z-index: 1; }
 /* Editorial two-column layout: big quote mark anchors the left,
    testimonial rides the right column. Topbar holds eyebrow + arrows,
    footer holds dots. Tighter rhythm, less empty air. */
-/* Sticky stage: testimonials pins while journal slides up over it,
+/* Sticky stage: testimonials pins while blog slides up over it,
    then both release together at the stage's bottom. */
 .sticky-stage { position: relative; }
 
@@ -884,7 +929,7 @@ section .shell { position: relative; z-index: 1; }
   background: var(--bone);
 }
 
-.journal-section {
+.blog-section {
   position: relative;
   z-index: 2;
   background: var(--bone);
@@ -1076,11 +1121,11 @@ section .shell { position: relative; z-index: 1; }
   .testimonial-meta { width: 100%; justify-content: space-between; gap: 16px; }
 }
 
-/* -- JOURNAL WINDOW -- */
-/* The metaphor: a framed window looking INTO the journal entry.
+/* -- BLOG WINDOW -- */
+/* The metaphor: a framed window looking INTO the blog entry.
    Scrollable pane + bottom fade + CTA footer.
    On click, grows to fullscreen as transition into the entry page. */
-.journal-window {
+.blog-window {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1096,11 +1141,11 @@ section .shell { position: relative; z-index: 1; }
               box-shadow var(--dur-base) var(--ease-out);
   box-shadow: 0 1px 0 var(--line);
 }
-.journal-window:hover {
+.blog-window:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 32px -18px rgba(18,16,14,0.35), 0 1px 0 var(--ink);
 }
-.journal-window:focus-visible {
+.blog-window:focus-visible {
   outline: 2px solid var(--terra);
   outline-offset: 4px;
 }
@@ -1108,16 +1153,16 @@ section .shell { position: relative; z-index: 1; }
 /* Expansion transition — JS adds .jw-expanding + sets fixed coords, then
    inline transition runs the grow. .jw-open fades the window contents to
    bone just before navigation to hide the browser load flash. */
-.journal-window.jw-expanding {
+.blog-window.jw-expanding {
   will-change: top, left, width, height, border-radius;
   z-index: 200;
   cursor: default;
   box-shadow: 0 24px 80px -20px rgba(18,16,14,0.45);
 }
-.journal-window.jw-expanding:hover { transform: none; }
-.journal-window.jw-fading .jw-pane,
-.journal-window.jw-fading .jw-footer,
-.journal-window.jw-fading .jw-fade {
+.blog-window.jw-expanding:hover { transform: none; }
+.blog-window.jw-fading .jw-pane,
+.blog-window.jw-fading .jw-footer,
+.blog-window.jw-fading .jw-fade {
   opacity: 0;
   transition: opacity 180ms ease;
 }
@@ -1260,12 +1305,12 @@ section .shell { position: relative; z-index: 1; }
   font-size: 18px;
   transition: transform var(--dur-fast), color var(--dur-fast);
 }
-.journal-window:hover .jw-cta { color: var(--terra); }
-.journal-window:hover .jw-arrow { color: var(--terra); transform: translateX(6px); }
+.blog-window:hover .jw-cta { color: var(--terra); }
+.blog-window:hover .jw-arrow { color: var(--terra); transform: translateX(6px); }
 
-/* Mobile refinements for the journal window */
+/* Mobile refinements for the blog window */
 @media (max-width: 720px) {
-  .journal-window { border-radius: 8px; margin-bottom: 32px; }
+  .blog-window { border-radius: 8px; margin-bottom: 32px; }
   .jw-pane {
     padding: 28px 22px 72px;
     max-height: clamp(380px, 76vw, 460px);
@@ -1304,7 +1349,7 @@ section .shell { position: relative; z-index: 1; }
 }
 
 /* -- EARLIER ENTRIES LIST -- */
-.journal-earlier { margin-top: clamp(32px, 4vw, 56px); }
+.blog-earlier { margin-top: clamp(32px, 4vw, 56px); }
 .je-label {
   font-size: 11px;
   letter-spacing: 0.22em;
@@ -1639,12 +1684,12 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   background-position: right center;
 }
 
-/* -- JOURNAL PAGE -- */
-.journal-hero {
+/* -- BLOG PAGE -- */
+.blog-hero {
   padding-top: 72px;
   padding-bottom: 48px;
 }
-.journal-hero-eyebrow {
+.blog-hero-eyebrow {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -1654,10 +1699,10 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   color: var(--smoke);
   margin-bottom: 40px;
 }
-.journal-hero-eyebrow .line { width: 40px; height: 1px; background: var(--smoke); }
+.blog-hero-eyebrow .line { width: 40px; height: 1px; background: var(--smoke); }
 
-.journal-hero-latest { margin-top: 16px; }
-.journal-hero-latest .e-meta {
+.blog-hero-latest { margin-top: 16px; }
+.blog-hero-latest .e-meta {
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -1665,7 +1710,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   font-weight: 500;
   margin-bottom: 24px;
 }
-.journal-hero-latest h1 {
+.blog-hero-latest h1 {
   font-family: var(--font-serif);
   font-weight: 500;
   font-size: clamp(36px, 5.5vw, 64px);
@@ -1674,8 +1719,8 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   margin-bottom: 32px;
   max-width: 18ch;
 }
-.journal-hero-latest h1 em { color: var(--terra); font-weight: 300; }
-.journal-hero-latest .e-excerpt {
+.blog-hero-latest h1 em { color: var(--terra); font-weight: 300; }
+.blog-hero-latest .e-excerpt {
   font-size: 16.5px;
   line-height: 1.55;
   color: var(--ink-2);
@@ -1683,18 +1728,18 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   margin-bottom: 36px;
 }
 
-.journal-list {
+.blog-list {
   border-top: 1px solid var(--line);
   padding-top: 40px;
 }
-.journal-list .label {
+.blog-list .label {
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--smoke);
   margin-bottom: 32px;
 }
-.journal-row {
+.blog-row {
   display: grid;
   grid-template-columns: 80px 1fr 1fr auto;
   gap: 32px;
@@ -1704,22 +1749,22 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   transition: opacity var(--dur-fast);
   color: var(--ink);
 }
-.journal-row:hover { opacity: 0.7; }
-.journal-row .no { font-size: 11px; letter-spacing: 0.18em; color: var(--smoke); font-weight: 500; }
-.journal-row .ttl {
+.blog-row:hover { opacity: 0.7; }
+.blog-row .no { font-size: 11px; letter-spacing: 0.18em; color: var(--smoke); font-weight: 500; }
+.blog-row .ttl {
   font-family: var(--font-serif);
   font-size: clamp(20px, 2vw, 26px);
   font-weight: 500;
   line-height: 1.15;
   letter-spacing: -0.015em;
 }
-.journal-row .ttl em { color: var(--terra); font-weight: 300; }
-.journal-row .date { font-size: 12px; letter-spacing: 0.08em; color: var(--smoke); text-transform: uppercase; }
-.journal-row .arr { font-size: 14px; color: var(--ink); }
+.blog-row .ttl em { color: var(--terra); font-weight: 300; }
+.blog-row .date { font-size: 12px; letter-spacing: 0.08em; color: var(--smoke); text-transform: uppercase; }
+.blog-row .arr { font-size: 14px; color: var(--ink); }
 
 @media (max-width: 720px) {
-  .journal-row { grid-template-columns: 1fr auto; gap: 12px; padding: 20px 0; }
-  .journal-row .no, .journal-row .date { display: none; }
+  .blog-row { grid-template-columns: 1fr auto; gap: 12px; padding: 20px 0; }
+  .blog-row .no, .blog-row .date { display: none; }
 }
 
 /* FAQ block */
@@ -1762,7 +1807,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   max-width: 64ch;
 }
 
-/* -- JOURNAL ENTRY PAGE -- */
+/* -- BLOG ENTRY PAGE -- */
 .entry-hero {
   padding-top: 72px;
   padding-bottom: 40px;

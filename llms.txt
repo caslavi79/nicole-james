@@ -5,14 +5,14 @@
 ## Core pages
 
 - [Home](https://nicolejamesaustin.com/): Full overview of services, record, testimonials, and credentials
-- [Journal](https://nicolejamesaustin.com/journal/): Building profiles, market analysis, and FAQ on downtown Austin condos
+- [Blog](https://nicolejamesaustin.com/blog/): Building profiles, market analysis, and FAQ on downtown Austin condos
 - [Contact](https://nicolejamesaustin.com/contact.html): Direct phone, email, office address, and inquiry form
 
-## Journal entries
+## Blog entries
 
-- [HOA Fees, Compared](https://nicolejamesaustin.com/journal/hoa-fees-compared.html): What residents in five downtown Austin buildings actually pay each month and what the fees cover
-- [Capitol View Corridor](https://nicolejamesaustin.com/journal/capitol-view-corridor.html): What the downtown Austin capitol view corridor regulation means for condo buyers
-- [Bridges on The Park Pricing](https://nicolejamesaustin.com/journal/bridges-pricing-history.html): How pricing at Bridges on The Park has moved from 2015 through 2026
+- [HOA Fees, Compared](https://nicolejamesaustin.com/blog/hoa-fees-compared.html): What residents in five downtown Austin buildings actually pay each month and what the fees cover
+- [Capitol View Corridor](https://nicolejamesaustin.com/blog/capitol-view-corridor.html): What the downtown Austin capitol view corridor regulation means for condo buyers
+- [Bridges on The Park Pricing](https://nicolejamesaustin.com/blog/bridges-pricing-history.html): How pricing at Bridges on The Park has moved from 2015 through 2026
 
 ## Key facts about Nicole James
 

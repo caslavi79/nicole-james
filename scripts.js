@@ -141,14 +141,14 @@
     startAuto();
   }
 
-  // -- JOURNAL WINDOW click-to-expand → SPA-style swap
+  // -- BLOG WINDOW click-to-expand → SPA-style swap
   // Clones the window into <body> so it escapes any ancestor stacking /
   // containing-block issues, animates the clone to fullscreen, fetches
   // the entry in parallel, swaps body under the clone, then fades the
   // clone out to reveal the real entry DOM.
-  const journalWindow = document.querySelector('.journal-window');
-  if (journalWindow) {
-    const targetHref = journalWindow.dataset.href;
+  const blogWindow = document.querySelector('.blog-window');
+  if (blogWindow) {
+    const targetHref = blogWindow.dataset.href;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const expandAndGo = async () => {
@@ -164,12 +164,12 @@
         .catch(() => null);
 
       // Capture the current on-screen rect of the window (includes hover transform)
-      const rect = journalWindow.getBoundingClientRect();
+      const rect = blogWindow.getBoundingClientRect();
 
       // Clone the window; the clone is the one that animates.
       // We append it directly to <body> so it escapes sticky-stage / transform
       // containing-block weirdness in the original parents.
-      const clone = journalWindow.cloneNode(true);
+      const clone = blogWindow.cloneNode(true);
       clone.classList.add('jw-expanding');
       clone.removeAttribute('data-animate');
       clone.id = 'jw-overlay';
@@ -188,7 +188,7 @@
       document.body.appendChild(clone);
 
       // Hide the original so we don't see it behind the clone.
-      journalWindow.style.visibility = 'hidden';
+      blogWindow.style.visibility = 'hidden';
       document.body.style.overflow = 'hidden';
 
       // Force reflow so the starting rect is committed.
@@ -258,13 +258,13 @@
       setTimeout(() => { clone.remove(); }, 340);
     };
 
-    journalWindow.addEventListener('click', (e) => {
+    blogWindow.addEventListener('click', (e) => {
       // Let nested <a> tags do their own thing.
       if (e.target.closest('a')) return;
       expandAndGo();
     });
 
-    journalWindow.addEventListener('keydown', (e) => {
+    blogWindow.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         expandAndGo();
@@ -287,7 +287,7 @@
     fit();
   });
 
-  // -- FAQ accordion (on journal page)
+  // -- FAQ accordion (on blog page)
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item) => {
     const q = item.querySelector('.faq-q');
@@ -314,6 +314,19 @@
 
   if (navToggle && navOverlay) {
     const overlayLinks = navOverlay.querySelectorAll('a');
+
+    // Mark the current page's nav link as active (terracotta).
+    (() => {
+      const path = location.pathname;
+      let currentPage = null;
+      if (path.includes('/blog/')) currentPage = 'blog';
+      else if (/\/contact\.html$/.test(path)) currentPage = 'contact';
+      else if (path === '/' || /\/index\.html$/.test(path) || path.endsWith('/')) currentPage = 'home';
+      if (currentPage) {
+        navOverlay.querySelectorAll(`.nav-overlay-link[data-page="${currentPage}"]`)
+          .forEach((el) => el.classList.add('is-active'));
+      }
+    })();
 
     const openMenu = () => {
       navOverlay.hidden = false;

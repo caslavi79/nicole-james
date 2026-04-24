@@ -14,7 +14,7 @@
       <img src="assets/nj-signature.png" alt="Nicole James" />
     </a>
     <div class="nav-links">
-      <a href="journal/">Journal</a>
+      <a href="blog/">Blog</a>
       <a href="contact.html">Contact</a>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navOverlay">
@@ -37,8 +37,19 @@
       </button>
     </div>
     <div class="nav-overlay-stack">
-      <a href="journal/" class="nav-overlay-link">Journal</a>
-      <a href="contact.html" class="nav-overlay-link">Contact</a>
+      <a href="./" data-page="home" class="nav-overlay-link">Home</a>
+      <a href="blog/" data-page="blog" class="nav-overlay-link">Blog</a>
+      <a href="contact.html" data-page="contact" class="nav-overlay-link">Contact</a>
+    </div>
+    <div class="nav-overlay-contact">
+      <a href="tel:+15124664608" class="nav-overlay-contact-btn" data-kind="phone">
+        <span class="nav-overlay-contact-label">Call or text</span>
+        <span class="nav-overlay-contact-value">512 &middot; 466 &middot; 4608</span>
+      </a>
+      <a href="mailto:nicolej@christiesrealestatels.com" class="nav-overlay-contact-btn" data-kind="email">
+        <span class="nav-overlay-contact-label">Email</span>
+        <span class="nav-overlay-contact-value">nicolej@christiesrealestatels.com</span>
+      </a>
     </div>
   </div>
 </div>
@@ -67,7 +78,7 @@
     <div>
       <h5>Site</h5>
       <ul>
-        <li><a href="journal/">Journal</a></li>
+        <li><a href="blog/">Blog</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
     </div>
