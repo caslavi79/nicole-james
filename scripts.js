@@ -67,9 +67,42 @@
   }
 
   if (testimonials.length) {
-    if (prevBtn) prevBtn.addEventListener('click', () => showTestimonial((tIdx - 1 + testimonials.length) % testimonials.length));
-    if (nextBtn) nextBtn.addEventListener('click', () => showTestimonial((tIdx + 1) % testimonials.length));
-    dots.forEach((d, k) => d.addEventListener('click', () => showTestimonial(k)));
+    const AUTO_MS = 6500;
+    let autoTimer = null;
+    const stage = document.querySelector('.testimonial-wrap');
+
+    const advance = () => showTestimonial((tIdx + 1) % testimonials.length);
+    const retreat = () => showTestimonial((tIdx - 1 + testimonials.length) % testimonials.length);
+
+    const startAuto = () => {
+      if (autoTimer) return;
+      autoTimer = setInterval(advance, AUTO_MS);
+    };
+    const stopAuto = () => {
+      if (!autoTimer) return;
+      clearInterval(autoTimer);
+      autoTimer = null;
+    };
+    const restartAuto = () => { stopAuto(); startAuto(); };
+
+    if (prevBtn) prevBtn.addEventListener('click', () => { retreat(); restartAuto(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { advance(); restartAuto(); });
+    dots.forEach((d, k) => d.addEventListener('click', () => { showTestimonial(k); restartAuto(); }));
+
+    // Pause on hover/focus, resume on leave
+    if (stage) {
+      stage.addEventListener('mouseenter', stopAuto);
+      stage.addEventListener('mouseleave', startAuto);
+      stage.addEventListener('focusin', stopAuto);
+      stage.addEventListener('focusout', startAuto);
+    }
+
+    // Pause when tab is backgrounded to save cycles
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto(); else startAuto();
+    });
+
+    startAuto();
   }
 
   // -- FAQ accordion (on journal page)
