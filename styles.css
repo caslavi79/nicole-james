@@ -193,13 +193,18 @@ section + section {
   gap: 32px;
 }
 .nav-links a {
-  font-size: 13px;
-  letter-spacing: 0.04em;
+  font-size: 15px;
+  letter-spacing: 0.02em;
   color: var(--ink-2);
   position: relative;
-  transition: color var(--dur-fast);
+  display: inline-block;
+  transform-origin: center;
+  transition: color var(--dur-fast), transform var(--dur-base) var(--ease-out);
 }
 .nav-links a:hover { color: var(--ink); }
+@media (hover: hover) and (min-width: 721px) {
+  .nav-links a:hover { transform: scale(1.12); color: var(--ink); }
+}
 .nav-links a.nav-inquire {
   background: var(--ink);
   color: var(--bone);
