@@ -590,9 +590,19 @@ section .shell { position: relative; z-index: 1; }
    positive `top` would crop the portrait. We pin with a negative `top`
    (computed in scripts.js as `viewport_height - hero_height`) so the hero
    scrolls normally until its bottom reaches the viewport bottom, then
-   sticks there while about slides up over it. */
+   sticks there while about slides up over it.
+
+   The translateZ + will-change forces the sticky hero onto its own GPU
+   compositing layer. iOS Safari otherwise lags sticky position updates
+   during momentum scroll — the hero briefly renders at its natural
+   scrolled position and then snaps back to the sticky pin, producing a
+   visible downward jerk of the headline. Compositing fixes that. */
 @media (max-width: 820px) {
-  .hero.hero-stuck { top: var(--hero-sticky-top, 92px); }
+  .hero.hero-stuck {
+    top: var(--hero-sticky-top, 92px);
+    transform: translateZ(0);
+    will-change: transform;
+  }
 }
 #about {
   position: relative;
