@@ -121,6 +121,26 @@
           <label for="f-message">Message</label>
           <textarea id="f-message" name="message" rows="4" placeholder="A building, a timeframe, or a question." required></textarea>
         </div>
+
+        <div class="form-optins">
+          <label class="form-optin">
+            <input type="checkbox" name="optin-journal" value="yes" />
+            <span class="form-optin-box" aria-hidden="true"></span>
+            <span class="form-optin-label">
+              <span class="form-optin-title">Journal updates</span>
+              <span class="form-optin-note">Email me when new entries are published.</span>
+            </span>
+          </label>
+          <label class="form-optin">
+            <input type="checkbox" name="optin-listings" value="yes" />
+            <span class="form-optin-box" aria-hidden="true"></span>
+            <span class="form-optin-label">
+              <span class="form-optin-title">New listing alerts</span>
+              <span class="form-optin-note">Send me new downtown Austin listings and market notes as they hit.</span>
+            </span>
+          </label>
+        </div>
+
         <button type="submit" class="btn btn-primary" style="margin-top:16px">Send inquiry →</button>
         <p class="meta" style="margin-top:16px">Responses within one business day.</p>
       </form>

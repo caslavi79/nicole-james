@@ -1547,6 +1547,75 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   border-bottom-color: var(--ink);
 }
 .form-field textarea { resize: none; min-height: 80px; overflow: hidden; }
+
+/* -- FORM OPT-IN CHECKBOXES -- */
+.form-optins {
+  display: flex;
+  flex-direction: column;
+  margin: 28px 0 8px;
+}
+.form-optin {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 14px;
+  align-items: start;
+  cursor: pointer;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+.form-optin + .form-optin { border-top: 1px solid var(--line); }
+.form-optin:last-child { border-bottom: 1px solid var(--line); }
+.form-optin input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.form-optin-box {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  position: relative;
+  display: inline-block;
+  margin-top: 2px;
+  transition: background var(--dur-fast), border-color var(--dur-fast);
+}
+.form-optin input:checked ~ .form-optin-box {
+  background: var(--ink);
+}
+.form-optin input:checked ~ .form-optin-box::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--bone);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.form-optin input:focus-visible ~ .form-optin-box {
+  outline: 2px solid var(--terra);
+  outline-offset: 3px;
+}
+.form-optin-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.form-optin-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.form-optin-note {
+  font-size: 12.5px;
+  color: var(--smoke);
+  line-height: 1.45;
+}
 .form-field select {
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%238A8178' stroke-width='1.5' fill='none'/></svg>");
