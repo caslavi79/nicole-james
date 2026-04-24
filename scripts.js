@@ -17,71 +17,32 @@
     onScroll();
   }
 
-  // -- MOBILE HERO STICKY (manual translate)
-  // Desktop keeps native `position: sticky; top: 113px`. On mobile the
-  // hero is taller than the viewport, and iOS Safari's native sticky
-  // visibly lags during momentum scroll — the headline renders at its
-  // natural scrolled position for a frame before snapping to the pin,
-  // producing a visible downward bump. We drop native sticky on mobile
-  // (CSS sets position: relative) and manually apply `translate3d` on
-  // every scroll event so the hero's visual position stays in sync with
-  // scroll. No rAF throttle: each scroll event directly writes the
-  // transform, which runs on the compositor thread and stays pixel-tight
-  // even during iOS momentum scroll.
-  const heroSticky = document.querySelector('.hero.hero-stuck');
-  const heroStage = heroSticky ? heroSticky.closest('.sticky-stage') : null;
-  if (heroSticky && heroStage) {
-    const mobileMql = window.matchMedia('(max-width: 820px)');
-    let heroDocTop = 0;
-    let stageDocBottom = 0;
-    let heroH = 0;
-    let vh = 0;
-
-    const measure = () => {
-      const prev = heroSticky.style.transform;
-      heroSticky.style.transform = '';
-      // Force layout so the next getBoundingClientRect reflects the
-      // untransformed position.
-      void heroSticky.offsetHeight;
-      const y = window.scrollY;
-      heroDocTop = heroSticky.getBoundingClientRect().top + y;
-      heroH = heroSticky.offsetHeight;
-      stageDocBottom = heroStage.getBoundingClientRect().bottom + y;
-      vh = window.innerHeight;
-      heroSticky.style.transform = prev;
-    };
-
-    const apply = () => {
-      if (!mobileMql.matches) {
-        heroSticky.style.transform = '';
-        return;
+  // -- MOBILE PORTRAIT RELOCATE
+  // On mobile, reparent the hero portrait out of .hero-grid and into
+  // .sticky-stage directly, so the portrait's containing block is the
+  // stage (not the short grid track). That gives `position: sticky` real
+  // pin range. Desktop keeps the original layout.
+  const portraitEl = document.querySelector('.hero-portrait');
+  const stageEl = document.querySelector('.sticky-stage');
+  const aboutEl = document.getElementById('about');
+  if (portraitEl && stageEl && aboutEl) {
+    const origParent = portraitEl.parentElement;
+    const origNext = portraitEl.nextElementSibling;
+    const mql = window.matchMedia('(max-width: 820px)');
+    const relocate = () => {
+      if (mql.matches) {
+        if (portraitEl.parentElement !== stageEl) {
+          stageEl.insertBefore(portraitEl, aboutEl);
+        }
+      } else {
+        if (portraitEl.parentElement !== origParent) {
+          origParent.insertBefore(portraitEl, origNext);
+        }
       }
-      const y = window.scrollY;
-      const pin = Math.min(92, vh - heroH);
-      const natural = heroDocTop - y;
-      // Native sticky release: once stage's bottom rises above hero's
-      // pinned bottom, the effective pin follows it up.
-      const stageLimit = stageDocBottom - heroH - y;
-      const effectivePin = Math.min(pin, stageLimit);
-      const target = Math.max(natural, effectivePin);
-      const tx = target - natural;
-      heroSticky.style.transform = tx > 0.5 ? `translate3d(0, ${tx}px, 0)` : '';
     };
-
-    const remeasure = () => { measure(); apply(); };
-
-    measure();
-    apply();
-    window.addEventListener('scroll', apply, { passive: true });
-    window.addEventListener('resize', remeasure, { passive: true });
-    window.addEventListener('orientationchange', remeasure);
-    window.addEventListener('load', remeasure);
-    if ('ResizeObserver' in window) {
-      new ResizeObserver(remeasure).observe(heroSticky);
-    }
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(remeasure);
-    }
+    relocate();
+    window.addEventListener('resize', relocate, { passive: true });
+    window.addEventListener('orientationchange', relocate);
   }
 
   // -- SCROLL REVEAL
