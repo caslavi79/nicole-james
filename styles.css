@@ -426,6 +426,12 @@ section .shell { position: relative; z-index: 1; }
 .hero {
   padding-top: clamp(12px, 2vw, 28px);
   padding-bottom: clamp(64px, 8vw, 120px);
+  overflow: hidden; /* clip hero children that drift off sides on scroll */
+}
+/* Make the split elements GPU-accelerated and remove default data-animate transforms
+   from the drift-controlled elements once the initial reveal has run. */
+.hero-copy, .hero-portrait {
+  will-change: transform, opacity;
 }
 .hero-grid {
   display: grid;
@@ -926,18 +932,48 @@ section .shell { position: relative; z-index: 1; }
   .t-mark { font-size: 64px; }
 }
 
-.t-stage { position: relative; min-height: 180px; }
+.t-stage {
+  position: relative;
+  min-height: 220px;
+  overflow: hidden; /* clip testimonials sliding in/out of frame */
+}
 .testimonial {
-  display: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
   flex-direction: column;
   gap: 28px;
-  opacity: 0;
-  transition: opacity var(--dur-base) var(--ease-out);
   max-width: 40ch;
+  opacity: 0;
+  transform: translateX(0);
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: opacity 380ms var(--ease-out), transform 520ms var(--ease-out);
 }
 .testimonial.active {
-  display: flex;
   opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+/* Directional exit/enter classes — JS toggles these on transitions. */
+.testimonial.exit-left {
+  opacity: 0;
+  transform: translateX(-72px);
+}
+.testimonial.exit-right {
+  opacity: 0;
+  transform: translateX(72px);
+}
+/* Pre-enter state: no transition, off-screen, ready to animate in. */
+.testimonial.pre-enter-right {
+  opacity: 0;
+  transform: translateX(72px);
+  transition: none;
+}
+.testimonial.pre-enter-left {
+  opacity: 0;
+  transform: translateX(-72px);
+  transition: none;
 }
 .testimonial blockquote {
   font-family: var(--font-serif);

@@ -59,20 +59,53 @@
   const nextBtn = document.getElementById('tNext');
   let tIdx = 0;
 
-  function showTestimonial(i) {
+  function setTestimonial(i) {
     testimonials.forEach((t, k) => t.classList.toggle('active', k === i));
     dots.forEach((d, k) => d.classList.toggle('active', k === i));
     if (counter) counter.textContent = `${String(i + 1).padStart(2, '0')} / 0${testimonials.length}`;
     tIdx = i;
   }
 
+  // Directional slide transition.
+  // direction: +1 = next (outgoing slides left, incoming from right)
+  //            -1 = prev (outgoing slides right, incoming from left)
+  function slideTo(newIdx, direction) {
+    if (newIdx === tIdx) return;
+    const outEl = testimonials[tIdx];
+    const inEl = testimonials[newIdx];
+    const isNext = direction > 0;
+
+    // Position incoming off-screen without transition
+    inEl.classList.remove('active', 'exit-left', 'exit-right');
+    inEl.classList.add(isNext ? 'pre-enter-right' : 'pre-enter-left');
+    // Force reflow so the pre-enter transform is applied before we animate
+    void inEl.offsetHeight;
+
+    // Animate outgoing off
+    outEl.classList.remove('active');
+    outEl.classList.add(isNext ? 'exit-left' : 'exit-right');
+
+    // Animate incoming in
+    inEl.classList.remove('pre-enter-right', 'pre-enter-left');
+    inEl.classList.add('active');
+
+    // Clean up exit classes on the previously-active after the animation finishes
+    setTimeout(() => {
+      outEl.classList.remove('exit-left', 'exit-right');
+    }, 600);
+
+    // Update indicators
+    dots.forEach((d, k) => d.classList.toggle('active', k === newIdx));
+    if (counter) counter.textContent = `${String(newIdx + 1).padStart(2, '0')} / 0${testimonials.length}`;
+    tIdx = newIdx;
+  }
+
   if (testimonials.length) {
     const AUTO_MS = 6500;
     let autoTimer = null;
-    const stage = document.querySelector('.testimonial-wrap');
 
-    const advance = () => showTestimonial((tIdx + 1) % testimonials.length);
-    const retreat = () => showTestimonial((tIdx - 1 + testimonials.length) % testimonials.length);
+    const advance = () => slideTo((tIdx + 1) % testimonials.length, 1);
+    const retreat = () => slideTo((tIdx - 1 + testimonials.length) % testimonials.length, -1);
 
     const startAuto = () => {
       if (autoTimer) return;
@@ -87,17 +120,20 @@
 
     if (prevBtn) prevBtn.addEventListener('click', () => { retreat(); restartAuto(); });
     if (nextBtn) nextBtn.addEventListener('click', () => { advance(); restartAuto(); });
-    dots.forEach((d, k) => d.addEventListener('click', () => { showTestimonial(k); restartAuto(); }));
+    dots.forEach((d, k) => d.addEventListener('click', () => {
+      if (k === tIdx) return;
+      // Pick direction by shortest path around the loop
+      const diff = k - tIdx;
+      const forward = (diff + testimonials.length) % testimonials.length;
+      const backward = testimonials.length - forward;
+      const dir = forward <= backward ? 1 : -1;
+      slideTo(k, dir);
+      restartAuto();
+    }));
 
-    // Pause on hover/focus, resume on leave
-    if (stage) {
-      stage.addEventListener('mouseenter', stopAuto);
-      stage.addEventListener('mouseleave', startAuto);
-      stage.addEventListener('focusin', stopAuto);
-      stage.addEventListener('focusout', startAuto);
-    }
-
-    // Pause when tab is backgrounded to save cycles
+    // Pause when tab is backgrounded so rotation doesn't burn cycles off-screen.
+    // Intentionally NOT pausing on hover — cursor often parks on the carousel
+    // while reading and freezes the rotation indefinitely.
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stopAuto(); else startAuto();
     });
