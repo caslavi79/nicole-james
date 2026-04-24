@@ -145,6 +145,10 @@ section {
 section + section {
   border-top: 1px solid var(--line);
 }
+/* No divider between sibling sections inside a sticky stage —
+   they overlap visually, so a top border on the covering section
+   would read as a stray line at rest. */
+.sticky-stage > section + section { border-top: 0; }
 
 .s-head {
   display: flex;
