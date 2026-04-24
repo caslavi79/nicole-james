@@ -424,7 +424,7 @@ section .shell { position: relative; z-index: 1; }
 
 /* -- HERO -- */
 .hero {
-  padding-top: 0;
+  padding-top: clamp(12px, 2vw, 28px);
   padding-bottom: clamp(64px, 8vw, 120px);
 }
 .hero-grid {
@@ -553,7 +553,7 @@ section .shell { position: relative; z-index: 1; }
 
 .about-head {
   position: sticky;
-  top: 124px; /* clears sticky nav (~112px with 76px logo) + breathing room */
+  top: 140px; /* clears sticky nav (~112px logo + bottom nudge) + breathing room */
   align-self: start;
 }
 .about-head .hh { display: flex; flex-direction: column; gap: 4px; }
