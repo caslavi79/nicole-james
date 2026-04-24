@@ -428,6 +428,19 @@ section .shell { position: relative; z-index: 1; }
   padding-top: clamp(12px, 2vw, 28px);
   padding-bottom: clamp(64px, 8vw, 120px);
 }
+/* Hero + About sticky stage: hero pins at top, about slides up over it
+   as the user scrolls, then both release together at stage end. */
+.hero.hero-stuck {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bone);
+}
+#about {
+  position: relative;
+  z-index: 2;
+  background: var(--bone);
+}
 .hero-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
