@@ -38,6 +38,10 @@
     updateHeroSticky();
     window.addEventListener('resize', updateHeroSticky, { passive: true });
     window.addEventListener('orientationchange', updateHeroSticky);
+    window.addEventListener('load', updateHeroSticky);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(updateHeroSticky);
+    }
   }
 
   // -- SCROLL REVEAL
