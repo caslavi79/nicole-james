@@ -55,14 +55,38 @@
 
 <nav class="nav" id="nav">
   <div class="shell nav-inner">
-    <a href="../" class="nav-logo">Nicole James</a>
+    <a href="../" class="nav-logo" aria-label="Nicole James — home">
+      <img src="../assets/nj-signature.png" alt="Nicole James" />
+    </a>
     <div class="nav-links">
       <a href="./">Journal</a>
       <a href="../contact.html">Contact</a>
-      <a href="../contact.html" class="nav-inquire">Inquire</a>
     </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navOverlay">
+      <span class="nav-toggle-lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
   </div>
 </nav>
+
+<div class="nav-overlay" id="navOverlay" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+  <div class="nav-overlay-inner">
+    <div class="nav-overlay-top">
+      <span class="nav-overlay-eyebrow">&sect; MENU</span>
+      <button class="nav-close" id="navClose" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="nav-overlay-stack">
+      <a href="./" class="nav-overlay-link">Journal</a>
+      <a href="../contact.html" class="nav-overlay-link">Contact</a>
+    </div>
+  </div>
+</div>
 
 <article>
   <div class="entry-hero shell">

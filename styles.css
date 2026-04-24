@@ -1546,7 +1546,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   outline: none;
   border-bottom-color: var(--ink);
 }
-.form-field textarea { resize: vertical; min-height: 80px; }
+.form-field textarea { resize: none; min-height: 80px; overflow: hidden; }
 .form-field select {
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%238A8178' stroke-width='1.5' fill='none'/></svg>");

@@ -275,6 +275,18 @@
     window.addEventListener('popstate', () => { window.location.reload(); });
   }
 
+  // -- AUTO-GROW textareas (no ugly manual-resize handle)
+  const autoGrowTextareas = document.querySelectorAll('.form-field textarea');
+  autoGrowTextareas.forEach((el) => {
+    const fit = () => {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    };
+    el.addEventListener('input', fit);
+    // In case the browser restores value on back-nav
+    fit();
+  });
+
   // -- FAQ accordion (on journal page)
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item) => {
