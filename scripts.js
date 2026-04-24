@@ -275,6 +275,39 @@
     window.addEventListener('popstate', () => { window.location.reload(); });
   }
 
+  // -- HERO SCROLL DRIFT
+  // As the user scrolls, hero-copy drifts off to the left and hero-portrait
+  // drifts off to the right, both fading. Gives the "hero pulls apart" feel
+  // as about section comes into view behind it.
+  const heroSection = document.querySelector('.hero');
+  const heroCopy = heroSection && heroSection.querySelector('.hero-copy');
+  const heroPortrait = heroSection && heroSection.querySelector('.hero-portrait');
+  if (heroSection && heroCopy && heroPortrait) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reducedMotion) {
+      let raf = null;
+      const update = () => {
+        raf = null;
+        const rect = heroSection.getBoundingClientRect();
+        const h = rect.height || 1;
+        // Progress: 0 when hero top is at viewport top, 1 when hero has
+        // scrolled ~70% of its height past the top. Finishes before the
+        // hero fully exits so the about section takes over cleanly.
+        const progress = Math.max(0, Math.min(1, -rect.top / (h * 0.7)));
+        const drift = progress * 120;                 // percent of element width
+        const fade  = Math.max(0, 1 - progress * 1.3);
+        heroCopy.style.transform     = 'translateX(' + (-drift) + '%)';
+        heroCopy.style.opacity       = fade;
+        heroPortrait.style.transform = 'translateX(' + ( drift) + '%)';
+        heroPortrait.style.opacity   = fade;
+      };
+      const onScroll = () => { if (raf) return; raf = requestAnimationFrame(update); };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    }
+  }
+
   // -- AUTO-GROW textareas (no ugly manual-resize handle)
   const autoGrowTextareas = document.querySelectorAll('.form-field textarea');
   autoGrowTextareas.forEach((el) => {
