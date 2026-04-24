@@ -142,10 +142,10 @@
   }
 
   // -- JOURNAL WINDOW click-to-expand → SPA-style swap
-  // Click pins the window at its current rect, animates it to fullscreen,
-  // fetches the entry page in parallel, replaces <body> underneath the
-  // expanded window once both are ready, pushes the URL, then fades the
-  // window out to reveal the real entry DOM.
+  // Clones the window into <body> so it escapes any ancestor stacking /
+  // containing-block issues, animates the clone to fullscreen, fetches
+  // the entry in parallel, swaps body under the clone, then fades the
+  // clone out to reveal the real entry DOM.
   const journalWindow = document.querySelector('.journal-window');
   if (journalWindow) {
     const targetHref = journalWindow.dataset.href;
@@ -153,85 +153,108 @@
 
     const expandAndGo = async () => {
       if (!targetHref) return;
-      if (journalWindow.classList.contains('jw-expanding')) return;
+      if (document.body.classList.contains('jw-transitioning')) return;
+      document.body.classList.add('jw-transitioning');
 
       if (reducedMotion) { window.location.href = targetHref; return; }
 
-      // Kick off the fetch immediately — done well before the animation ends
+      // Kick off the fetch immediately — done well before the animation ends.
       const fetchPromise = fetch(targetHref, { credentials: 'same-origin' })
         .then(r => r.ok ? r.text() : null)
         .catch(() => null);
 
+      // Capture the current on-screen rect of the window (includes hover transform)
       const rect = journalWindow.getBoundingClientRect();
 
-      // Pin window at its current on-screen coords
-      journalWindow.style.position = 'fixed';
-      journalWindow.style.top = rect.top + 'px';
-      journalWindow.style.left = rect.left + 'px';
-      journalWindow.style.width = rect.width + 'px';
-      journalWindow.style.height = rect.height + 'px';
-      journalWindow.style.margin = '0';
-      journalWindow.style.maxWidth = 'none';
-      journalWindow.classList.add('jw-expanding');
+      // Clone the window; the clone is the one that animates.
+      // We append it directly to <body> so it escapes sticky-stage / transform
+      // containing-block weirdness in the original parents.
+      const clone = journalWindow.cloneNode(true);
+      clone.classList.add('jw-expanding');
+      clone.removeAttribute('data-animate');
+      clone.id = 'jw-overlay';
+      Object.assign(clone.style, {
+        position: 'fixed',
+        top: rect.top + 'px',
+        left: rect.left + 'px',
+        width: rect.width + 'px',
+        height: rect.height + 'px',
+        margin: '0',
+        maxWidth: 'none',
+        zIndex: '10000',
+        transform: 'none',
+        transition: 'none',
+      });
+      document.body.appendChild(clone);
 
+      // Hide the original so we don't see it behind the clone.
+      journalWindow.style.visibility = 'hidden';
       document.body.style.overflow = 'hidden';
-      void journalWindow.offsetHeight;
 
-      // Grow to fullscreen
-      journalWindow.style.transition =
+      // Force reflow so the starting rect is committed.
+      void clone.offsetHeight;
+
+      // Animate to fullscreen.
+      clone.style.transition =
         'top 620ms cubic-bezier(0.7, 0, 0.2, 1),' +
         ' left 620ms cubic-bezier(0.7, 0, 0.2, 1),' +
         ' width 620ms cubic-bezier(0.7, 0, 0.2, 1),' +
         ' height 620ms cubic-bezier(0.7, 0, 0.2, 1),' +
         ' border-radius 620ms ease';
-      journalWindow.style.top = '0';
-      journalWindow.style.left = '0';
-      journalWindow.style.width = '100vw';
-      journalWindow.style.height = '100vh';
-      journalWindow.style.borderRadius = '0';
+      clone.style.top = '0';
+      clone.style.left = '0';
+      clone.style.width = '100vw';
+      clone.style.height = '100vh';
+      clone.style.borderRadius = '0';
 
-      // Fade the inner chrome near the end so the swap is invisible
-      setTimeout(() => journalWindow.classList.add('jw-fading'), 480);
+      // Fade the clone's inner chrome near the end of the grow so the body
+      // swap under it is invisible.
+      setTimeout(() => clone.classList.add('jw-fading'), 500);
 
-      // Wait for the expand animation to finish, then swap the body
+      // Wait for the animation AND the fetch.
       await new Promise(r => setTimeout(r, 640));
       const html = await fetchPromise;
 
-      if (!html) { window.location.href = targetHref; return; }
+      if (!html) {
+        // Fallback: straight nav so the user still gets there.
+        window.location.href = targetHref;
+        return;
+      }
 
-      // Parse fetched document
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
 
-      // Push URL + update title FIRST so relative paths in the new DOM
-      // resolve against the entry URL (e.g. ../assets/... on /journal/X)
+      // Push URL + title FIRST so the entry DOM's relative URLs
+      // (e.g. ../assets/...) resolve against the new location.
       history.pushState({ spa: true, from: location.href }, '', targetHref);
       document.title = doc.title || document.title;
 
-      // Move the expanded window OUT of body so it survives the swap
-      document.documentElement.appendChild(journalWindow);
+      // Move the clone OUT of <body> so it survives the body swap.
+      document.documentElement.appendChild(clone);
 
-      // Replace body children with the fetched body's children
+      // Swap body content with the entry's body.
       document.body.innerHTML = doc.body.innerHTML;
 
-      // Scroll to top and restore overflow
+      // Reset scroll + unlock.
       window.scrollTo(0, 0);
       document.body.style.overflow = '';
+      document.body.classList.remove('jw-transitioning');
 
-      // Fade the overlay out
-      journalWindow.style.transition = 'opacity 320ms ease';
-      journalWindow.style.opacity = '0';
-      setTimeout(() => { journalWindow.remove(); }, 340);
+      // Fade out the clone overlay.
+      clone.style.transition = 'opacity 320ms ease';
+      clone.style.opacity = '0';
+      setTimeout(() => { clone.remove(); }, 340);
 
-      // Re-run scripts.js so nav hamburger/FAQ/etc. attach to the new DOM.
-      // Cache-bust so the browser actually re-executes it.
+      // Re-run scripts.js so the entry page's nav hamburger, FAQ accordion
+      // etc. attach to the new DOM. Cache-bust so the browser re-executes it.
       const s = document.createElement('script');
       s.src = 'scripts.js?r=' + Date.now();
       document.body.appendChild(s);
     };
 
     journalWindow.addEventListener('click', (e) => {
-      if (e.target.closest('a')) return; // nested links do their own thing
+      // Let nested <a> tags do their own thing.
+      if (e.target.closest('a')) return;
       expandAndGo();
     });
 
@@ -242,7 +265,7 @@
       }
     });
 
-    // Back/forward after a SPA swap: simplest reliable path is a full reload
+    // Back/forward after a SPA swap: full reload is the safest path.
     window.addEventListener('popstate', () => { window.location.reload(); });
   }
 
