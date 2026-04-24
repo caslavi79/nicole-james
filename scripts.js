@@ -275,25 +275,6 @@
     window.addEventListener('popstate', () => { window.location.reload(); });
   }
 
-  // -- HERO REVEAL
-  // Past a small scroll threshold, add body.hero-revealed. CSS runs the
-  // one-shot animation: hero-copy slides out left, portrait slides out
-  // right, about body fades + lifts in. Removing the class (scroll back
-  // to top) plays it in reverse.
-  const heroEl = document.querySelector('.hero');
-  if (heroEl) {
-    const THRESHOLD = 40;
-    let revealed = false;
-    const sync = () => {
-      const shouldReveal = window.scrollY > THRESHOLD;
-      if (shouldReveal === revealed) return;
-      revealed = shouldReveal;
-      document.body.classList.toggle('hero-revealed', revealed);
-    };
-    window.addEventListener('scroll', sync, { passive: true });
-    sync();
-  }
-
   // -- AUTO-GROW textareas (no ugly manual-resize handle)
   const autoGrowTextareas = document.querySelectorAll('.form-field textarea');
   autoGrowTextareas.forEach((el) => {

@@ -423,45 +423,10 @@ section .shell { position: relative; z-index: 1; }
   }
 }
 
-/* -- HERO --
-   Positioned over the about section (which has margin-top:-100vh to
-   overlap underneath). At scroll rest, hero covers about. Once the
-   user scrolls past the threshold, hero content slides off and about
-   fades in behind it — same physical viewport space. */
+/* -- HERO -- */
 .hero {
-  position: relative;
-  z-index: 2;
-  min-height: 100vh;
   padding-top: clamp(12px, 2vw, 28px);
   padding-bottom: clamp(64px, 8vw, 120px);
-  background: var(--bone);
-  overflow: hidden; /* clip hero children that drift off sides on scroll */
-}
-#about {
-  position: relative;
-  z-index: 1;
-  margin-top: -100vh; /* sit behind hero, same viewport space */
-  opacity: 0;
-  transition: opacity 700ms ease 150ms;
-}
-body.hero-revealed #about {
-  opacity: 1;
-}
-/* One-shot reveal: when body.hero-revealed (added on scroll past 40px),
-   hero-copy slides out LEFT, portrait slides out RIGHT, both fade. */
-.hero-copy, .hero-portrait {
-  will-change: transform, opacity;
-  transition:
-    transform 900ms cubic-bezier(0.7, 0, 0.2, 1),
-    opacity 600ms ease;
-}
-body.hero-revealed .hero-copy {
-  transform: translateX(-130%);
-  opacity: 0;
-}
-body.hero-revealed .hero-portrait {
-  transform: translateX(130%);
-  opacity: 0;
 }
 .hero-grid {
   display: grid;
