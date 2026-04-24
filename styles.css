@@ -1186,7 +1186,6 @@ section .shell { position: relative; z-index: 1; }
   justify-content: space-between;
   align-items: center;
   padding: 18px clamp(28px, 4vw, 64px);
-  border-top: 1px solid var(--ink);
   background: var(--bone);
   font-size: 11px;
   letter-spacing: 0.22em;
