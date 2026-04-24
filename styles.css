@@ -390,6 +390,7 @@ section .shell { position: relative; z-index: 1; }
   bottom: 2%;
   transform: translateX(-50%);
   width: 70%;
+  background-image: url('assets/nj-buildings.png');
   background-position: center;
   opacity: 0.05;
 }
@@ -406,7 +407,7 @@ section .shell { position: relative; z-index: 1; }
   right: 4%;
   bottom: 20%;
   width: 16%;
-  background-image: url('assets/nj-buildings.png');
+  background-image: url('assets/nj-logo.png');
   background-position: right center;
   opacity: 0.05;
 }
