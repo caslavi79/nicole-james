@@ -357,10 +357,119 @@ section + section {
   font-weight: 400;
   letter-spacing: 0;
 }
-.nav-overlay-contact-item[data-kind="email"] .nav-overlay-contact-value {
+.nav-overlay-contact-item[data-chooser="email"] .nav-overlay-contact-value {
   font-size: 14px;
   word-break: break-all;
 }
+
+/* -- CONTACT CHOOSER (phone / email action sheet) -- */
+.chooser {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.chooser[hidden] { display: none; }
+.chooser.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.chooser-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 16, 14, 0.45);
+  backdrop-filter: blur(4px);
+}
+.chooser-panel {
+  position: relative;
+  background: var(--bone);
+  border-radius: 14px;
+  margin: 0 12px 12px;
+  padding: 20px 16px 16px;
+  width: calc(100% - 24px);
+  max-width: 440px;
+  transform: translateY(24px);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.chooser.open .chooser-panel { transform: translateY(0); }
+.chooser-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0 18px;
+}
+.chooser-title {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  font-weight: 500;
+}
+.chooser-sub {
+  font-size: 15.5px;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+.chooser-row {
+  display: flex;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.chooser-stack {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 2px;
+}
+.chooser-action {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 14px;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--bone-2);
+  border-radius: 10px;
+  font-weight: 500;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.chooser-stack .chooser-action {
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+  font-weight: 400;
+  justify-content: flex-start;
+  padding: 15px 18px;
+}
+.chooser-stack .chooser-action:last-child { border-bottom: 0; }
+.chooser-action:active { background: var(--ink); color: var(--bone); }
+.chooser-stack .chooser-action:active { background: var(--ink); color: var(--bone); }
+.chooser-cancel {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 16px;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--smoke);
+  background: transparent;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.chooser-cancel:active { background: var(--bone-2); color: var(--ink); }
+
+body.chooser-open { overflow: hidden; }
 .nav-overlay-inquire {
   margin-top: 16px;
   background: var(--ink);

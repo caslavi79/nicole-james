@@ -81,15 +81,48 @@
       <a href="contact.html" data-page="contact" class="nav-overlay-link">Contact</a>
     </div>
     <div class="nav-overlay-contact">
-      <a href="tel:+15124664608" class="nav-overlay-contact-item" data-kind="phone">
+      <button type="button" class="nav-overlay-contact-item" data-chooser="phone">
         <span class="nav-overlay-contact-label">Call or text</span>
         <span class="nav-overlay-contact-value">512 &middot; 466 &middot; 4608</span>
-      </a>
-      <a href="mailto:nicolej@christiesrealestatels.com" class="nav-overlay-contact-item" data-kind="email">
+      </button>
+      <button type="button" class="nav-overlay-contact-item" data-chooser="email">
         <span class="nav-overlay-contact-label">Email</span>
         <span class="nav-overlay-contact-value">nicolej@christiesrealestatels.com</span>
-      </a>
+      </button>
     </div>
+  </div>
+</div>
+
+<!-- ========== CONTACT CHOOSERS ========== -->
+<div class="chooser" id="phoneChooser" role="dialog" aria-modal="true" aria-label="Call or text Nicole" hidden>
+  <div class="chooser-backdrop" data-close></div>
+  <div class="chooser-panel">
+    <div class="chooser-head">
+      <span class="chooser-title">Call or text Nicole</span>
+      <span class="chooser-sub">512 &middot; 466 &middot; 4608</span>
+    </div>
+    <div class="chooser-row">
+      <a href="tel:+15124664608" class="chooser-action">Call</a>
+      <a href="sms:+15124664608" class="chooser-action">Text</a>
+    </div>
+    <button type="button" class="chooser-cancel" data-close>Cancel</button>
+  </div>
+</div>
+
+<div class="chooser" id="emailChooser" role="dialog" aria-modal="true" aria-label="Email Nicole" hidden>
+  <div class="chooser-backdrop" data-close></div>
+  <div class="chooser-panel">
+    <div class="chooser-head">
+      <span class="chooser-title">Email Nicole</span>
+      <span class="chooser-sub">nicolej@christiesrealestatels.com</span>
+    </div>
+    <div class="chooser-stack">
+      <a href="mailto:nicolej@christiesrealestatels.com" class="chooser-action">Default mail app</a>
+      <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=nicolej@christiesrealestatels.com" target="_blank" rel="noopener" class="chooser-action">Gmail</a>
+      <a href="https://outlook.live.com/mail/0/deeplink/compose?to=nicolej@christiesrealestatels.com" target="_blank" rel="noopener" class="chooser-action">Outlook</a>
+      <button type="button" class="chooser-action chooser-copy" data-copy="nicolej@christiesrealestatels.com">Copy address</button>
+    </div>
+    <button type="button" class="chooser-cancel" data-close>Cancel</button>
   </div>
 </div>
 

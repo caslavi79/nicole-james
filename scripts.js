@@ -408,4 +408,92 @@
     else if (mql.addListener) mql.addListener(onMqChange);
   }
 
+  // -- CONTACT CHOOSERS (phone / email action sheets)
+  const chooserTriggers = document.querySelectorAll('[data-chooser]');
+  const choosers = document.querySelectorAll('.chooser');
+
+  const openChooser = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.hidden = false;
+    void el.offsetWidth; // force reflow so the transition plays
+    el.classList.add('open');
+    document.body.classList.add('chooser-open');
+  };
+
+  const closeChooser = (el) => {
+    el.classList.remove('open');
+    const onEnd = () => {
+      if (!el.classList.contains('open')) el.hidden = true;
+      el.removeEventListener('transitionend', onEnd);
+    };
+    el.addEventListener('transitionend', onEnd);
+    setTimeout(() => { if (!el.classList.contains('open')) el.hidden = true; }, 400);
+    if (!document.querySelector('.chooser.open')) {
+      document.body.classList.remove('chooser-open');
+    }
+  };
+
+  chooserTriggers.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = btn.dataset.chooser === 'phone' ? 'phoneChooser' : 'emailChooser';
+      openChooser(target);
+    });
+  });
+
+  choosers.forEach((chooser) => {
+    // Close when clicking the backdrop or any element marked data-close.
+    chooser.addEventListener('click', (e) => {
+      if (e.target.hasAttribute('data-close') || e.target === chooser) {
+        closeChooser(chooser);
+      }
+    });
+
+    // Handle each chooser action.
+    chooser.querySelectorAll('.chooser-action').forEach((action) => {
+      action.addEventListener('click', (e) => {
+        // Copy-to-clipboard action
+        if (action.hasAttribute('data-copy')) {
+          e.preventDefault();
+          const text = action.dataset.copy;
+          const original = action.textContent;
+          const done = () => {
+            action.textContent = 'Copied';
+            setTimeout(() => {
+              action.textContent = original;
+              closeChooser(chooser);
+            }, 700);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, done);
+          } else {
+            // Legacy fallback
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (_) {}
+            document.body.removeChild(ta);
+            done();
+          }
+          return;
+        }
+        // Navigation actions (tel:, sms:, mailto:, web mail):
+        // let the browser navigate, then close the sheet after a beat so
+        // the user returns to a clean menu state.
+        setTimeout(() => closeChooser(chooser), 120);
+      });
+    });
+  });
+
+  // Escape closes any open chooser.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.chooser.open').forEach(closeChooser);
+    }
+  });
+
 })();
