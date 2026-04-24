@@ -207,12 +207,13 @@
       clone.style.height = '100vh';
       clone.style.borderRadius = '0';
 
-      // Fade the clone's inner chrome near the end of the grow so the body
-      // swap under it is invisible.
-      setTimeout(() => clone.classList.add('jw-fading'), 500);
+      // Fade the clone's inner chrome so by the time we swap bodies the
+      // clone is a solid bone rectangle — nothing flashes through.
+      // Fade is 180ms (see CSS). We wait for it to fully complete.
+      setTimeout(() => clone.classList.add('jw-fading'), 460);
 
-      // Wait for the animation AND the fetch.
-      await new Promise(r => setTimeout(r, 640));
+      // Wait for: grow animation (620ms) + inner fade (180ms) + a frame.
+      await new Promise(r => setTimeout(r, 660));
       const html = await fetchPromise;
 
       if (!html) {
@@ -232,7 +233,8 @@
       // Move the clone OUT of <body> so it survives the body swap.
       document.documentElement.appendChild(clone);
 
-      // Swap body content with the entry's body.
+      // Swap body content with the entry's body. Clone is still fullscreen
+      // solid bone on top, so this is invisible.
       document.body.innerHTML = doc.body.innerHTML;
 
       // Reset scroll + unlock.
@@ -240,16 +242,20 @@
       document.body.style.overflow = '';
       document.body.classList.remove('jw-transitioning');
 
-      // Fade out the clone overlay.
-      clone.style.transition = 'opacity 320ms ease';
-      clone.style.opacity = '0';
-      setTimeout(() => { clone.remove(); }, 340);
-
       // Re-run scripts.js so the entry page's nav hamburger, FAQ accordion
       // etc. attach to the new DOM. Cache-bust so the browser re-executes it.
       const s = document.createElement('script');
       s.src = 'scripts.js?r=' + Date.now();
       document.body.appendChild(s);
+
+      // Wait TWO paint frames so the entry DOM is laid out before we fade
+      // the clone out — prevents any "empty page" flash during reveal.
+      await new Promise(r => requestAnimationFrame(r));
+      await new Promise(r => requestAnimationFrame(r));
+
+      clone.style.transition = 'opacity 320ms ease';
+      clone.style.opacity = '0';
+      setTimeout(() => { clone.remove(); }, 340);
     };
 
     journalWindow.addEventListener('click', (e) => {

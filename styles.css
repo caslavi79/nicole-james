@@ -1105,7 +1105,7 @@ section .shell { position: relative; z-index: 1; }
 .journal-window.jw-fading .jw-footer,
 .journal-window.jw-fading .jw-fade {
   opacity: 0;
-  transition: opacity 280ms ease;
+  transition: opacity 180ms ease;
 }
 
 /* Corner ticks removed */
