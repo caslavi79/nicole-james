@@ -425,16 +425,19 @@ section .shell { position: relative; z-index: 1; }
 
 /* -- HERO -- */
 .hero {
-  padding-top: clamp(12px, 2vw, 28px);
-  padding-bottom: clamp(64px, 8vw, 120px);
+  padding-top: clamp(8px, 1.5vw, 20px);
+  padding-bottom: clamp(24px, 4vw, 56px);
 }
-/* Hero + About sticky stage: hero pins at top, about slides up over it
-   as the user scrolls, then both release together at stage end. */
+/* Hero + About sticky stage: hero pins immediately below the sticky nav
+   (no pre-sticky scroll), about slides up over it as the user scrolls. */
 .hero.hero-stuck {
   position: sticky;
-  top: 0;
+  top: 113px; /* matches desktop nav height (76px logo + 36px padding + 1px border) */
   z-index: 1;
   background: var(--bone);
+}
+@media (max-width: 720px) {
+  .hero.hero-stuck { top: 92px; } /* mobile nav: 56px logo + 36px padding */
 }
 #about {
   position: relative;
