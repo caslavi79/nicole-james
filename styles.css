@@ -596,16 +596,23 @@ section .shell { position: relative; z-index: 1; }
   z-index: 1;
   background: var(--bone);
 }
-/* On mobile, native sticky lags visibly during iOS momentum scroll
-   (the headline briefly renders at its natural scrolled position before
-   snapping back to the pin). Drop sticky here; scripts.js translates
-   the hero manually on every scroll event so its visual position stays
-   tight with the scroll. */
+/* On mobile the hero (text + portrait) is taller than the viewport, so
+   a positive `top` would crop the portrait. Pin with a negative `top`
+   (computed in scripts.js as `viewport_height - hero_height`) so the
+   hero scrolls normally until its bottom reaches the viewport bottom,
+   then sticks there while about slides up over it.
+
+   The scroll-snap below forces the scroll to stop exactly at the pin
+   position — momentum can't overshoot past it, which is what produces
+   the iOS "creep + snap" bump during fast scrolls. */
 @media (max-width: 820px) {
   .hero.hero-stuck {
-    position: relative;
-    top: auto;
-    will-change: transform;
+    top: var(--hero-sticky-top, 92px);
+    scroll-snap-align: end;
+    scroll-snap-stop: always;
+  }
+  html {
+    scroll-snap-type: y proximity;
   }
 }
 #about {
