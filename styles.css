@@ -553,7 +553,7 @@ section .shell { position: relative; z-index: 1; }
 
 .about-head {
   position: sticky;
-  top: 96px; /* clears sticky nav (~64px) + breathing room */
+  top: 124px; /* clears sticky nav (~112px with 76px logo) + breathing room */
   align-self: start;
 }
 .about-head .hh { display: flex; flex-direction: column; gap: 4px; }
