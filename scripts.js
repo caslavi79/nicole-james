@@ -275,13 +275,15 @@
     window.addEventListener('popstate', () => { window.location.reload(); });
   }
 
-  // -- HERO SCROLL DRIFT
-  // As the user scrolls, hero-copy drifts off to the left and hero-portrait
-  // drifts off to the right, both fading. Gives the "hero pulls apart" feel
-  // as about section comes into view behind it.
+  // -- HERO SCROLL DRIFT + ABOUT REVEAL
+  // Scroll through the hero: hero-copy drifts left, hero-portrait drifts
+  // right, both fade. In parallel, the about section's body paragraphs
+  // fade up from opacity 0 so section 2 reveals itself as section 1
+  // pulls apart.
   const heroSection = document.querySelector('.hero');
   const heroCopy = heroSection && heroSection.querySelector('.hero-copy');
   const heroPortrait = heroSection && heroSection.querySelector('.hero-portrait');
+  const aboutReveal = document.querySelector('[data-about-reveal]');
   if (heroSection && heroCopy && heroPortrait) {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reducedMotion) {
@@ -291,8 +293,7 @@
         const rect = heroSection.getBoundingClientRect();
         const h = rect.height || 1;
         // Progress: 0 when hero top is at viewport top, 1 when hero has
-        // scrolled ~70% of its height past the top. Finishes before the
-        // hero fully exits so the about section takes over cleanly.
+        // scrolled ~70% of its height past the top.
         const progress = Math.max(0, Math.min(1, -rect.top / (h * 0.7)));
         const drift = progress * 120;                 // percent of element width
         const fade  = Math.max(0, 1 - progress * 1.3);
@@ -300,11 +301,23 @@
         heroCopy.style.opacity       = fade;
         heroPortrait.style.transform = 'translateX(' + ( drift) + '%)';
         heroPortrait.style.opacity   = fade;
+
+        if (aboutReveal) {
+          // About fades in on the same scroll timeline — comes in a touch
+          // faster so it's mostly visible by the time the hero is gone.
+          const reveal = Math.max(0, Math.min(1, progress * 1.2));
+          aboutReveal.style.opacity = reveal;
+          aboutReveal.style.transform = 'translateY(' + ((1 - reveal) * 18) + 'px)';
+        }
       };
       const onScroll = () => { if (raf) return; raf = requestAnimationFrame(update); };
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onScroll, { passive: true });
       update();
+    } else if (aboutReveal) {
+      // Reduced motion: just show it.
+      aboutReveal.style.opacity = '1';
+      aboutReveal.style.transform = 'none';
     }
   }
 

@@ -571,6 +571,12 @@ section .shell { position: relative; z-index: 1; }
 }
 
 .about-body { display: flex; flex-direction: column; gap: 40px; max-width: 62ch; }
+/* Hero-scroll drives the reveal; start hidden, JS tracks scroll progress. */
+.about-body[data-about-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  will-change: opacity, transform;
+}
 .about-body .lede-line {
   font-size: clamp(17px, 1.4vw, 20px);
   font-weight: 500;
