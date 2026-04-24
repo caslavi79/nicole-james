@@ -1,0 +1,41 @@
+# Nicole James · nicolejamesaustin.com
+# Allow all reputable crawlers including AI search engines.
+
+User-agent: *
+Allow: /
+
+# OpenAI — ChatGPT search + training
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: GPTBot
+Allow: /
+
+# Anthropic — Claude search + training
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+
+# Google Gemini / Vertex AI training (Google Search is always allowed via Googlebot)
+User-agent: Google-Extended
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot-Extended
+Allow: /
+
+# Common Crawl
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://nicolejamesaustin.com/sitemap.xml

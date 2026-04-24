@@ -1,0 +1,82 @@
+[
+  {
+    "address": "1203 Newton St, Austin, TX 78704",
+    "beds": 3,
+    "baths": 2.0,
+    "sqft": 1650,
+    "status": "Rented",
+    "price": null
+  },
+  {
+    "address": "210 Lee Barton Dr #308, Austin, TX 78704",
+    "beds": 2,
+    "baths": 2.0,
+    "sqft": 1600,
+    "status": "Rented",
+    "price": null
+  },
+  {
+    "address": "1109 W Oltorf St, Austin, TX 78704",
+    "beds": 4,
+    "baths": 3.1,
+    "sqft": 2666,
+    "status": "Rented",
+    "price": null
+  },
+  {
+    "address": "2203 Mountain View Rd, Austin, TX 78703",
+    "beds": 3,
+    "baths": 3.0,
+    "sqft": 1851,
+    "status": "Closed",
+    "price": null
+  },
+  {
+    "address": "210 Lee Barton Dr #301, Austin, TX 78704",
+    "beds": 2,
+    "baths": 2.0,
+    "sqft": 1600,
+    "status": "Closed",
+    "price": null
+  },
+  {
+    "address": "210 Lee Barton Dr #414, Austin, TX 78704",
+    "beds": 1,
+    "baths": 1.0,
+    "sqft": 1016,
+    "status": "Rented",
+    "price": null
+  },
+  {
+    "address": "501 West Ave #1406, Austin, TX 78701",
+    "beds": 1,
+    "baths": 1.0,
+    "sqft": 652,
+    "status": "Rented",
+    "price": null
+  },
+  {
+    "address": "210 Lee Barton Dr #518, Austin, TX 78704",
+    "beds": 2,
+    "baths": 2.0,
+    "sqft": 1365,
+    "status": "Rented",
+    "price": null
+  },
+  {
+    "address": "501 West Ave #1604, Austin, TX 78701",
+    "beds": 3,
+    "baths": 3.0,
+    "sqft": 2009,
+    "status": "Closed",
+    "price": null
+  },
+  {
+    "address": "210 Lee Barton Dr #417, Austin, TX 78704",
+    "beds": 2,
+    "baths": 2.0,
+    "sqft": 1369,
+    "status": "Closed",
+    "price": null
+  }
+]
