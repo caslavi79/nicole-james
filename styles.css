@@ -423,11 +423,29 @@ section .shell { position: relative; z-index: 1; }
   }
 }
 
-/* -- HERO -- */
+/* -- HERO --
+   Positioned over the about section (which has margin-top:-100vh to
+   overlap underneath). At scroll rest, hero covers about. Once the
+   user scrolls past the threshold, hero content slides off and about
+   fades in behind it — same physical viewport space. */
 .hero {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
   padding-top: clamp(12px, 2vw, 28px);
   padding-bottom: clamp(64px, 8vw, 120px);
+  background: var(--bone);
   overflow: hidden; /* clip hero children that drift off sides on scroll */
+}
+#about {
+  position: relative;
+  z-index: 1;
+  margin-top: -100vh; /* sit behind hero, same viewport space */
+  opacity: 0;
+  transition: opacity 700ms ease 150ms;
+}
+body.hero-revealed #about {
+  opacity: 1;
 }
 /* One-shot reveal: when body.hero-revealed (added on scroll past 40px),
    hero-copy slides out LEFT, portrait slides out RIGHT, both fade. */
@@ -582,20 +600,6 @@ body.hero-revealed .hero-portrait {
 }
 
 .about-body { display: flex; flex-direction: column; gap: 40px; max-width: 62ch; }
-/* About body reveals in sync with hero slide-out.
-   Hidden by default; body.hero-revealed runs the fade-in. */
-.about-body[data-about-reveal] {
-  opacity: 0;
-  transform: translateY(20px);
-  will-change: opacity, transform;
-  transition:
-    opacity 700ms ease 150ms,
-    transform 800ms cubic-bezier(0.16, 1, 0.3, 1) 150ms;
-}
-body.hero-revealed .about-body[data-about-reveal] {
-  opacity: 1;
-  transform: translateY(0);
-}
 .about-body .lede-line {
   font-size: clamp(17px, 1.4vw, 20px);
   font-weight: 500;
