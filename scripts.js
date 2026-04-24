@@ -17,6 +17,29 @@
     onScroll();
   }
 
+  // -- MOBILE HERO STICKY OFFSET
+  // On mobile the hero is often taller than the viewport, so a positive
+  // `top` would crop the bottom (the portrait). Pin at the smaller of
+  // 92px (mobile nav height) and (viewport - hero height). The latter is
+  // negative when the hero overflows, which parks the hero's bottom at
+  // the viewport bottom once sticky engages. Desktop keeps its CSS
+  // `top: 113px` from the base rule.
+  const heroSticky = document.querySelector('.hero.hero-stuck');
+  if (heroSticky) {
+    const mobileMql = window.matchMedia('(max-width: 820px)');
+    const updateHeroSticky = () => {
+      if (!mobileMql.matches) {
+        heroSticky.style.removeProperty('--hero-sticky-top');
+        return;
+      }
+      const offset = Math.min(92, window.innerHeight - heroSticky.offsetHeight);
+      heroSticky.style.setProperty('--hero-sticky-top', `${offset}px`);
+    };
+    updateHeroSticky();
+    window.addEventListener('resize', updateHeroSticky, { passive: true });
+    window.addEventListener('orientationchange', updateHeroSticky);
+  }
+
   // -- SCROLL REVEAL
   const revealTargets = document.querySelectorAll('[data-animate]');
   if ('IntersectionObserver' in window) {
