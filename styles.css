@@ -424,7 +424,7 @@ section .shell { position: relative; z-index: 1; }
 
 /* -- HERO -- */
 .hero {
-  padding-top: clamp(16px, 2.5vw, 40px);
+  padding-top: 0;
   padding-bottom: clamp(64px, 8vw, 120px);
 }
 .hero-grid {
@@ -1085,8 +1085,11 @@ section .shell { position: relative; z-index: 1; }
 .jw-tag {
   margin-left: auto;
   padding: 4px 10px;
-  background: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
   color: var(--bone);
+  -webkit-text-stroke: 0.7px var(--ink);
+  paint-order: stroke fill;
   font-size: 9.5px;
   letter-spacing: 0.22em;
 }
