@@ -2339,8 +2339,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   background: var(--ink);
   margin: 0;
   padding: 0;
-  /* Below the nav (z-index 50) so the nav floats above the video */
-  z-index: 40;
+  z-index: 100;
   transform: translateY(0);
   transition: transform 650ms cubic-bezier(0.65, 0, 0.35, 1);
   will-change: transform;
@@ -2356,16 +2355,6 @@ body.about-cover-locked {
   overflow: hidden;
   height: 100%;
   overscroll-behavior: none;
-}
-/* While the cover is up, drop the nav's background so the video shows
-   through (dark logo/links read fine against the footage). Also kills
-   the mobile-only opaque bone fallback. */
-body.about-cover-locked .nav,
-body.about-cover-locked .nav.scrolled {
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border-bottom-color: transparent;
 }
 .about-cover-video {
   position: absolute;
