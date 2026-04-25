@@ -744,6 +744,9 @@ section .shell { position: relative; z-index: 1; }
   .split { grid-template-columns: 1fr; gap: 48px; }
   .split > .divider { display: none; }
   .split-left, .split-right { padding: 0; }
+  /* On mobile, Inquire (right) comes before Credentials (left) */
+  .credentials-section .split-right { order: 1; }
+  .credentials-section .split-left { order: 2; }
 }
 
 /* -- ABOUT -- sticky left, scrolling right (desktop). Larger editorial type. */
