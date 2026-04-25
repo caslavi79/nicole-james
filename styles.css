@@ -2329,14 +2329,32 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 
 /* -- ABOUT PAGE: full-screen video cover -- */
 .about-cover {
-  position: relative;
-  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 100vh;
   height: 100svh; /* iOS Safari: small viewport height (excludes URL bar) */
   overflow: hidden;
   background: var(--ink);
   margin: 0;
   padding: 0;
+  z-index: 100;
+  transform: translateY(0);
+  transition: transform 650ms cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+.about-cover.is-dismissed {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+/* Lock the page while the cover is up so the first scroll input is
+   captured by the dismiss handler instead of moving the page. */
+html.about-cover-locked,
+body.about-cover-locked {
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
 }
 .about-cover-video {
   position: absolute;
