@@ -1300,12 +1300,19 @@ section .shell { position: relative; z-index: 1; }
 /* Corner ticks removed */
 .jw-corners { display: none; }
 
-/* The 'pane' — preview content area (now sized to content; the
-   fade/scroll behavior was retired when the inline preview was trimmed). */
+/* The 'pane' — scrollable viewport into the entry. Sized short on
+   purpose so the inline preview content always overflows by ~100px,
+   keeping the .jw-fade gradient over real text instead of empty bone. */
 .jw-pane {
   position: relative;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: auto;
+  max-height: clamp(260px, 30vw, 340px);
   background: var(--bone-lift, var(--bone));
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(18,16,14,0.15) transparent;
 }
 .jw-pane::-webkit-scrollbar { width: 6px; }
 .jw-pane::-webkit-scrollbar-track { background: transparent; }
@@ -1386,10 +1393,25 @@ section .shell { position: relative; z-index: 1; }
   margin-bottom: 16px;
 }
 
-/* Fade retired — preview content is short enough to show in full.
-   Kept the rule (display: none) instead of removing the markup so the
-   expand-on-click animation hooks (.jw-fading) don't break. */
-.jw-fade { display: none; }
+/* The fade — sits above the footer, fades the bottom of the
+   visible (overflowing) text into bone so "READ FULL ENTRY" reads
+   as the natural next step. */
+.jw-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 56px; /* clears the footer bar */
+  height: 120px;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba(250, 246, 239, 0) 0%,
+    rgba(250, 246, 239, 0.85) 60%,
+    var(--bone-lift, var(--bone)) 100%
+  );
+  pointer-events: none;
+}
+@media (max-width: 720px) { .jw-fade { bottom: 48px; height: 90px; } }
 
 /* Bottom bar — the 'threshold' of the window */
 .jw-footer {
@@ -1419,7 +1441,7 @@ section .shell { position: relative; z-index: 1; }
 /* Mobile refinements for the blog window */
 @media (max-width: 720px) {
   .blog-window { border-radius: 8px; margin-bottom: 32px; }
-  .jw-pane { padding: 0; }
+  .jw-pane { max-height: clamp(240px, 56vw, 300px); }
   .jw-head {
     gap: 10px;
     font-size: 10.5px;
@@ -1442,7 +1464,7 @@ section .shell { position: relative; z-index: 1; }
    tighten CTA letter-spacing so "READ THE ENTRY →" doesn't squeeze. */
 @media (max-width: 480px) {
   .jw-tag { display: none; }
-  .jw-pane { padding: 0; }
+  .jw-pane { max-height: clamp(220px, 60vw, 280px); }
   .jw-title { font-size: 26px; letter-spacing: -0.015em; max-width: none; }
   .jw-footer {
     padding: 13px 18px;
