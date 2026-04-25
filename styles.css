@@ -2330,11 +2330,10 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 /* -- ABOUT PAGE: full-screen video cover -- */
 .about-cover {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100vh;
-  height: 100lvh; /* large viewport height — video extends behind iOS URL bar */
+  /* inset:0 stretches the cover edge-to-edge of the visual viewport. With
+     viewport-fit=cover this includes the area behind iOS top + bottom URL
+     bars, so the video plays full-bleed and the bars overlay translucently. */
+  inset: 0;
   overflow: hidden;
   background: var(--ink);
   margin: 0;
