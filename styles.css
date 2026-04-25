@@ -2354,7 +2354,6 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 html.about-cover-locked,
 body.about-cover-locked {
   overflow: hidden;
-  height: 100%;
   overscroll-behavior: none;
 }
 .about-cover-video {
