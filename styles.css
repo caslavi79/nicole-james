@@ -1609,7 +1609,9 @@ section .shell { position: relative; z-index: 1; }
   .cred-item .v2 { font-size: 12.5px; }
   .inquire-cta { margin-top: 8px; }
   .inquire-cta h3 { font-size: 26px; margin-bottom: 18px; }
-  .inquire-cta p { font-size: 14px; margin-bottom: 22px; }
+  .inquire-cta p { font-size: 14px; margin-bottom: 36px; }
+  /* Tighten gap between section heading and inquire body on mobile */
+  .credentials-section .s-head { margin-bottom: 24px; }
 }
 @media (max-width: 480px) {
   .inquire-cta h3 { font-size: 24px; }
