@@ -2372,17 +2372,45 @@ body.about-cover-locked {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: clamp(48px, 12vh, 140px);
+  /* Place the logo in the upper third of the cover. svh keeps the math
+     stable on iOS Safari (excludes URL bar). Lower bound clears the nav
+     comfortably on shorter desktop windows; cap keeps it from drifting
+     too far down on tall monitors. */
+  padding-top: clamp(96px, 15svh, 168px);
   padding-left: var(--shell-pad);
   padding-right: var(--shell-pad);
   z-index: 1;
   pointer-events: none;
 }
 .about-cover-logo {
-  width: clamp(200px, 32vw, 380px);
+  width: clamp(220px, 30vw, 380px);
   height: auto;
   filter: brightness(0) invert(1);
   opacity: 0.95;
+}
+@media (max-width: 720px) {
+  /* Mobile portrait: the video crop has sky in the upper field, city
+     in the lower field. Push the logo down to ~24svh so it sits in the
+     visual top third (not jammed against the nav, not floating over the
+     skyline) and shrink it slightly so it reads as a frame, not a
+     billboard. */
+  .about-cover-overlay {
+    padding-top: clamp(140px, 24svh, 220px);
+  }
+  .about-cover-logo {
+    width: min(56vw, 260px);
+  }
+}
+@media (max-width: 480px) {
+  /* Smallest phones: tighten width so the logo doesn't dominate the
+     narrow screen, and hold the placement at ~22svh which keeps the
+     center of the logo near the 28% line. */
+  .about-cover-overlay {
+    padding-top: clamp(128px, 22svh, 200px);
+  }
+  .about-cover-logo {
+    width: min(60vw, 220px);
+  }
 }
 
 /* -- ABOUT PAGE -- */
