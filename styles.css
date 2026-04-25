@@ -1308,7 +1308,7 @@ section .shell { position: relative; z-index: 1; }
   /* Default auto: when the user hits the bottom of this pane, scroll
      chains up to the page so they're not trapped in the card. */
   overscroll-behavior: auto;
-  max-height: clamp(440px, 52vw, 620px);
+  max-height: clamp(320px, 36vw, 440px);
   background: var(--bone-lift, var(--bone));
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
