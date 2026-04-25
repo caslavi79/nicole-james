@@ -1441,8 +1441,8 @@ section .shell { position: relative; z-index: 1; }
 @media (max-width: 720px) {
   .blog-window { border-radius: 8px; margin-bottom: 32px; }
   .jw-pane {
-    padding: 28px 22px 72px;
-    max-height: clamp(380px, 76vw, 460px);
+    padding: 28px 22px 28px;
+    max-height: clamp(300px, 64vw, 400px);
   }
   .jw-head {
     gap: 10px;
