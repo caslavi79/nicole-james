@@ -2109,6 +2109,25 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   .contact-grid { grid-template-columns: 1fr; }
 }
 
+/* -- HOME: ABOUT "READ MORE" LINK -- */
+.about-readmore {
+  margin-top: 24px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+}
+.about-readmore a {
+  color: var(--terra);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+}
+.about-readmore a:hover {
+  color: var(--terra-deep);
+  border-bottom-color: var(--terra-deep);
+}
+
 /* -- HOME: CONDENSED SERVICES PREVIEW -- */
 .svc-mini {
   display: grid;
