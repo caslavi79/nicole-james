@@ -1446,7 +1446,7 @@ section .shell { position: relative; z-index: 1; }
 /* Mobile refinements for the blog window */
 @media (max-width: 720px) {
   .blog-window { border-radius: 8px; margin-bottom: 32px; }
-  .jw-pane { max-height: clamp(300px, 70vw, 380px); }
+  .jw-pane { max-height: clamp(380px, 76vw, 460px); }
   .jw-head {
     gap: 10px;
     font-size: 10.5px;
@@ -1469,7 +1469,6 @@ section .shell { position: relative; z-index: 1; }
    tighten CTA letter-spacing so "READ THE ENTRY →" doesn't squeeze. */
 @media (max-width: 480px) {
   .jw-tag { display: none; }
-  .jw-pane { max-height: clamp(280px, 76vw, 340px); }
   .jw-title { font-size: 26px; letter-spacing: -0.015em; max-width: none; }
   .jw-footer {
     padding: 13px 18px;
