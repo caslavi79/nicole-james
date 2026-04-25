@@ -113,6 +113,50 @@
     v.appendChild(source);
     v.load();
   })();
+
+  // Cover dismiss: first scroll/touch/key input smoothly scrolls past the
+  // entire cover in one motion, so it slides up off-screen. After that,
+  // normal page scrolling resumes. The cover itself is in normal document
+  // flow (no fixed positioning, no transform), so iOS Safari doesn't race
+  // the URL bar viewport math against the dismiss animation.
+  (function () {
+    var cover = document.querySelector('.about-cover');
+    if (!cover) return;
+    var dismissed = false;
+    var KEYS = ['ArrowDown','ArrowUp','PageDown','PageUp','Space','End','Home'];
+
+    function smoothScrollTo(target, duration) {
+      var start = window.scrollY;
+      var distance = target - start;
+      if (Math.abs(distance) < 2) return;
+      var startTime = performance.now();
+      function step(currentTime) {
+        var elapsed = currentTime - startTime;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        window.scrollTo(0, start + distance * eased);
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function dismiss(e) {
+      if (dismissed) return;
+      dismissed = true;
+      if (e && typeof e.preventDefault === 'function') {
+        try { e.preventDefault(); } catch (_) {}
+      }
+      smoothScrollTo(cover.offsetHeight, 700);
+    }
+    function onWheel(e) { dismiss(e); }
+    function onTouchMove(e) { dismiss(e); }
+    function onKey(e) {
+      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') dismiss(e);
+    }
+    window.addEventListener('wheel', onWheel, { passive: false, once: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false, once: true });
+    window.addEventListener('keydown', onKey, { once: true });
+  })();
 </script>
 
 <!-- ========== PAGE HERO ========== -->
