@@ -1308,7 +1308,7 @@ section .shell { position: relative; z-index: 1; }
   flex: 1 1 auto;
   overflow-y: auto;
   overscroll-behavior: auto;
-  max-height: clamp(260px, 30vw, 340px);
+  max-height: clamp(320px, 36vw, 440px);
   background: var(--bone-lift, var(--bone));
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
@@ -1323,8 +1323,13 @@ section .shell { position: relative; z-index: 1; }
 .jw-pane::-webkit-scrollbar-thumb:hover { background: rgba(18,16,14,0.25); }
 
 .jw-pane-inner {
-  padding: clamp(32px, 4.5vw, 64px) clamp(28px, 4vw, 64px) clamp(24px, 3vw, 48px);
+  padding: clamp(32px, 4.5vw, 64px) clamp(28px, 4vw, 64px) 0;
 }
+/* Last paragraph in the preview body: zero its bottom margin so when
+   you scroll to the bottom of the pane the actual text touches the
+   bottom edge of the scroll area, not 40–60px of empty bone. That
+   keeps the .jw-fade gradient over real text. */
+.jw-body p:last-child { margin-bottom: 0; }
 
 /* Meta row at top of pane — mimics the real entry page */
 .jw-head {
@@ -1441,7 +1446,7 @@ section .shell { position: relative; z-index: 1; }
 /* Mobile refinements for the blog window */
 @media (max-width: 720px) {
   .blog-window { border-radius: 8px; margin-bottom: 32px; }
-  .jw-pane { max-height: clamp(240px, 56vw, 300px); }
+  .jw-pane { max-height: clamp(300px, 70vw, 380px); }
   .jw-head {
     gap: 10px;
     font-size: 10.5px;
@@ -1464,7 +1469,7 @@ section .shell { position: relative; z-index: 1; }
    tighten CTA letter-spacing so "READ THE ENTRY →" doesn't squeeze. */
 @media (max-width: 480px) {
   .jw-tag { display: none; }
-  .jw-pane { max-height: clamp(220px, 60vw, 280px); }
+  .jw-pane { max-height: clamp(280px, 76vw, 340px); }
   .jw-title { font-size: 26px; letter-spacing: -0.015em; max-width: none; }
   .jw-footer {
     padding: 13px 18px;
