@@ -2334,7 +2334,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   left: 0;
   right: 0;
   height: 100vh;
-  height: 100svh; /* iOS Safari: small viewport height (excludes URL bar) */
+  height: 100lvh; /* large viewport height — video extends behind iOS URL bar */
   overflow: hidden;
   background: var(--ink);
   margin: 0;
