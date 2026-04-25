@@ -2095,7 +2095,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 .about-readmore a {
   color: var(--terra);
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--terra);
   padding-bottom: 2px;
   transition: color var(--dur-fast), border-color var(--dur-fast);
 }
