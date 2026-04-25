@@ -2335,7 +2335,13 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
      bars, so the video plays full-bleed and the bars overlay translucently. */
   inset: 0;
   overflow: hidden;
-  background: var(--ink);
+  /* Background is transparent (not --ink) so the body's --bone shows through
+     any region the video doesn't cover. iOS Safari samples pixels near the
+     URL bar to compute its translucent tint; a dark background here would
+     dye the bar dark even though the video reaches the edge. Letting bone
+     show through pairs with <meta name="theme-color" content="#F4EFE7">
+     so the bar reads bone-translucent — matching the home page. */
+  background: transparent;
   margin: 0;
   padding: 0;
   /* Below the nav (z-index 50) so the nav stays visible at the top */
