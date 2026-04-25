@@ -1300,19 +1300,12 @@ section .shell { position: relative; z-index: 1; }
 /* Corner ticks removed */
 .jw-corners { display: none; }
 
-/* The 'pane' — the scrollable viewport into the entry */
+/* The 'pane' — preview content area (now sized to content; the
+   fade/scroll behavior was retired when the inline preview was trimmed). */
 .jw-pane {
   position: relative;
-  flex: 1 1 auto;
-  overflow-y: auto;
-  /* Default auto: when the user hits the bottom of this pane, scroll
-     chains up to the page so they're not trapped in the card. */
-  overscroll-behavior: auto;
-  max-height: clamp(320px, 36vw, 440px);
+  flex: 0 0 auto;
   background: var(--bone-lift, var(--bone));
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(18,16,14,0.15) transparent;
 }
 .jw-pane::-webkit-scrollbar { width: 6px; }
 .jw-pane::-webkit-scrollbar-track { background: transparent; }
@@ -1393,24 +1386,10 @@ section .shell { position: relative; z-index: 1; }
   margin-bottom: 16px;
 }
 
-/* The crucial fade — sits above the footer, hinting at content below.
-   Now that pane is scrollable, the fade tells the user "keep scrolling". */
-.jw-fade {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 56px; /* clears the footer bar */
-  height: 140px;
-  z-index: 2;
-  background: linear-gradient(
-    to bottom,
-    rgba(250, 246, 239, 0) 0%,
-    rgba(250, 246, 239, 0.85) 60%,
-    var(--bone-lift, var(--bone)) 100%
-  );
-  pointer-events: none;
-}
-@media (max-width: 720px) { .jw-fade { bottom: 48px; height: 100px; } }
+/* Fade retired — preview content is short enough to show in full.
+   Kept the rule (display: none) instead of removing the markup so the
+   expand-on-click animation hooks (.jw-fading) don't break. */
+.jw-fade { display: none; }
 
 /* Bottom bar — the 'threshold' of the window */
 .jw-footer {
@@ -1440,10 +1419,7 @@ section .shell { position: relative; z-index: 1; }
 /* Mobile refinements for the blog window */
 @media (max-width: 720px) {
   .blog-window { border-radius: 8px; margin-bottom: 32px; }
-  .jw-pane {
-    padding: 28px 22px 28px;
-    max-height: clamp(300px, 64vw, 400px);
-  }
+  .jw-pane { padding: 0; }
   .jw-head {
     gap: 10px;
     font-size: 10.5px;
