@@ -115,20 +115,22 @@
   })();
 
   // Cover dismiss: first scroll/touch/key input smoothly scrolls past the
-  // entire cover in one motion, so it slides up off-screen. After that,
-  // normal page scrolling resumes. The cover itself is in normal document
-  // flow (no fixed positioning, no transform), so iOS Safari doesn't race
-  // the URL bar viewport math against the dismiss animation.
+  // entire cover in one motion, so it slides up off-screen. While the
+  // animation is running we block every wheel/touch/scroll-key event so
+  // the user's continued trackpad/touch input doesn't override the
+  // animation (the original `{ once: true }` listener was being defeated
+  // by trackpad momentum events firing many times per swipe).
   (function () {
     var cover = document.querySelector('.about-cover');
     if (!cover) return;
     var dismissed = false;
+    var animating = false;
     var KEYS = ['ArrowDown','ArrowUp','PageDown','PageUp','Space','End','Home'];
 
-    function smoothScrollTo(target, duration) {
+    function smoothScrollTo(target, duration, done) {
       var start = window.scrollY;
       var distance = target - start;
-      if (Math.abs(distance) < 2) return;
+      if (Math.abs(distance) < 2) { if (done) done(); return; }
       var startTime = performance.now();
       function step(currentTime) {
         var elapsed = currentTime - startTime;
@@ -136,26 +138,42 @@
         var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
         window.scrollTo(0, start + distance * eased);
         if (progress < 1) requestAnimationFrame(step);
+        else if (done) done();
       }
       requestAnimationFrame(step);
     }
 
-    function dismiss(e) {
-      if (dismissed) return;
+    function block(e) { e.preventDefault(); }
+
+    function startDismiss(e) {
       dismissed = true;
+      animating = true;
       if (e && typeof e.preventDefault === 'function') {
         try { e.preventDefault(); } catch (_) {}
       }
-      smoothScrollTo(cover.offsetHeight, 700);
+      smoothScrollTo(cover.offsetHeight, 700, function () {
+        animating = false;
+        window.removeEventListener('wheel', onScroll, { passive: false });
+        window.removeEventListener('touchmove', onScroll, { passive: false });
+        window.removeEventListener('keydown', onKey);
+      });
     }
-    function onWheel(e) { dismiss(e); }
-    function onTouchMove(e) { dismiss(e); }
+
+    function onScroll(e) {
+      if (animating) { e.preventDefault(); return; }
+      if (!dismissed) startDismiss(e);
+    }
     function onKey(e) {
-      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') dismiss(e);
+      if (animating) { e.preventDefault(); return; }
+      if (!dismissed && (KEYS.indexOf(e.code) !== -1 || e.key === ' ')) startDismiss(e);
     }
-    window.addEventListener('wheel', onWheel, { passive: false, once: true });
-    window.addEventListener('touchmove', onTouchMove, { passive: false, once: true });
-    window.addEventListener('keydown', onKey, { once: true });
+
+    // Permanent listeners (passive: false so preventDefault works) — they
+    // both trigger the first dismiss and block scroll input during the
+    // animation. Listeners self-remove once animation finishes.
+    window.addEventListener('wheel', onScroll, { passive: false });
+    window.addEventListener('touchmove', onScroll, { passive: false });
+    window.addEventListener('keydown', onKey);
   })();
 </script>
 
