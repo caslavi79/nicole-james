@@ -2385,7 +2385,12 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .about-hero-overlay {
   position: absolute;
   left: 50%;
-  top: 30%;
+  /* Anchor with viewport units instead of percentage so positioning
+     doesn't depend on the wrapper having a definite resolved height
+     (the percentage chain through 100%-on-static-parent is fragile
+     at first paint). The hero section is sized to ~viewport height,
+     so vh ≈ % of the visible hero — same visual result, but stable. */
+  top: 20vh;
   transform: translate(-50%, -50%);
   width: min(60vw, 720px);
   height: auto;
@@ -2399,7 +2404,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 @media (max-width: 720px) {
   .about-hero-overlay {
-    top: 40%;
+    top: 32vh;
     width: min(75vw, 520px);
   }
 }
