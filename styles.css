@@ -2342,14 +2342,16 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 720px) { :root { --nav-h: 93px; } }
 
 .about-cover {
-  /* Fixed overlay. inset:0 + viewport-fit=cover stretches the cover edge-
-     to-edge of the visual viewport — including behind the iOS URL bar pill
-     and home-indicator safe area, so no bone strip anywhere. Page content
-     (hero, bio, etc.) lives in normal flow underneath; the slide-up dismiss
-     transforms the cover off the top of the screen, revealing it. The nav
-     (z-index 50) stays visible above the cover (z-index 40). */
+  /* Fixed overlay covering everything BELOW the nav. Top edge sits at the
+     nav's bottom (var(--nav-h)); bottom edge stretches to the viewport
+     bottom. Page content (hero, bio, etc.) lives in normal flow behind it
+     and is revealed when .is-dismissed transforms the cover up. The nav
+     stays visible at the top (z-index 50, above the cover at 40). */
   position: fixed;
-  inset: 0;
+  top: var(--nav-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   overflow: hidden;
   background: transparent;
