@@ -2342,49 +2342,19 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 720px) { :root { --nav-h: 93px; } }
 
 .about-cover {
-  /* Fixed overlay covering everything BELOW the nav. Height is driven by
-     a JS-set --cover-h custom property that mirrors window.innerHeight,
-     which iOS Safari computes as the FULL visible viewport (including
-     behind the URL bar pill). CSS viewport units stop at the layout
-     viewport, which doesn't include the pill area. JS bypasses that. */
-  position: fixed;
-  top: var(--nav-h);
-  left: 0;
-  right: 0;
+  /* In normal document flow (position: relative). iOS Safari treats fixed
+     elements as UI chrome and constrains them to the layout viewport
+     (which stops at the URL bar pill); in-flow elements are treated as
+     page content and bleed all the way to the visual viewport bottom.
+     Same rules body content gets. Height is set in JS to window.innerHeight
+     for an exact match against the actual visible area on every device. */
+  position: relative;
   width: 100%;
-  height: calc(100lvh - var(--nav-h));                  /* fallback before --cover-h is set */
-  height: calc(var(--cover-h, 100lvh) - var(--nav-h));  /* JS-measured */
+  height: 100lvh;            /* fallback before JS runs */
   overflow: hidden;
-  background: transparent;
+  background: var(--ink);    /* dark behind video while it loads */
   margin: 0;
   padding: 0;
-  z-index: 40;
-  transform: translateY(0);
-  transition: transform 700ms cubic-bezier(0.65, 0, 0.35, 1);
-  will-change: transform;
-  -webkit-backface-visibility: hidden;
-}
-.about-cover.is-dismissed {
-  transform: translateY(-100%);
-  pointer-events: none;
-}
-
-/* Page-content slide-up reveal. The .about-reveal wrapper holds every
-   section after the cover. It starts translated below the visible
-   viewport so the cover is what's seen on initial load; .is-revealed
-   transforms it back to 0, sliding up to cover the video. */
-.about-reveal {
-  position: relative;
-  z-index: 10;                /* above the cover (z-index 40 inside its own stacking context, but the cover has no z-index relative to .about-reveal here) */
-  background: var(--bone);    /* solid so the video underneath is fully obscured during the slide */
-  transform: translateY(100vh);
-  transform: translateY(100lvh);
-  transform: translateY(var(--cover-h, 100lvh));
-  transition: transform 700ms cubic-bezier(0.65, 0, 0.35, 1);
-  will-change: transform;
-}
-.about-reveal.is-revealed {
-  transform: translateY(0);
 }
 /* Lock the page while the cover is up so the first scroll input fires the
    dismiss instead of moving the body underneath. */
