@@ -119,6 +119,8 @@
       class="about-hero-video-el"
       autoplay muted loop playsinline preload="auto"
       poster="assets/hero-poster.jpg"
+      data-poster-desktop="assets/hero-poster.jpg"
+      data-poster-mobile="assets/hero-poster-mobile.jpg"
       data-src-desktop="assets/background.mp4"
       data-src-mobile="assets/background-mobile.mp4"
     ></video>
@@ -151,6 +153,10 @@
     }
 
     var isMobile = window.matchMedia('(max-width: 720px)').matches;
+    // Swap to the right-aspect poster too, so the still frame matches
+    // the video crop if playback is delayed or freezes.
+    var posterSrc = isMobile ? v.dataset.posterMobile : v.dataset.posterDesktop;
+    if (posterSrc) v.poster = posterSrc;
     var src = isMobile ? v.dataset.srcMobile : v.dataset.srcDesktop;
     var source = document.createElement('source');
     source.src = src;
