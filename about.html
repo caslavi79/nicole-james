@@ -72,73 +72,6 @@
   </div>
 </div>
 
-<!-- ========== VIDEO COVER (over page content, below nav) ========== -->
-<section class="about-cover" aria-label="Nicole James — Christie's International Real Estate">
-  <video
-    class="about-cover-video"
-    autoplay muted loop playsinline preload="auto"
-    poster="assets/hero-poster.jpg"
-    data-src-desktop="assets/background.mp4"
-    data-src-mobile="assets/background-mobile.mp4"
-  ></video>
-  <div class="about-cover-overlay">
-    <img class="about-cover-logo" src="assets/cire-atproperties.png" alt="Christie's International Real Estate · @properties Lone Star" />
-  </div>
-</section>
-<script>
-  // Cover is in normal flow (position: relative). Set its height in JS to
-  // window.innerHeight so it exactly matches the visible viewport including
-  // behind the iOS URL bar pill. CSS units don't measure that area; JS does.
-  (function () {
-    var cover = document.querySelector('.about-cover');
-    if (!cover) return;
-    function sizeCover() {
-      cover.style.height = window.innerHeight + 'px';
-    }
-    sizeCover();
-    window.addEventListener('resize', sizeCover);
-    window.addEventListener('orientationchange', sizeCover);
-  })();
-
-  (function () {
-    var v = document.querySelector('.about-cover-video');
-    if (!v) return;
-    var isMobile = window.matchMedia('(max-width: 720px)').matches;
-    var primary = isMobile ? v.dataset.srcMobile : v.dataset.srcDesktop;
-    var fallback = v.dataset.srcDesktop;
-    var source = document.createElement('source');
-    source.src = primary;
-    source.type = 'video/mp4';
-    source.addEventListener('error', function () {
-      if (source.src.indexOf(fallback) === -1 && primary !== fallback) {
-        source.src = fallback;
-        v.load();
-      }
-    }, { once: true });
-    v.appendChild(source);
-    v.load();
-  })();
-
-  // Pause the video once the user has scrolled past the cover so it stops
-  // rendering. Resume if they scroll back up.
-  (function () {
-    var cover = document.querySelector('.about-cover');
-    if (!cover) return;
-    var v = cover.querySelector('video');
-    if (!v) return;
-    var paused = false;
-    function check() {
-      var hidden = window.scrollY > cover.offsetHeight;
-      if (hidden && !paused) { try { v.pause(); } catch (_) {} paused = true; }
-      else if (!hidden && paused) { try { v.play(); } catch (_) {} paused = false; }
-    }
-    window.addEventListener('scroll', check, { passive: true });
-  })();
-</script>
-
-<!-- ========== POST-COVER CONTENT (slides up over the sticky cover) ========== -->
-<div class="about-content">
-
 <!-- ========== PAGE HERO ========== -->
 <section class="contact-hero">
   <div class="shell">
@@ -231,8 +164,6 @@
     <a href="contact.html" class="btn btn-primary">Begin a conversation &rarr;</a>
   </div>
 </section>
-
-</div><!-- /.about-content -->
 
 <!-- ========== FOOTER ========== -->
 <footer>
