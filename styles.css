@@ -2342,18 +2342,18 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 720px) { :root { --nav-h: 93px; } }
 
 .about-cover {
-  /* Fixed overlay covering everything BELOW the nav. Top edge sits at the
-     nav's bottom (var(--nav-h)); bottom edge pushes BELOW the layout-
-     viewport bottom by env(safe-area-inset-bottom), so on iOS Safari the
-     video bleeds behind the URL bar pill and home-indicator strip instead
-     of leaving body content visible there. Requires viewport-fit=cover on
-     the page meta. */
+  /* Fixed overlay covering everything BELOW the nav. Sized via explicit
+     height (not bottom:0) because on iOS Safari `bottom:0` on a fixed
+     element anchors to the LAYOUT viewport (which stops at the URL bar
+     pill); `100vh`/`100lvh` resolves to the full visible viewport height
+     including the area behind the URL bar pill and home-indicator. */
   position: fixed;
   top: var(--nav-h);
   left: 0;
   right: 0;
-  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
   width: 100%;
+  height: calc(100vh - var(--nav-h));   /* fallback */
+  height: calc(100lvh - var(--nav-h));  /* large viewport: full screen incl. behind URL bar */
   overflow: hidden;
   background: transparent;
   margin: 0;
