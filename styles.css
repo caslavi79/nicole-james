@@ -2342,26 +2342,20 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 720px) { :root { --nav-h: 93px; } }
 
 .about-cover {
-  /* Fixed overlay covering everything below the nav, all the way to the
-     PHYSICAL bottom of the screen — bleeding behind any browser chrome
-     (URL bar pill, home indicator). Using 100lvh ensures the cover is
-     always sized to the LARGEST possible viewport (URL bar hidden state),
-     and we deliberately let it extend past the currently-visible bottom
-     so the video bleeds behind the URL bar pill in every browser state.
+  /* Fixed overlay that covers the ENTIRE screen — top to physical bottom,
+     bleeding behind both the nav and the Safari URL-bar pill.
 
-     Why not 100dvh + bottom:0? Because `bottom:0` on a fixed element
-     anchors to the *visible* bottom in most mobile browsers (Chrome,
-     Firefox), which leaves a gap of background-color behind the URL bar.
-     Letting the element overflow past the visible bottom is what creates
-     the edge-to-edge bleed effect. */
+     We extend the element well past the visible bottom (100lvh + 200px
+     cushion) so it definitively reaches behind the URL bar in every
+     state. overflow:hidden on the parent clips the excess; the video
+     inside (object-fit:cover) just fills the larger frame. */
   position: fixed;
-  top: var(--nav-h);
+  top: 0;
   left: 0;
   right: 0;
   width: 100vw;
-  height: calc(100vh - var(--nav-h));    /* legacy fallback */
-  height: calc(100svh - var(--nav-h));   /* small viewport — guaranteed to fit */
-  height: calc(100lvh - var(--nav-h));   /* LARGE viewport — bleeds behind URL bar */
+  height: calc(100vh + 200px);                  /* legacy fallback */
+  height: calc(100lvh + 200px);                 /* large viewport + generous cushion to bleed behind URL bar */
   overflow: hidden;
   background: transparent;
   margin: 0;
