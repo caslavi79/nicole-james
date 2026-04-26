@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260425-36" />
+<link rel="stylesheet" href="styles.css?v=20260425-39" />
 </head>
 
 <body>
@@ -66,7 +66,7 @@
       </button>
       <button type="button" class="nav-overlay-contact-item" data-chooser="email">
         <span class="nav-overlay-contact-label">Email</span>
-        <span class="nav-overlay-contact-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3f51565c50535a557f5c574d564c4b565a4c4d5a5e535a4c4b5e4b5a534c115c5052">[email&#160;protected]</a></span>
+        <span class="nav-overlay-contact-value">nicolej@christiesrealestatels.com</span>
       </button>
     </div>
   </div>
@@ -74,7 +74,6 @@
 
 <!-- ========== VIDEO COVER (over page content, below nav) ========== -->
 <section class="about-cover" aria-label="Nicole James — Christie's International Real Estate">
-  <div class="about-cover-placeholder" aria-hidden="true"></div>
   <video
     class="about-cover-video"
     autoplay muted loop playsinline preload="auto"
@@ -86,7 +85,20 @@
     <img class="about-cover-logo" src="assets/cire-atproperties.png" alt="Christie's International Real Estate · @properties Lone Star" />
   </div>
 </section>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+  // JS-measured cover height. CSS viewport units (vh/lvh/dvh) on iOS Safari
+  // stop at the layout viewport, which excludes the URL-bar pill area.
+  // window.innerHeight returns the actual visible viewport including behind
+  // the pill. Push that into --cover-h; the cover's CSS height uses it.
+  (function () {
+    function sizeCover() {
+      document.documentElement.style.setProperty('--cover-h', window.innerHeight + 'px');
+    }
+    sizeCover();
+    window.addEventListener('resize', sizeCover);
+    window.addEventListener('orientationchange', sizeCover);
+  })();
+
   (function () {
     var v = document.querySelector('.about-cover-video');
     if (!v) return;
@@ -106,39 +118,51 @@
     v.load();
   })();
 
+  // Reveal: page content (.about-reveal wrapper) starts translated below
+  // the viewport. First scroll/touch/key input adds .is-revealed which
+  // runs a CSS transform transition, sliding the content up over the
+  // video. After the transition we hide the .about-cover entirely so the
+  // video stops rendering.
   (function () {
     var cover = document.querySelector('.about-cover');
-    if (!cover) return;
+    var reveal = document.querySelector('.about-reveal');
+    if (!cover || !reveal) return;
     document.documentElement.classList.add('about-cover-locked');
     document.body.classList.add('about-cover-locked');
-    var dismissed = false;
+    var fired = false;
     var KEYS = ['ArrowDown','ArrowUp','PageDown','PageUp','Space','End','Home'];
-    function dismiss(e) {
-      if (dismissed) return;
-      dismissed = true;
+    function go(e) {
+      if (fired) return;
+      fired = true;
       if (e && typeof e.preventDefault === 'function') {
         try { e.preventDefault(); } catch (_) {}
       }
-      cover.classList.add('is-dismissed');
-      cover.setAttribute('aria-hidden', 'true');
+      reveal.classList.add('is-revealed');
       window.removeEventListener('wheel', onWheel, { passive: false });
       window.removeEventListener('touchmove', onTouchMove, { passive: false });
       window.removeEventListener('keydown', onKey);
       setTimeout(function () {
+        // Stop rendering the video and unlock scroll
+        cover.style.display = 'none';
+        var v = cover.querySelector('video');
+        if (v && v.pause) try { v.pause(); } catch (_) {}
         document.documentElement.classList.remove('about-cover-locked');
         document.body.classList.remove('about-cover-locked');
       }, 750);
     }
-    function onWheel(e) { dismiss(e); }
-    function onTouchMove(e) { dismiss(e); }
+    function onWheel(e) { go(e); }
+    function onTouchMove(e) { go(e); }
     function onKey(e) {
-      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') dismiss(e);
+      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') go(e);
     }
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('touchmove', onTouchMove, { passive: false });
     window.addEventListener('keydown', onKey);
   })();
 </script>
+
+<!-- ========== REVEALABLE PAGE CONTENT (slides up over the video on first scroll) ========== -->
+<div class="about-reveal">
 
 <!-- ========== PAGE HERO ========== -->
 <section class="contact-hero">
@@ -233,6 +257,8 @@
   </div>
 </section>
 
+</div><!-- /.about-reveal -->
+
 <!-- ========== FOOTER ========== -->
 <footer>
   <div class="shell f-grid">
@@ -260,7 +286,7 @@
         1105 N. Lamar Blvd, Suite 100<br>
         Austin, TX 78703<br><br>
         <a href="tel:+15124664608">512·466·4608</a><br>
-        <a href="/cdn-cgi/l/email-protection#533d3a303c3f363913303b213a20273a36202136323f3620273227363f207d303c3e"><span class="__cf_email__" data-cfemail="107e79737f7c757a507378627963647975636275717c7563647164757c633e737f7d">[email&#160;protected]</span></a>
+        <a href="mailto:nicolej@christiesrealestatels.com">nicolej@christiesrealestatels.com</a>
       </address>
     </div>
     <div>
@@ -279,7 +305,7 @@
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="scripts.js"></script>
+<script src="scripts.js"></script>
 
 </body>
 </html>
