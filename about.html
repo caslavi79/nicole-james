@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260425-26" />
+<link rel="stylesheet" href="styles.css?v=20260425-27" />
 </head>
 
 <body>
@@ -114,45 +114,55 @@
     v.load();
   })();
 
-  // Cover dismiss: cover is a fixed overlay sitting on top of the page
-  // content. First scroll/touch/key input adds .is-dismissed which
-  // triggers the CSS transition (transform: translateY(-100%)) — the
-  // cover slides up out of the top of the screen, revealing the content
-  // (page hero, bio, etc.) that was already positioned underneath.
-  // While the cover is up, html/body are scroll-locked so the input
-  // triggers the dismiss instead of moving the page.
+  // Cover dismiss: the cover is an in-flow hero (100svh tall, pulled under
+  // the nav by a negative margin). On first scroll/touch/key input we run
+  // a smooth-scroll-past that scrolls the page from y=0 to y=cover.height
+  // over 700ms — which makes the cover slide up out of the top of the
+  // viewport and reveals the page content (page hero, bio, etc.) that was
+  // already in normal document flow underneath. While the smooth-scroll
+  // animation is running we block further scroll input (incl. trackpad
+  // momentum) so the curve isn't disrupted; once it finishes, normal
+  // scrolling resumes.
   (function () {
     var cover = document.querySelector('.about-cover');
     if (!cover) return;
-    document.documentElement.classList.add('about-cover-locked');
-    document.body.classList.add('about-cover-locked');
     var dismissed = false;
-    var KEYS = ['ArrowDown','ArrowUp','PageDown','PageUp','Space','End','Home'];
+    var animating = false;
+    var KEYS = ['ArrowDown','PageDown','Space','End'];
 
-    function dismiss(e) {
-      if (dismissed) return;
-      dismissed = true;
-      if (e && typeof e.preventDefault === 'function') {
-        try { e.preventDefault(); } catch (_) {}
+    function smoothScrollTo(target, duration, done) {
+      var start = window.scrollY;
+      var distance = target - start;
+      if (Math.abs(distance) < 2) { if (done) done(); return; }
+      var t0 = performance.now();
+      function step(t) {
+        var progress = Math.min((t - t0) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        window.scrollTo(0, start + distance * eased);
+        if (progress < 1) requestAnimationFrame(step);
+        else if (done) done();
       }
-      cover.classList.add('is-dismissed');
-      cover.setAttribute('aria-hidden', 'true');
-      window.removeEventListener('wheel', onWheel, { passive: false });
-      window.removeEventListener('touchmove', onTouchMove, { passive: false });
-      window.removeEventListener('keydown', onKey);
-      // Wait for the slide-up transition to finish, then unlock scroll.
-      setTimeout(function () {
-        document.documentElement.classList.remove('about-cover-locked');
-        document.body.classList.remove('about-cover-locked');
-      }, 700);
+      requestAnimationFrame(step);
     }
-    function onWheel(e) { dismiss(e); }
-    function onTouchMove(e) { dismiss(e); }
+
+    function start(e) {
+      dismissed = true;
+      animating = true;
+      if (e && e.preventDefault) try { e.preventDefault(); } catch(_) {}
+      smoothScrollTo(cover.offsetHeight, 700, function () {
+        animating = false;
+      });
+    }
+    function onScroll(e) {
+      if (animating) { e.preventDefault(); return; }
+      if (!dismissed) start(e);
+    }
     function onKey(e) {
-      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') dismiss(e);
+      if (animating) { e.preventDefault(); return; }
+      if (!dismissed && (KEYS.indexOf(e.code) !== -1 || e.key === ' ')) start(e);
     }
-    window.addEventListener('wheel', onWheel, { passive: false });
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('wheel', onScroll, { passive: false });
+    window.addEventListener('touchmove', onScroll, { passive: false });
     window.addEventListener('keydown', onKey);
   })();
 </script>

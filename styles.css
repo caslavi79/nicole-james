@@ -2328,53 +2328,33 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 
 /* -- ABOUT PAGE: full-screen video cover --
-   In-flow hero, not a position:fixed dismiss layer. Earlier versions used
-   position:fixed + transform:translateY(-100%) on first scroll to "dismiss"
-   the cover. On iOS Safari that produced a state where the cover ended up
-   partially translated while the body had also scrolled — leaving a hard
-   seam between the video and the bio portrait below. Making the cover a
-   normal block at the top of the document flow eliminates that whole class
-   of bugs: there's no fixed positioning vs visual-viewport mismatch, no
-   body-lock race, no transform interaction with viewport-fit=cover. The
-   user simply scrolls past it, the way every Apple hero works.
-
-   Height is 100dvh so it fills the visual viewport on iOS regardless of
-   URL bar state. theme-color=#F4EFE7 in the <head> keeps the bar bone. */
-/* Nav height — top of the about-cover anchors here so the video starts
+   In-flow hero (Apple iPhone-Air pattern). The cover is a normal block at
+   the top of the page, pulled up under the nav with a negative top margin
+   equal to --nav-h. Page content (page hero, bio, etc.) lives directly
+   beneath in normal flow. On first scroll input a tiny smooth-scroll-past
+   in JS slides the cover up off the top of the viewport, revealing the
+   content underneath. No position:fixed, no transform dismiss, no body
+   lock — the layout uses regular document scroll, which avoids every
+   iOS Safari URL-bar / visual-viewport / body-lock race we hit before. */
+/* Nav height — the about-cover anchors visually here so the video starts
    right at the bottom edge of the nav, fills down to the viewport bottom. */
 :root { --nav-h: 113px; }
 @media (max-width: 720px) { :root { --nav-h: 93px; } }
 
 .about-cover {
-  /* Fixed overlay covering everything below the nav. Top edge sits at the
-     nav's bottom edge; bottom edge stretches to the viewport bottom (so it
-     extends behind any iOS bottom URL bar). Page content (hero, bio, etc.)
-     lives in normal flow behind the cover and is revealed when .is-dismissed
-     transforms the cover up off-screen. */
-  position: fixed;
-  top: var(--nav-h);
-  left: 0;
-  right: 0;
-  bottom: 0;
+  /* In-flow block. Negative top margin pulls the cover up so its top edge
+     starts at the very top of the document (under the translucent sticky
+     nav), and 100svh stretches it to the bottom of the visible viewport
+     on iOS without jiggling when the URL bar shows/hides. */
+  position: relative;
+  display: flow-root;            /* contains the negative margin */
+  margin-top: calc(-1 * var(--nav-h));
+  width: 100%;
+  height: 100svh;                /* small viewport — Apple's pattern, no jiggle */
+  min-height: 100vh;             /* fallback for browsers without svh */
   overflow: hidden;
   background: transparent;
-  margin: 0;
   padding: 0;
-  z-index: 40; /* below the nav (z-index 50) so the slide-up tucks behind it */
-  transform: translateY(0);
-  transition: transform 700ms cubic-bezier(0.65, 0, 0.35, 1);
-  will-change: transform;
-}
-.about-cover.is-dismissed {
-  transform: translateY(-100%);
-  pointer-events: none;
-}
-/* Lock the body while the cover is up so the first scroll input is what
-   triggers the dismiss instead of moving the page underneath. */
-html.about-cover-locked,
-body.about-cover-locked {
-  overflow: hidden;
-  overscroll-behavior: none;
 }
 .about-cover-video {
   position: absolute;
