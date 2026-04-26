@@ -86,13 +86,14 @@
   </div>
 </section>
 <script>
-  // JS-measured cover height. CSS viewport units (vh/lvh/dvh) on iOS Safari
-  // stop at the layout viewport, which excludes the URL-bar pill area.
-  // window.innerHeight returns the actual visible viewport including behind
-  // the pill. Push that into --cover-h; the cover's CSS height uses it.
+  // Cover is in normal flow (position: relative). Set its height in JS to
+  // window.innerHeight so it exactly matches the visible viewport including
+  // behind the iOS URL bar pill. CSS units don't measure that area; JS does.
   (function () {
+    var cover = document.querySelector('.about-cover');
+    if (!cover) return;
     function sizeCover() {
-      document.documentElement.style.setProperty('--cover-h', window.innerHeight + 'px');
+      cover.style.height = window.innerHeight + 'px';
     }
     sizeCover();
     window.addEventListener('resize', sizeCover);
@@ -118,51 +119,56 @@
     v.load();
   })();
 
-  // Reveal: page content (.about-reveal wrapper) starts translated below
-  // the viewport. First scroll/touch/key input adds .is-revealed which
-  // runs a CSS transform transition, sliding the content up over the
-  // video. After the transition we hide the .about-cover entirely so the
-  // video stops rendering.
+  // Smooth-scroll past the cover on first scroll input. Cover is in normal
+  // flow, so scrolling the page past its height moves it off-screen like
+  // any other block. Trackpad-momentum events during the curve are blocked
+  // so they can't override the animation. Once it finishes, the video is
+  // paused (it's off-screen anyway).
   (function () {
     var cover = document.querySelector('.about-cover');
-    var reveal = document.querySelector('.about-reveal');
-    if (!cover || !reveal) return;
-    document.documentElement.classList.add('about-cover-locked');
-    document.body.classList.add('about-cover-locked');
+    if (!cover) return;
     var fired = false;
+    var animating = false;
     var KEYS = ['ArrowDown','ArrowUp','PageDown','PageUp','Space','End','Home'];
-    function go(e) {
-      if (fired) return;
-      fired = true;
-      if (e && typeof e.preventDefault === 'function') {
-        try { e.preventDefault(); } catch (_) {}
+
+    function smoothScrollTo(target, duration, done) {
+      var start = window.scrollY;
+      var distance = target - start;
+      if (Math.abs(distance) < 2) { if (done) done(); return; }
+      var t0 = performance.now();
+      function step(t) {
+        var p = Math.min((t - t0) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        window.scrollTo(0, start + distance * eased);
+        if (p < 1) requestAnimationFrame(step);
+        else if (done) done();
       }
-      reveal.classList.add('is-revealed');
-      window.removeEventListener('wheel', onWheel, { passive: false });
-      window.removeEventListener('touchmove', onTouchMove, { passive: false });
-      window.removeEventListener('keydown', onKey);
-      setTimeout(function () {
-        // Stop rendering the video and unlock scroll
-        cover.style.display = 'none';
+      requestAnimationFrame(step);
+    }
+
+    function startAnim(e) {
+      fired = true;
+      animating = true;
+      if (e && e.preventDefault) try { e.preventDefault(); } catch (_) {}
+      smoothScrollTo(cover.offsetHeight, 700, function () {
+        animating = false;
         var v = cover.querySelector('video');
         if (v && v.pause) try { v.pause(); } catch (_) {}
-        document.documentElement.classList.remove('about-cover-locked');
-        document.body.classList.remove('about-cover-locked');
-      }, 750);
+      });
     }
-    function onWheel(e) { go(e); }
-    function onTouchMove(e) { go(e); }
+    function onScroll(e) {
+      if (animating) { e.preventDefault(); return; }
+      if (!fired) startAnim(e);
+    }
     function onKey(e) {
-      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') go(e);
+      if (animating) { e.preventDefault(); return; }
+      if (!fired && (KEYS.indexOf(e.code) !== -1 || e.key === ' ')) startAnim(e);
     }
-    window.addEventListener('wheel', onWheel, { passive: false });
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('wheel', onScroll, { passive: false });
+    window.addEventListener('touchmove', onScroll, { passive: false });
     window.addEventListener('keydown', onKey);
   })();
 </script>
-
-<!-- ========== REVEALABLE PAGE CONTENT (slides up over the video on first scroll) ========== -->
-<div class="about-reveal">
 
 <!-- ========== PAGE HERO ========== -->
 <section class="contact-hero">
@@ -256,8 +262,6 @@
     <a href="contact.html" class="btn btn-primary">Begin a conversation &rarr;</a>
   </div>
 </section>
-
-</div><!-- /.about-reveal -->
 
 <!-- ========== FOOTER ========== -->
 <footer>
