@@ -86,6 +86,19 @@
   </div>
 </section>
 <script>
+  // JS-measured cover height. CSS viewport units (vh/lvh/dvh) on iOS Safari
+  // stop at the layout viewport, which excludes the URL-bar pill area.
+  // window.innerHeight returns the actual visible viewport including behind
+  // the pill. Push that into --cover-h; the cover's CSS height uses it.
+  (function () {
+    function sizeCover() {
+      document.documentElement.style.setProperty('--cover-h', window.innerHeight + 'px');
+    }
+    sizeCover();
+    window.addEventListener('resize', sizeCover);
+    window.addEventListener('orientationchange', sizeCover);
+  })();
+
   (function () {
     var v = document.querySelector('.about-cover-video');
     if (!v) return;
