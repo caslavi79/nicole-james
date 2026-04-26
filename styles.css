@@ -1089,6 +1089,7 @@ section .shell { position: relative; z-index: 1; }
   position: relative;
   z-index: 2;
   background: var(--bone);
+  border-top: 1px solid var(--line);
 }
 
 .t-topbar {
@@ -1228,7 +1229,6 @@ section .shell { position: relative; z-index: 1; }
 .testimonial-footer {
   margin-top: clamp(32px, 4vw, 48px);
   padding-top: 20px;
-  border-top: 1px solid var(--line);
   display: flex;
   justify-content: center;
 }
