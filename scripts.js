@@ -551,4 +551,34 @@
     }
   });
 
+  // -- BUILDING CAROUSEL pager (services hero)
+  // Updates the "01–04 of 24" counter and the progress fill as the
+  // user scrolls the horizontal carousel.
+  const bldgCar = document.getElementById('bldgCarousel');
+  const bldgCounter = document.getElementById('bldgCarouselCounter');
+  const bldgFill = document.getElementById('bldgCarouselFill');
+  if (bldgCar && bldgCounter && bldgFill) {
+    const updatePager = () => {
+      const cards = bldgCar.querySelectorAll('.bldg-card');
+      const total = cards.length;
+      if (!total) return;
+      const cardW = cards[0].getBoundingClientRect().width;
+      const gap = parseFloat(getComputedStyle(bldgCar).columnGap) || 0;
+      const step = cardW + gap;
+      const visible = Math.max(1, Math.round(bldgCar.clientWidth / step));
+      const first = Math.min(total, Math.round(bldgCar.scrollLeft / step) + 1);
+      const last = Math.min(total, first + visible - 1);
+      const pad = (n) => String(n).padStart(2, '0');
+      bldgCounter.textContent = `${pad(first)}–${pad(last)} of ${pad(total)}`;
+      const trackW = bldgCar.scrollWidth - bldgCar.clientWidth;
+      const pct = trackW > 0 ? (bldgCar.scrollLeft / trackW) : 0;
+      const fillPct = (visible / total) * 100;
+      bldgFill.style.width = fillPct + '%';
+      bldgFill.style.left = (pct * (100 - fillPct)) + '%';
+    };
+    updatePager();
+    bldgCar.addEventListener('scroll', updatePager, { passive: true });
+    window.addEventListener('resize', updatePager, { passive: true });
+  }
+
 })();

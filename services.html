@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260426-1" />
+<link rel="stylesheet" href="styles.css?v=20260426-20" />
 </head>
 
 <body>
@@ -74,91 +74,140 @@
   </div>
 </div>
 
-<!-- ========== PAGE HERO ========== -->
-<section class="contact-hero">
+<!-- ========== HERO · BUILDING CAROUSEL ========== -->
+<section class="bldg-carousel-section" aria-label="Buildings carousel">
   <div class="shell">
-    <div class="eyebrow" style="margin-bottom:40px">Services</div>
-    <h1>Everything <em class="serif-italic">I do.</em></h1>
-    <p class="lede">Seller representation, buyer representation, and off-market advisory &mdash; all built on building-level knowledge of downtown Austin's condo towers.</p>
+    <div class="bldg-carousel-topbar">
+      <span class="eyebrow">Hero &middot; horizontal carousel &middot; multiple visible</span>
+      <span class="bldg-carousel-cue">scrolls &rarr;</span>
+    </div>
+    <div class="bldg-carousel" id="bldgCarousel" tabindex="0" aria-label="Buildings">
+      <div class="bldg-card">
+        <div class="bldg-card-img"><span class="bldg-card-img-placeholder">image</span></div>
+        <div class="bldg-card-meta"><strong>Bridges</strong><span>on the Park</span></div>
+      </div>
+      <div class="bldg-card">
+        <div class="bldg-card-img"><span class="bldg-card-img-placeholder">image</span></div>
+        <div class="bldg-card-meta"><strong>The</strong><span>Independent</span></div>
+      </div>
+      <div class="bldg-card">
+        <div class="bldg-card-img"><span class="bldg-card-img-placeholder">image</span></div>
+        <div class="bldg-card-meta"><strong>The</strong><span>Austonian</span></div>
+      </div>
+      <div class="bldg-card">
+        <div class="bldg-card-img"><span class="bldg-card-img-placeholder">image</span></div>
+        <div class="bldg-card-meta"><strong>70</strong><span>Rainey</span></div>
+      </div>
+      <div class="bldg-card">
+        <div class="bldg-card-img"><span class="bldg-card-img-placeholder">image</span></div>
+        <div class="bldg-card-meta"><strong>Building</strong><span>placeholder</span></div>
+      </div>
+      <div class="bldg-card">
+        <div class="bldg-card-img"><span class="bldg-card-img-placeholder">image</span></div>
+        <div class="bldg-card-meta"><strong>Building</strong><span>placeholder</span></div>
+      </div>
+      <div class="bldg-card">
+        <div class="bldg-card-img"><span class="bldg-card-img-placeholder">image</span></div>
+        <div class="bldg-card-meta"><strong>Building</strong><span>placeholder</span></div>
+      </div>
+      <div class="bldg-card">
+        <div class="bldg-card-img"><span class="bldg-card-img-placeholder">image</span></div>
+        <div class="bldg-card-meta"><strong>Building</strong><span>placeholder</span></div>
+      </div>
+    </div>
+    <div class="bldg-carousel-pager">
+      <span class="bldg-carousel-counter" id="bldgCarouselCounter">01&ndash;04 of 24</span>
+      <span class="bldg-carousel-track" aria-hidden="true"><span class="bldg-carousel-track-fill" id="bldgCarouselFill"></span></span>
+    </div>
   </div>
 </section>
 
-<!-- ========== SERVICE 01 — SELLER ========== -->
+<!-- ========== § 01 · TIES TO CAROUSEL ========== -->
+<section class="svc-page">
+  <div class="shell">
+    <div class="s-head">
+      <span class="eyebrow">§ 01 &middot; Ties to carousel above</span>
+      <h2 class="display" data-animate>
+        Twenty-four buildings. <em class="serif-italic">One specialty.</em>
+      </h2>
+      <p class="lede">Subtitle &middot; framing line into the writeup.</p>
+    </div>
+    <div class="svc-prose" data-animate>
+      <p class="body-text">Placeholder expertise writeup paragraph one. Prose describing Nicole's coverage of downtown Austin condominium buildings &mdash; what makes the practice building-deep rather than market-wide.</p>
+      <p class="body-text">Placeholder expertise writeup paragraph two. More detail on the depth of knowledge across specific towers, floor lines, HOAs, and pricing patterns.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== § 02 · FOR SELLERS ========== -->
 <section id="seller" class="svc-page">
   <div class="shell">
-    <div class="svc-page-grid">
-      <div class="svc-page-head">
-        <div class="num">NO. 01</div>
-        <h2 class="display">Seller<br>representation.</h2>
-        <p class="lede">For owners selling a downtown Austin condo.</p>
+    <div class="s-head">
+      <span class="eyebrow">§ 02 &middot; For sellers <span class="svc-anchor-tag">#seller</span></span>
+      <h2 class="display" data-animate>
+        What I bring to <em class="serif-italic">a listing.</em>
+      </h2>
+    </div>
+    <div class="svc-offer-grid">
+      <div class="svc-offer" data-animate>
+        <div class="lb">offering A</div>
+        <h3 class="title">High-quality staging<br>+ photography.</h3>
       </div>
-      <div class="svc-page-body">
-        <p class="body-text"><strong>Pricing built on your building, not a citywide average.</strong> Listings reach the MLS, the Christie's International global network spanning nearly 50 countries, and a private buyer list kept since 2007.</p>
-        <ul class="bullets">
-          <li>Pricing strategy built on your building's last twelve months of sold comparables</li>
-          <li>Photography through vendors vetted for high-rise work</li>
-          <li>MLS exposure plus Christie's global luxury network</li>
-          <li>Private buyer list Nicole has built since 2007</li>
-        </ul>
-        <div class="staging-callout">
-          <div class="tl">Included with seller representation</div>
-          <h4>Staging and <em>photography prep.</em></h4>
-          <p>Nicole prepares each unit personally before photography. Getting the space right is part of the listing.</p>
-        </div>
+      <div class="svc-offer" data-animate>
+        <div class="lb">offering B</div>
+        <h3 class="title">Christie's international<br>buyer network.</h3>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ========== SERVICE 02 — BUYER ========== -->
-<section id="buyer" class="svc-page">
-  <div class="shell">
-    <div class="svc-page-grid">
-      <div class="svc-page-head">
-        <div class="num">NO. 02</div>
-        <h2 class="display">Buyer<br>representation.</h2>
-        <p class="lede">For clients buying into downtown Austin condo towers.</p>
-      </div>
-      <div class="svc-page-body">
-        <p class="body-text"><strong>Building-level pricing and private-market access.</strong> Representing buyers across the full inventory of downtown Austin condos, with floor-by-floor pricing analysis and access to pre-market units through a private buyer list kept since 2007.</p>
-        <ul class="bullets">
-          <li>Floor-by-floor pricing analysis across 20+ downtown buildings</li>
-          <li>HOA reserve and assessment history review before offer</li>
-          <li>Private buyer list access to pre-market and off-market units</li>
-          <li>Negotiation grounded in the building's last twelve months of sold comparables</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ========== SERVICE 03 — ADVISORY ========== -->
+<!-- ========== § 03 · OFF-MARKET ========== -->
 <section id="advisory" class="svc-page">
   <div class="shell">
-    <div class="svc-page-grid">
-      <div class="svc-page-head">
-        <div class="num">NO. 03</div>
-        <h2 class="display">Off-market<br>advisory.</h2>
-        <p class="lede">Quiet conversations before anything goes public.</p>
+    <div class="s-head">
+      <span class="eyebrow">§ 03 &middot; Off-market <span class="svc-anchor-tag">#advisory</span></span>
+      <h2 class="display" data-animate>
+        Quiet <em class="serif-italic">conversations.</em>
+      </h2>
+    </div>
+    <div class="svc-prose-grid">
+      <div class="svc-prose" data-animate>
+        <p class="body-text">Placeholder body paragraph for the off-market advisory section. Discreet seller consultations and pre-market buyer matching, before anything reaches the public market.</p>
+        <p class="body-text">Placeholder secondary paragraph. The conversation starts privately and stays that way until the seller is ready.</p>
       </div>
-      <div class="svc-page-body">
-        <p class="body-text"><strong>For owners testing, and buyers waiting for a rare line.</strong> Most private listings in Nicole's practice sell before they reach the market. If you are considering selling, or looking for a line that rarely trades, the conversation starts here.</p>
-        <ul class="bullets">
-          <li>Discreet seller consultations for owners testing the market</li>
-          <li>Pre-market buyer matching on rarely-traded lines and floors</li>
-          <li>Direct coordination with building HOAs and concierge teams</li>
-          <li>No marketing, no signage, no public exposure until the seller is ready</li>
-        </ul>
-      </div>
+      <ul class="bullets" data-animate>
+        <li>Discreet seller consults</li>
+        <li>Pre-market matching</li>
+        <li>No signage, no public exposure</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- ========== CTA ========== -->
+<!-- ========== § 04 · FOR BUYERS ========== -->
+<section id="buyer" class="svc-page">
+  <div class="shell">
+    <div class="s-head">
+      <span class="eyebrow">§ 04 &middot; For buyers &middot; &#8617; ties everything together <span class="svc-anchor-tag">#buyer</span></span>
+      <h2 class="display" data-animate>
+        All of it, <em class="serif-italic">working for you.</em>
+      </h2>
+    </div>
+    <div class="svc-prose" data-animate>
+      <p class="body-text">Placeholder buyer-side prose paragraph one. How building-level knowledge, the off-market network, and Christie's global reach combine into representation on the buyer side.</p>
+      <p class="body-text">Placeholder buyer-side prose paragraph two. More on the floor-by-floor analysis, HOA review, and negotiation grounded in the building's actual sold comparables.</p>
+    </div>
+    <p class="closing-thought" data-animate>
+      Closing thought &middot; <em class="serif-italic">&ldquo;She has the building knowledge, she knows what you need.&rdquo;</em>
+    </p>
+  </div>
+</section>
+
+<!-- ========== CLOSING CTA ========== -->
 <section class="svc-page-cta">
   <div class="shell">
+    <span class="eyebrow" style="display:block;margin-bottom:20px">Closing CTA &middot; &rarr; contact.html</span>
     <h2 class="display">Begin a <em class="serif-italic">conversation.</em></h2>
-    <p class="lede">Buyer representation, seller consultations, off-market conversations &mdash; messages go directly to Nicole, not an assistant.</p>
     <a href="contact.html" class="btn btn-primary">Begin a conversation &rarr;</a>
   </div>
 </section>
