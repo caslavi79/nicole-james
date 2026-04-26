@@ -2343,15 +2343,16 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 
 .about-cover {
   /* Fixed overlay covering everything BELOW the nav. Top edge sits at the
-     nav's bottom (var(--nav-h)); bottom edge stretches to the viewport
-     bottom. Page content (hero, bio, etc.) lives in normal flow behind it
-     and is revealed when .is-dismissed transforms the cover up. The nav
-     stays visible at the top (z-index 50, above the cover at 40). */
+     nav's bottom (var(--nav-h)); bottom edge pushes BELOW the layout-
+     viewport bottom by env(safe-area-inset-bottom), so on iOS Safari the
+     video bleeds behind the URL bar pill and home-indicator strip instead
+     of leaving body content visible there. Requires viewport-fit=cover on
+     the page meta. */
   position: fixed;
   top: var(--nav-h);
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
   width: 100%;
   overflow: hidden;
   background: transparent;
