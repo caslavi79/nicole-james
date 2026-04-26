@@ -579,6 +579,28 @@
     updatePager();
     bldgCar.addEventListener('scroll', updatePager, { passive: true });
     window.addEventListener('resize', updatePager, { passive: true });
+
+    // Arrow navigation (desktop)
+    const bldgPrev = document.getElementById('bldgArrowPrev');
+    const bldgNext = document.getElementById('bldgArrowNext');
+    const scrollByPage = (dir) => {
+      const cards = bldgCar.querySelectorAll('.bldg-card');
+      if (!cards.length) return;
+      const cardW = cards[0].getBoundingClientRect().width;
+      const gap = parseFloat(getComputedStyle(bldgCar).columnGap) || 0;
+      const step = cardW + gap;
+      const visible = Math.max(1, Math.round(bldgCar.clientWidth / step));
+      bldgCar.scrollBy({ left: dir * step * visible, behavior: 'smooth' });
+    };
+    const syncArrows = () => {
+      if (!bldgPrev || !bldgNext) return;
+      bldgPrev.disabled = bldgCar.scrollLeft <= 0;
+      bldgNext.disabled = bldgCar.scrollLeft >= bldgCar.scrollWidth - bldgCar.clientWidth - 1;
+    };
+    if (bldgPrev) bldgPrev.addEventListener('click', () => scrollByPage(-1));
+    if (bldgNext) bldgNext.addEventListener('click', () => scrollByPage(1));
+    bldgCar.addEventListener('scroll', syncArrows, { passive: true });
+    syncArrows();
   }
 
 })();

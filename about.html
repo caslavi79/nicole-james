@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260426-20" />
+<link rel="stylesheet" href="styles.css?v=20260426-21" />
 </head>
 
 <body class="page-about">
@@ -203,39 +203,45 @@
 <section id="about">
   <div class="shell">
     <div class="s-head">
-      <span class="eyebrow">§ 01 · In partnership</span>
+      <span class="eyebrow" data-animate>§ 01 &middot; In partnership</span>
       <h2 class="display" data-animate>
         Global reach. <em class="serif-italic">Local hand.</em>
       </h2>
     </div>
 
     <div class="partner-logos" data-animate>
-      <div class="partner-logo">
-        <span class="partner-logo-placeholder">Christie's &middot; @properties</span>
-      </div>
-      <span class="partner-x" aria-hidden="true">&times;</span>
-      <div class="partner-logo">
-        <span class="partner-logo-placeholder">Nicole James signature</span>
+      <div class="partner-pairing">
+        <div class="partner-logo partner-logo--brokerage">
+          <span class="partner-logo-placeholder">Christie's &middot; @properties</span>
+        </div>
+        <div class="partner-sep" aria-hidden="true">
+          <span class="partner-sep-line"></span>
+          <em class="serif-italic partner-sep-glyph">&times;</em>
+          <span class="partner-sep-line"></span>
+        </div>
+        <div class="partner-logo partner-logo--agent">
+          <span class="partner-logo-placeholder">Nicole James signature</span>
+        </div>
       </div>
     </div>
 
     <div class="partner-pillars">
       <div class="partner-pillar" data-animate>
-        <div class="lb">Global network</div>
         <div class="v">~50 countries</div>
+        <div class="lb">Global network</div>
       </div>
       <div class="partner-pillar" data-animate>
-        <div class="lb">Luxury Specialist</div>
         <div class="v">Christie's, 2020</div>
+        <div class="lb">Luxury Specialist</div>
       </div>
       <div class="partner-pillar" data-animate>
-        <div class="lb">Cross-listing</div>
         <div class="v">christiesrealestate.com</div>
+        <div class="lb">Cross-listing</div>
       </div>
     </div>
 
     <p class="push-link push-link--right" data-animate>
-      <a href="services.html"><span class="push-tag">push #1</span> see how this works, building by building &rarr;</a>
+      <a href="services.html">see how this works, building by building &rarr;</a>
     </p>
   </div>
 </section>
@@ -246,27 +252,31 @@
 <section class="stats-section">
   <div class="shell">
     <div class="s-head">
-      <span class="eyebrow">§ 02 · By the numbers</span>
+      <span class="eyebrow" data-animate>§ 02 &middot; By the numbers</span>
       <h2 class="display" data-animate>
         A nineteen-year <em class="serif-italic">specialty practice.</em>
       </h2>
     </div>
     <div class="stat-row">
-      <div class="stat-cell" data-animate>
-        <div class="v">90+</div>
-        <div class="l">units &middot; Bridges</div>
+      <div class="stat-cell stat-cell--featured" data-animate>
+        <span class="stat-index">01</span>
+        <div class="stat-v">90+</div>
+        <div class="stat-l">units &middot; Bridges</div>
       </div>
       <div class="stat-cell" data-animate>
-        <div class="v">19 yrs</div>
-        <div class="l">in market</div>
+        <span class="stat-index">02</span>
+        <div class="stat-v">19 yrs</div>
+        <div class="stat-l">in market</div>
       </div>
       <div class="stat-cell" data-animate>
-        <div class="v">3&times;</div>
-        <div class="l">ABJ Top 50 nom.</div>
+        <span class="stat-index">03</span>
+        <div class="stat-v">3&times;</div>
+        <div class="stat-l">ABJ Top 50 nom.</div>
       </div>
       <div class="stat-cell" data-animate>
-        <div class="v">20+</div>
-        <div class="l">towers covered</div>
+        <span class="stat-index">04</span>
+        <div class="stat-v">20+</div>
+        <div class="stat-l">towers covered</div>
       </div>
     </div>
   </div>
@@ -276,22 +286,23 @@
 <section class="about-page" id="practice">
   <div class="shell">
     <div class="s-head">
-      <span class="eyebrow">§ 03 · About Nicole</span>
-      <h2 class="display" data-animate>
+      <span class="eyebrow" data-animate>§ 03 &middot; About Nicole</span>
+      <h2 data-animate>
         The hand <em class="serif-italic">behind the practice.</em>
       </h2>
     </div>
     <div class="about-page-grid">
-      <div class="about-page-portrait">
+      <figure class="about-page-portrait">
         <img src="assets/nicole-james.jpg" alt="Nicole James, downtown Austin condo specialist" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
         <div class="about-page-portrait-placeholder" style="display:none">portrait of Nicole</div>
-      </div>
+        <figcaption class="about-page-portrait-caption">Nicole James &mdash; Downtown Austin</figcaption>
+      </figure>
       <div class="about-page-body">
-        <span class="push-tag push-tag--corner" aria-hidden="true">push #2</span>
-        <p class="lede-line">Placeholder lede &mdash; one or two sentences framing Nicole's practice.</p>
+        <p class="lede-line">Placeholder lede &mdash; one or two sentences <em class="serif-italic">framing Nicole's practice.</em></p>
         <p class="body-text">Placeholder paragraph one. Body copy describing Nicole's background, approach, and the practice she has built around downtown Austin condominium living.</p>
         <p class="body-text">Placeholder paragraph two. More on philosophy, process, and why building-level knowledge matters to the people she represents.</p>
         <p class="body-text">Placeholder paragraph three. A closing thought that brings the section to its end.</p>
+        <p class="about-page-body-marker" aria-hidden="true">&sect;&thinsp;03</p>
       </div>
     </div>
 
