@@ -2375,7 +2375,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .about-hero-overlay {
   position: absolute;
   left: 50%;
-  top: 20%;
+  top: 30%;
   transform: translate(-50%, -50%);
   width: min(60vw, 720px);
   height: auto;
