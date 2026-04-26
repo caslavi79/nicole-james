@@ -2353,12 +2353,16 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   padding: 0;
 }
 
-/* About page hero: video fills the .hero.hero-stuck section. Override
-   the hero's content padding so the video reaches the section edges. */
+/* About page hero: video fills the .hero.hero-stuck section. Sized to
+   exactly the visible viewport below the nav so the sticky element fits
+   in the viewport (avoids the iOS WebKit "sticky taller than viewport"
+   bug — see the @media (max-width: 820px) hero-stuck rule above). */
 .about-hero-video {
   padding: 0;
   overflow: hidden;
   background: var(--ink);
+  height: calc(100vh - var(--nav-h));
+  height: calc(100lvh - var(--nav-h));
 }
 .about-hero-video-el {
   display: block;
@@ -2366,6 +2370,16 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   height: 100%;
   object-fit: cover;
   object-position: center;
+}
+/* About page: override the mobile sticky-disable from .hero-stuck. The
+   video section is exactly viewport-sized, so the iOS sticky bug doesn't
+   apply, and we want the video to pin while #about slides up over it. */
+@media (max-width: 820px) {
+  body.page-about .hero.hero-stuck {
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 1;
+  }
 }
 
 /* About page: scroll-snap so #about snaps fully under the nav on the
