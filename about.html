@@ -114,55 +114,46 @@
     v.load();
   })();
 
-  // Cover dismiss: the cover is an in-flow hero (100svh tall, pulled under
-  // the nav by a negative margin). On first scroll/touch/key input we run
-  // a smooth-scroll-past that scrolls the page from y=0 to y=cover.height
-  // over 700ms — which makes the cover slide up out of the top of the
-  // viewport and reveals the page content (page hero, bio, etc.) that was
-  // already in normal document flow underneath. While the smooth-scroll
-  // animation is running we block further scroll input (incl. trackpad
-  // momentum) so the curve isn't disrupted; once it finishes, normal
-  // scrolling resumes.
+  // Cover dismiss: cover is a fixed overlay sitting on top of the page
+  // content. First wheel/touch/scroll-key input adds .is-dismissed which
+  // triggers the CSS transition (transform: translateY(-100%)) — the
+  // cover slides up out of the top of the screen, revealing the content
+  // (page hero, bio, etc.) that was already positioned behind it in
+  // normal flow. While the cover is up, html/body are scroll-locked so
+  // the input triggers the dismiss instead of moving the page.
   (function () {
     var cover = document.querySelector('.about-cover');
     if (!cover) return;
+    document.documentElement.classList.add('about-cover-locked');
+    document.body.classList.add('about-cover-locked');
     var dismissed = false;
-    var animating = false;
-    var KEYS = ['ArrowDown','PageDown','Space','End'];
+    var KEYS = ['ArrowDown','ArrowUp','PageDown','PageUp','Space','End','Home'];
 
-    function smoothScrollTo(target, duration, done) {
-      var start = window.scrollY;
-      var distance = target - start;
-      if (Math.abs(distance) < 2) { if (done) done(); return; }
-      var t0 = performance.now();
-      function step(t) {
-        var progress = Math.min((t - t0) / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-        window.scrollTo(0, start + distance * eased);
-        if (progress < 1) requestAnimationFrame(step);
-        else if (done) done();
-      }
-      requestAnimationFrame(step);
-    }
-
-    function start(e) {
+    function dismiss(e) {
+      if (dismissed) return;
       dismissed = true;
-      animating = true;
-      if (e && e.preventDefault) try { e.preventDefault(); } catch(_) {}
-      smoothScrollTo(cover.offsetHeight, 700, function () {
-        animating = false;
+      if (e && typeof e.preventDefault === 'function') {
+        try { e.preventDefault(); } catch (_) {}
+      }
+      requestAnimationFrame(function () {
+        cover.classList.add('is-dismissed');
       });
+      cover.setAttribute('aria-hidden', 'true');
+      window.removeEventListener('wheel', onWheel, { passive: false });
+      window.removeEventListener('touchmove', onTouchMove, { passive: false });
+      window.removeEventListener('keydown', onKey);
+      setTimeout(function () {
+        document.documentElement.classList.remove('about-cover-locked');
+        document.body.classList.remove('about-cover-locked');
+      }, 750);
     }
-    function onScroll(e) {
-      if (animating) { e.preventDefault(); return; }
-      if (!dismissed) start(e);
-    }
+    function onWheel(e) { dismiss(e); }
+    function onTouchMove(e) { dismiss(e); }
     function onKey(e) {
-      if (animating) { e.preventDefault(); return; }
-      if (!dismissed && (KEYS.indexOf(e.code) !== -1 || e.key === ' ')) start(e);
+      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') dismiss(e);
     }
-    window.addEventListener('wheel', onScroll, { passive: false });
-    window.addEventListener('touchmove', onScroll, { passive: false });
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
     window.addEventListener('keydown', onKey);
   })();
 </script>
