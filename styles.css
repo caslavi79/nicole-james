@@ -2368,6 +2368,24 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   transform: translateY(-100%);
   pointer-events: none;
 }
+
+/* Page-content slide-up reveal. The .about-reveal wrapper holds every
+   section after the cover. It starts translated below the visible
+   viewport so the cover is what's seen on initial load; .is-revealed
+   transforms it back to 0, sliding up to cover the video. */
+.about-reveal {
+  position: relative;
+  z-index: 10;                /* above the cover (z-index 40 inside its own stacking context, but the cover has no z-index relative to .about-reveal here) */
+  background: var(--bone);    /* solid so the video underneath is fully obscured during the slide */
+  transform: translateY(100vh);
+  transform: translateY(100lvh);
+  transform: translateY(var(--cover-h, 100lvh));
+  transition: transform 700ms cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+.about-reveal.is-revealed {
+  transform: translateY(0);
+}
 /* Lock the page while the cover is up so the first scroll input fires the
    dismiss instead of moving the body underneath. */
 html.about-cover-locked,

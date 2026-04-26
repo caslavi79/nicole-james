@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260425-37" />
+<link rel="stylesheet" href="styles.css?v=20260425-38" />
 </head>
 
 <body>
@@ -118,39 +118,51 @@
     v.load();
   })();
 
+  // Reveal: page content (.about-reveal wrapper) starts translated below
+  // the viewport. First scroll/touch/key input adds .is-revealed which
+  // runs a CSS transform transition, sliding the content up over the
+  // video. After the transition we hide the .about-cover entirely so the
+  // video stops rendering.
   (function () {
     var cover = document.querySelector('.about-cover');
-    if (!cover) return;
+    var reveal = document.querySelector('.about-reveal');
+    if (!cover || !reveal) return;
     document.documentElement.classList.add('about-cover-locked');
     document.body.classList.add('about-cover-locked');
-    var dismissed = false;
+    var fired = false;
     var KEYS = ['ArrowDown','ArrowUp','PageDown','PageUp','Space','End','Home'];
-    function dismiss(e) {
-      if (dismissed) return;
-      dismissed = true;
+    function go(e) {
+      if (fired) return;
+      fired = true;
       if (e && typeof e.preventDefault === 'function') {
         try { e.preventDefault(); } catch (_) {}
       }
-      cover.classList.add('is-dismissed');
-      cover.setAttribute('aria-hidden', 'true');
+      reveal.classList.add('is-revealed');
       window.removeEventListener('wheel', onWheel, { passive: false });
       window.removeEventListener('touchmove', onTouchMove, { passive: false });
       window.removeEventListener('keydown', onKey);
       setTimeout(function () {
+        // Stop rendering the video and unlock scroll
+        cover.style.display = 'none';
+        var v = cover.querySelector('video');
+        if (v && v.pause) try { v.pause(); } catch (_) {}
         document.documentElement.classList.remove('about-cover-locked');
         document.body.classList.remove('about-cover-locked');
       }, 750);
     }
-    function onWheel(e) { dismiss(e); }
-    function onTouchMove(e) { dismiss(e); }
+    function onWheel(e) { go(e); }
+    function onTouchMove(e) { go(e); }
     function onKey(e) {
-      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') dismiss(e);
+      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') go(e);
     }
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('touchmove', onTouchMove, { passive: false });
     window.addEventListener('keydown', onKey);
   })();
 </script>
+
+<!-- ========== REVEALABLE PAGE CONTENT (slides up over the video on first scroll) ========== -->
+<div class="about-reveal">
 
 <!-- ========== PAGE HERO ========== -->
 <section class="contact-hero">
@@ -244,6 +256,8 @@
     <a href="contact.html" class="btn btn-primary">Begin a conversation &rarr;</a>
   </div>
 </section>
+
+</div><!-- /.about-reveal -->
 
 <!-- ========== FOOTER ========== -->
 <footer>
