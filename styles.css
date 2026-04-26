@@ -2498,3 +2498,22 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   opacity: 1;
   transform: translateY(0);
 }
+
+/* HOME HERO targeted animations:
+   - .hero-copy text elements slide in from the LEFT
+   - .hero-portrait rises in from the BOTTOM (bigger distance)
+   End states use `transform: none` (not translateY/X 0) so the mobile
+   sticky portrait — which JS later promotes to position:sticky — has
+   no lingering transform that would break sticky pinning. */
+.hero-copy [data-animate] {
+  transform: translateX(-40px);
+}
+.hero-copy [data-animate].in {
+  transform: none;
+}
+.hero-portrait[data-animate] {
+  transform: translateY(50px);
+}
+.hero-portrait[data-animate].in {
+  transform: none;
+}
