@@ -2368,6 +2368,17 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   object-position: center;
 }
 
+/* About page: scroll-snap so #about snaps fully under the nav on the
+   first scroll past the video hero (no slow slide-over). */
+body.page-about {
+  scroll-snap-type: y mandatory;
+}
+body.page-about .hero.hero-stuck { scroll-snap-align: start; }
+body.page-about #about {
+  scroll-snap-align: start;
+  scroll-margin-top: var(--nav-h, 113px);
+}
+
 /* Wrapper around all sections after the cover. z-index 2 puts it above
    the sticky cover (z-index 1), and the bone background ensures the
    video underneath isn't visible through it. As the user scrolls, this
