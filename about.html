@@ -122,8 +122,24 @@
 </section>
 <script>
   (function () {
+    var hero = document.querySelector('.about-hero-video');
     var v = document.querySelector('.about-hero-video-el');
-    if (!v) return;
+    if (!hero || !v) return;
+
+    // Size the hero section to the EXACT visible viewport minus the nav.
+    // window.innerHeight reaches behind the iOS URL bar pill where CSS
+    // 100lvh/100dvh stop short. Without this, the next section peeks into
+    // the pill area on first load.
+    function sizeHero() {
+      var isMobile = window.matchMedia('(max-width: 720px)').matches;
+      var navH = isMobile ? 93 : 113;
+      hero.style.height = (window.innerHeight - navH) + 'px';
+    }
+    sizeHero();
+    window.addEventListener('resize', sizeHero);
+    window.addEventListener('orientationchange', sizeHero);
+
+    // Pick the right video source for this viewport
     var isMobile = window.matchMedia('(max-width: 720px)').matches;
     var src = isMobile ? v.dataset.srcMobile : v.dataset.srcDesktop;
     var source = document.createElement('source');
