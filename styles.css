@@ -2393,13 +2393,11 @@ body.page-about #about {
   scroll-margin-top: var(--nav-h, 113px);
 }
 
-/* DEBUG: blue + black stripe at the top of #about so we can see exactly
-   where the section begins relative to the video. Remove when done. */
-body.page-about #about::before {
-  content: '';
-  display: block;
-  height: 16px;
-  background: linear-gradient(to bottom, blue 0 50%, black 50% 100%);
+/* DEBUG: full section border on #about so we can see the section's
+   exact extent. 8px black inner + 8px blue outer. Remove when done. */
+body.page-about #about {
+  border: 8px solid black;
+  outline: 8px solid blue;
 }
 
 /* Wrapper around all sections after the cover. z-index 2 puts it above
