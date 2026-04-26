@@ -555,52 +555,143 @@
   // Updates the "01–04 of 24" counter and the progress fill as the
   // user scrolls the horizontal carousel.
   const bldgCar = document.getElementById('bldgCarousel');
-  const bldgCounter = document.getElementById('bldgCarouselCounter');
-  const bldgFill = document.getElementById('bldgCarouselFill');
-  if (bldgCar && bldgCounter && bldgFill) {
-    const updatePager = () => {
-      const cards = bldgCar.querySelectorAll('.bldg-card');
-      const total = cards.length;
-      if (!total) return;
-      const cardW = cards[0].getBoundingClientRect().width;
-      const gap = parseFloat(getComputedStyle(bldgCar).columnGap) || 0;
-      const step = cardW + gap;
-      const visible = Math.max(1, Math.round(bldgCar.clientWidth / step));
-      const first = Math.min(total, Math.round(bldgCar.scrollLeft / step) + 1);
-      const last = Math.min(total, first + visible - 1);
-      const pad = (n) => String(n).padStart(2, '0');
-      bldgCounter.textContent = `${pad(first)}–${pad(last)} of ${pad(total)}`;
-      const trackW = bldgCar.scrollWidth - bldgCar.clientWidth;
-      const pct = trackW > 0 ? (bldgCar.scrollLeft / trackW) : 0;
-      const fillPct = (visible / total) * 100;
-      bldgFill.style.width = fillPct + '%';
-      bldgFill.style.left = (pct * (100 - fillPct)) + '%';
-    };
-    updatePager();
-    bldgCar.addEventListener('scroll', updatePager, { passive: true });
-    window.addEventListener('resize', updatePager, { passive: true });
+  if (bldgCar) {
+    // True endless loop: as the leftmost card scrolls fully out of view,
+    // detach it and append to the end (and bump the offset by its width
+    // so visually nothing changes). The card list is conceptually infinite.
+    bldgCar.style.overflow = 'hidden';
+    bldgCar.style.scrollSnapType = 'none';
+    bldgCar.style.display = 'flex';
+    bldgCar.style.gap = '0';
+    bldgCar.style.padding = '8px 0';
 
-    // Arrow navigation (desktop)
+    const originals = Array.from(bldgCar.querySelectorAll('.bldg-card'));
+    originals.forEach(c => {
+      c.style.flex = '0 0 clamp(200px, 26vw, 300px)';
+      c.style.scrollSnapAlign = 'none';
+    });
+    const track = document.createElement('div');
+    track.className = 'bldg-marquee-track';
+    track.style.display = 'flex';
+    track.style.gap = 'clamp(16px, 1.5vw, 24px)';
+    track.style.flex = '0 0 auto';
+    track.style.willChange = 'transform';
+    track.style.paddingLeft = 'clamp(16px, 1.5vw, 24px)';
+    originals.forEach(c => track.appendChild(c));
+    // Clone enough copies that we always have buffer to fill the viewport
+    // ahead of the visible cards — at least one full extra set, plus a bit.
+    for (let i = 0; i < 2; i++) {
+      originals.forEach(c => {
+        const clone = c.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
+      });
+    }
+    bldgCar.appendChild(track);
+
+    let offset = 0;
+    const GAP = 24; // approximate gap; recomputed below per resize
+    let gap = GAP;
+    const computeGap = () => {
+      const cs = getComputedStyle(track);
+      gap = parseFloat(cs.columnGap || cs.gap) || 24;
+    };
+    computeGap();
+    window.addEventListener('resize', computeGap, { passive: true });
+
+    const SPEED = 28; // px/sec — gentle drift, pauses on hover
+    let last = performance.now();
+    let paused = false;
+
+    const tick = (now) => {
+      const dt = Math.min(50, now - last) / 1000;
+      last = now;
+      if (!paused) {
+        offset -= SPEED * dt;
+        // While the leftmost card is fully off-screen on the left, recycle it.
+        // First card position relative to viewport = offset + 0 to offset + cardWidth.
+        // It's fully gone when offset + cardWidth + gap <= 0, i.e. offset <= -(cardWidth + gap)
+        let first = track.firstElementChild;
+        while (first) {
+          const w = first.getBoundingClientRect().width;
+          if (offset + w + gap <= 0) {
+            track.appendChild(first);
+            offset += w + gap;
+            first = track.firstElementChild;
+          } else break;
+        }
+        track.style.transform = `translate3d(${offset}px, 0, 0)`;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame((t) => { last = t; tick(t); });
+
+    bldgCar.addEventListener('mouseenter', () => { paused = true; });
+    bldgCar.addEventListener('mouseleave', () => { paused = false; });
+    let hoverActive = false;
+    bldgCar.addEventListener('pointerenter', () => { hoverActive = true; paused = true; });
+    bldgCar.addEventListener('pointerleave', () => { hoverActive = false; paused = false; });
+
+    // Arrow buttons nudge the offset by N card-widths (4 desktop / 2 mobile)
     const bldgPrev = document.getElementById('bldgArrowPrev');
     const bldgNext = document.getElementById('bldgArrowNext');
-    const scrollByPage = (dir) => {
-      const cards = bldgCar.querySelectorAll('.bldg-card');
-      if (!cards.length) return;
-      const cardW = cards[0].getBoundingClientRect().width;
-      const gap = parseFloat(getComputedStyle(bldgCar).columnGap) || 0;
-      const step = cardW + gap;
-      const visible = Math.max(1, Math.round(bldgCar.clientWidth / step));
-      bldgCar.scrollBy({ left: dir * step * visible, behavior: 'smooth' });
+    const nudge = (dir) => {
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      const stepCount = isMobile ? 2 : 4;
+      const card = track.firstElementChild;
+      if (!card) return;
+      const cardW = card.getBoundingClientRect().width + gap;
+      const totalDelta = dir * cardW * stepCount;
+
+      // Pause auto-drift during the tween so it doesn't fight us
+      paused = true;
+      // Reconcile the DOM IMMEDIATELY for the case where dir < 0 (going backward):
+      // pre-pull enough cards from the end to the front so the tween has room
+      // to reveal them on the left.
+      if (dir < 0) {
+        let need = cardW * stepCount + 50;
+        while (need > 0) {
+          const last = track.lastElementChild;
+          if (!last) break;
+          track.insertBefore(last, track.firstElementChild);
+          const w = last.getBoundingClientRect().width + gap;
+          offset -= w;
+          need -= w;
+        }
+        // Apply pre-shift instantly (no transition) so user doesn't see the jump
+        track.style.transition = 'none';
+        track.style.transform = `translate3d(${offset}px, 0, 0)`;
+        // Force reflow so the next transform is animated
+        void track.offsetWidth;
+      }
+
+      track.style.transition = 'transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1)';
+      offset -= totalDelta;
+      track.style.transform = `translate3d(${offset}px, 0, 0)`;
+
+      setTimeout(() => {
+        track.style.transition = '';
+        // For forward motion, recycle off-screen-left cards now (no visual change)
+        if (dir > 0) {
+          let first = track.firstElementChild;
+          while (first) {
+            const w = first.getBoundingClientRect().width;
+            if (offset + w + gap <= 0) {
+              track.appendChild(first);
+              offset += w + gap;
+              first = track.firstElementChild;
+            } else break;
+          }
+          track.style.transform = `translate3d(${offset}px, 0, 0)`;
+        }
+        // Resume auto-drift only if mouse isn't currently over the carousel
+        if (!hoverActive) paused = false;
+        // Resync the tick clock so dt doesn't jump
+        last = performance.now();
+      }, 720);
     };
-    const syncArrows = () => {
-      if (!bldgPrev || !bldgNext) return;
-      bldgPrev.disabled = bldgCar.scrollLeft <= 0;
-      bldgNext.disabled = bldgCar.scrollLeft >= bldgCar.scrollWidth - bldgCar.clientWidth - 1;
-    };
-    if (bldgPrev) bldgPrev.addEventListener('click', () => scrollByPage(-1));
-    if (bldgNext) bldgNext.addEventListener('click', () => scrollByPage(1));
-    bldgCar.addEventListener('scroll', syncArrows, { passive: true });
-    syncArrows();
+    if (bldgPrev) bldgPrev.addEventListener('click', () => nudge(-1));
+    if (bldgNext) bldgNext.addEventListener('click', () => nudge(1));
   }
 
 })();

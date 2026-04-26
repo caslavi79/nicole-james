@@ -2913,8 +2913,10 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
    SERVICES page · HERO building carousel — polished
    ============================================================ */
 .bldg-carousel-section {
-  padding: clamp(40px, 5vw, 72px) 0 clamp(56px, 6vw, 88px);
+  padding: clamp(20px, 2.5vw, 36px) 0 clamp(20px, 2vw, 32px);
 }
+/* Kill the auto sibling-border between carousel and the next svc-page */
+.bldg-carousel-section + .svc-page { border-top: 0 !important; padding-top: clamp(20px, 2vw, 32px) !important; }
 .bldg-carousel-topbar {
   display: flex;
   justify-content: space-between;
@@ -3003,22 +3005,26 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
-  font-family: var(--font-serif);
+  gap: 6px;
+  font-family: var(--font-sans);
   padding: 0 2px;
 }
-.bldg-card-meta strong {
-  font-weight: 500;
-  font-size: clamp(15px, 1.3vw, 18px);
-  color: var(--ink);
-  letter-spacing: -0.01em;
-  transition: color 0.2s ease;
-}
 .bldg-card-meta span {
-  font-size: clamp(12px, 1vw, 14px);
+  font-size: 9.5px;
   color: var(--smoke);
-  font-style: italic;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+.bldg-card-meta strong {
+  font-weight: 400;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.25;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  transition: color 0.2s ease;
+  font-family: var(--font-serif);
 }
 .bldg-carousel-pager {
   display: flex;
@@ -3077,6 +3083,33 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .bldg-carousel-arrow:disabled {
   opacity: 0.25;
   pointer-events: none;
+}
+
+/* Floating arrow buttons — sit on top of the carousel viewport,
+   vertically centered on the cards' image area. */
+.bldg-carousel-arrow--floating {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bone);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 18px rgba(0,0,0,0.06);
+  font-size: 15px;
+  /* Nudge above center so they sit on the image, not the meta line */
+  margin-top: calc(-1 * (clamp(12px, 1vw, 14px) + 14px) / 2);
+}
+.bldg-carousel-arrow--floating.bldg-carousel-arrow--prev { left: clamp(8px, 2vw, 24px); }
+.bldg-carousel-arrow--floating.bldg-carousel-arrow--next { right: clamp(8px, 2vw, 24px); }
+@media (hover: hover) {
+  .bldg-carousel-arrow--floating:hover {
+    background: var(--ink);
+    color: var(--bone);
+    border-color: var(--ink);
+  }
 }
 
 /* ============================================================
