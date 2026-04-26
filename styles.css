@@ -38,11 +38,12 @@
 *, *::before, *::after { box-sizing: border-box; }
 html {
   -webkit-text-size-adjust: 100%;
-  /* iOS Safari with viewport-fit=cover: anything not painted by an
-     element shows through to <html>'s background. Without this the
-     URL-bar pill area shows the browser default (white), reading as a
-     "bone-on-white margin" near the bottom of every page. */
-  background: var(--ink);
+  /* Match the body background so the area behind the iOS Safari URL-bar
+     pill bleeds the page bone, not a stray system color. min-height
+     keeps short pages (privacy, fair-housing) from leaving a strip
+     where the body ends before the viewport bottom. */
+  background: var(--bone);
+  min-height: 100%;
 }
 body {
   margin: 0;
