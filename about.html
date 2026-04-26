@@ -2,13 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<!-- iOS Safari URL bar tint. Bone matches the page palette so the bar
-     overlays translucently in bone (same look the home page gets via
-     pixel sampling). Without this, iOS samples nearby pixels and any
-     dark area near the bar (e.g. the cover's video, or its background)
-     dyes the bar dark — appearing as a black band. -->
-<meta name="theme-color" content="#F4EFE7" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>About Nicole James · Downtown Austin Condo Specialist</title>
 <meta name="description" content="Nineteen years representing downtown Austin condo buyers and sellers. Christie's International Real Estate Luxury Specialist. Building-level knowledge of every major downtown tower." />
@@ -26,7 +20,7 @@
 <link rel="stylesheet" href="styles.css?v=20260425-33" />
 </head>
 
-<body class="page-about">
+<body>
 
 <nav class="nav" id="nav">
   <div class="shell nav-inner">
@@ -77,86 +71,6 @@
     </div>
   </div>
 </div>
-
-<!-- ========== FULL-SCREEN VIDEO COVER ========== -->
-<section class="about-cover" aria-label="Nicole James — Christie's International Real Estate">
-  <video
-    class="about-cover-video"
-    autoplay muted loop playsinline preload="auto"
-    poster="assets/hero-poster.jpg"
-    data-src-desktop="assets/background.mp4"
-    data-src-mobile="assets/background-mobile.mp4"
-  ></video>
-  <div class="about-cover-overlay">
-    <img class="about-cover-logo" src="assets/cire-atproperties.png" alt="Christie's International Real Estate · @properties Lone Star" />
-  </div>
-</section>
-<script>
-  // Pick the right video file based on viewport — only one downloads.
-  // If the mobile file 404s (e.g. before it's been exported), fall back
-  // to the desktop file so the cover still plays.
-  (function () {
-    var v = document.querySelector('.about-cover-video');
-    if (!v) return;
-    var isMobile = window.matchMedia('(max-width: 720px)').matches;
-    var primary = isMobile ? v.dataset.srcMobile : v.dataset.srcDesktop;
-    var fallback = v.dataset.srcDesktop;
-    var source = document.createElement('source');
-    source.src = primary;
-    source.type = 'video/mp4';
-    source.addEventListener('error', function () {
-      if (source.src.indexOf(fallback) === -1 && primary !== fallback) {
-        source.src = fallback;
-        v.load();
-      }
-    }, { once: true });
-    v.appendChild(source);
-    v.load();
-  })();
-
-  // Cover dismiss: cover is a fixed overlay sitting on top of the page
-  // content. First wheel/touch/scroll-key input adds .is-dismissed which
-  // triggers the CSS transition (transform: translateY(-100%)) — the
-  // cover slides up out of the top of the screen, revealing the content
-  // (page hero, bio, etc.) that was already positioned behind it in
-  // normal flow. While the cover is up, html/body are scroll-locked so
-  // the input triggers the dismiss instead of moving the page.
-  (function () {
-    var cover = document.querySelector('.about-cover');
-    if (!cover) return;
-    document.documentElement.classList.add('about-cover-locked');
-    document.body.classList.add('about-cover-locked');
-    var dismissed = false;
-    var KEYS = ['ArrowDown','ArrowUp','PageDown','PageUp','Space','End','Home'];
-
-    function dismiss(e) {
-      if (dismissed) return;
-      dismissed = true;
-      if (e && typeof e.preventDefault === 'function') {
-        try { e.preventDefault(); } catch (_) {}
-      }
-      requestAnimationFrame(function () {
-        cover.classList.add('is-dismissed');
-      });
-      cover.setAttribute('aria-hidden', 'true');
-      window.removeEventListener('wheel', onWheel, { passive: false });
-      window.removeEventListener('touchmove', onTouchMove, { passive: false });
-      window.removeEventListener('keydown', onKey);
-      setTimeout(function () {
-        document.documentElement.classList.remove('about-cover-locked');
-        document.body.classList.remove('about-cover-locked');
-      }, 750);
-    }
-    function onWheel(e) { dismiss(e); }
-    function onTouchMove(e) { dismiss(e); }
-    function onKey(e) {
-      if (KEYS.indexOf(e.code) !== -1 || e.key === ' ') dismiss(e);
-    }
-    window.addEventListener('wheel', onWheel, { passive: false });
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
-    window.addEventListener('keydown', onKey);
-  })();
-</script>
 
 <!-- ========== PAGE HERO ========== -->
 <section class="contact-hero">
