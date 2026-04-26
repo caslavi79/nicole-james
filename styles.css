@@ -2518,7 +2518,14 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .hero-copy .hero-eyebrow[data-animate] { transition-delay: 0ms; }
 .hero-copy h1[data-animate]            { transition-delay: 120ms; }
 .hero-copy .lede[data-animate]         { transition-delay: 240ms; }
-.hero-copy .hero-ctas[data-animate]    { transition-delay: 360ms; }
+/* CTAs need a longer, gentler opacity curve — the dark "Begin a
+   conversation" button against the bone background reads as a sudden
+   "pop" with the standard ease-out. Slower duration + ease-in-out
+   ramps brightness in evenly so it doesn't jolt. */
+.hero-copy .hero-ctas[data-animate] {
+  transition: opacity 1400ms ease-in-out, transform 900ms var(--ease-out);
+  transition-delay: 360ms;
+}
 
 .hero-portrait[data-animate] {
   transform: translateY(120px);
