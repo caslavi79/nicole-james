@@ -2372,6 +2372,16 @@ body.about-cover-locked {
   overflow: hidden;
   overscroll-behavior: none;
 }
+/* While cover is up, kill nav's bone background so the video underneath
+   shows through the nav area. Applies on every viewport size — overrides
+   both the desktop translucent rule and the mobile opaque rule. */
+body.about-cover-locked .nav,
+body.about-cover-locked .nav.scrolled {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom-color: transparent !important;
+}
 .about-cover-video {
   position: absolute;
   inset: 0;
