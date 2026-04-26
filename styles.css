@@ -2327,36 +2327,13 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   font-size: 17px;
 }
 
-/* -- ABOUT PAGE: full-screen video cover --
-   In-flow hero (Apple iPhone-Air pattern). The cover is a normal block at
-   the top of the page, pulled up under the nav with a negative top margin
-   equal to --nav-h. Page content (page hero, bio, etc.) lives directly
-   beneath in normal flow. On first scroll input a tiny smooth-scroll-past
-   in JS slides the cover up off the top of the viewport, revealing the
-   content underneath. No position:fixed, no transform dismiss, no body
-   lock — the layout uses regular document scroll, which avoids every
-   iOS Safari URL-bar / visual-viewport / body-lock race we hit before. */
-/* Nav height — the about-cover anchors visually here so the video starts
-   right at the bottom edge of the nav, fills down to the viewport bottom. */
+/* -- ABOUT PAGE: video hero --
+   The about page's hero is a full-bleed video section (.about-hero-video)
+   that fills the viewport below the nav. On mobile it sticks under the
+   nav while the next section (#about) snaps up over it. */
 :root { --nav-h: 113px; }
 @media (max-width: 720px) { :root { --nav-h: 93px; } }
 
-.about-cover {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100lvh;
-  overflow: hidden;
-  background: var(--ink);
-  margin: 0;
-  padding: 0;
-}
-
-/* About page hero: video fills the .hero.hero-stuck section. Sized to
-   exactly the visible viewport below the nav so the sticky element fits
-   in the viewport (avoids the iOS WebKit "sticky taller than viewport"
-   bug — see the @media (max-width: 820px) hero-stuck rule above). */
 .about-hero-video {
   padding: 0;
   overflow: hidden;
@@ -2391,95 +2368,6 @@ body.page-about .hero.hero-stuck { scroll-snap-align: start; }
 body.page-about #about {
   scroll-snap-align: start;
   scroll-margin-top: var(--nav-h, 113px);
-}
-
-/* DEBUG: full section border on #about so we can see the section's
-   exact extent. 8px black inner + 8px blue outer. Remove when done. */
-body.page-about #about {
-  border: 8px solid black;
-  outline: 8px solid blue;
-}
-
-/* Wrapper around all sections after the cover. z-index 2 puts it above
-   the sticky cover (z-index 1), and the bone background ensures the
-   video underneath isn't visible through it. As the user scrolls, this
-   wrapper rises and paints over the pinned cover. */
-.about-content {
-  position: relative;
-  z-index: 2;
-  background: var(--bone);
-}
-/* Lock the page while the cover is up so the first scroll input fires the
-   dismiss instead of moving the body underneath. */
-html.about-cover-locked,
-body.about-cover-locked {
-  overflow: hidden;
-  overscroll-behavior: none;
-}
-/* While cover is up, kill nav's bone background so the video underneath
-   shows through the nav area. Applies on every viewport size — overrides
-   both the desktop translucent rule and the mobile opaque rule. */
-body.about-cover-locked .nav,
-body.about-cover-locked .nav.scrolled {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border-bottom-color: transparent !important;
-}
-.about-cover-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top; /* anchor video top to cover top so the sky stays visible */
-  z-index: 0;
-}
-.about-cover-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  /* Place the logo in the upper third of the cover. svh keeps the math
-     stable on iOS Safari (excludes URL bar). Lower bound clears the nav
-     comfortably on shorter desktop windows; cap keeps it from drifting
-     too far down on tall monitors. */
-  padding-top: clamp(96px, 15svh, 168px);
-  padding-left: var(--shell-pad);
-  padding-right: var(--shell-pad);
-  z-index: 1;
-  pointer-events: none;
-}
-.about-cover-logo {
-  width: clamp(220px, 30vw, 380px);
-  height: auto;
-  filter: brightness(0) invert(1);
-  opacity: 0.95;
-}
-@media (max-width: 720px) {
-  /* Mobile portrait: the video crop has sky in the upper field, city
-     in the lower field. Push the logo down to ~24svh so it sits in the
-     visual top third (not jammed against the nav, not floating over the
-     skyline) and shrink it slightly so it reads as a frame, not a
-     billboard. */
-  .about-cover-overlay {
-    padding-top: clamp(140px, 24svh, 220px);
-  }
-  .about-cover-logo {
-    width: min(56vw, 260px);
-  }
-}
-@media (max-width: 480px) {
-  /* Smallest phones: tighten width so the logo doesn't dominate the
-     narrow screen, and hold the placement at ~22svh which keeps the
-     center of the logo near the 28% line. */
-  .about-cover-overlay {
-    padding-top: clamp(128px, 22svh, 200px);
-  }
-  .about-cover-logo {
-    width: min(60vw, 220px);
-  }
 }
 
 /* -- ABOUT PAGE -- */
