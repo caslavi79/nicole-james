@@ -17,6 +17,23 @@
     onScroll();
   }
 
+  // -- DEFER STICKY ACTIVATION (iOS Safari URL-bar fix)
+  // In-body `position: sticky` elements at first paint cause iOS Safari
+  // to keep the bottom URL bar in expanded opaque tab-bar mode instead
+  // of the floating translucent pill. The CSS uses
+  // `position: var(--portrait-pos|--hero-pos, static)` for the home
+  // portrait + about hero so they're static at first paint. On the very
+  // first scroll input we flip them to `sticky` — which is also the
+  // moment the pin would visually engage anyway, so the behavior is
+  // indistinguishable from native sticky.
+  const activateSticky = () => {
+    const root = document.documentElement.style;
+    root.setProperty('--portrait-pos', 'sticky');
+    root.setProperty('--hero-pos', 'sticky');
+  };
+  window.addEventListener('scroll', activateSticky, { passive: true, once: true });
+  window.addEventListener('touchmove', activateSticky, { passive: true, once: true });
+
   // -- MOBILE PORTRAIT RELOCATE
   // On mobile, reparent the hero portrait out of .hero-grid and into
   // .sticky-stage directly, so the portrait's containing block is the

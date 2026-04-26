@@ -670,12 +670,17 @@ section .shell { position: relative; z-index: 1; }
   /* Portrait pins below the sticky nav; the hero itself is static here
      (see above) so the text reads, scrolls up, and the portrait arrives
      + pins at the nav before about slides over. Positive-top sticky on
-     an element that fits in viewport — the code path iOS handles well. */
+     an element that fits in viewport — the code path iOS handles well.
+     Position is gated by --portrait-pos (set to `sticky` by JS on first
+     scroll). At first paint it's `static` so iOS Safari collapses the
+     URL bar into the floating pill instead of holding it expanded
+     because of an in-body sticky element. The pin behavior is identical
+     once the user scrolls, which is also when it would visually engage. */
   .hero-portrait {
     max-width: 400px;
     margin: 0 auto;
     width: 100%;
-    position: sticky;
+    position: var(--portrait-pos, static);
     top: 92px;
     z-index: 1;
   }
@@ -2361,10 +2366,14 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 /* About page: override the mobile sticky-disable from .hero-stuck. The
    video section is exactly viewport-sized, so the iOS sticky bug doesn't
-   apply, and we want the video to pin while #about slides up over it. */
+   apply, and we want the video to pin while #about slides up over it.
+   Position is gated by --hero-pos (set to `sticky` by JS on first
+   scroll). At first paint it's `static` so iOS Safari collapses the
+   URL bar into the floating pill instead of holding it expanded because
+   of an in-body sticky element. */
 @media (max-width: 820px) {
   body.page-about .hero.hero-stuck {
-    position: sticky;
+    position: var(--hero-pos, static);
     top: var(--nav-h);
     z-index: 1;
   }
