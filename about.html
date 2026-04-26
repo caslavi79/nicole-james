@@ -121,7 +121,7 @@
     data-src-desktop="assets/background.mp4"
     data-src-mobile="assets/background-mobile.mp4"
   ></video>
-  <img class="about-hero-overlay" src="assets/hero-overlay.gif" alt="" aria-hidden="true" />
+  <img class="about-hero-overlay" data-src="assets/hero-overlay.gif" alt="" aria-hidden="true" />
 </section>
 <script>
   (function () {
@@ -155,6 +155,23 @@
     source.type = 'video/mp4';
     v.appendChild(source);
     v.load();
+
+    // Defer loading the overlay GIF until the video actually starts
+    // playing. Setting img.src kicks off the GIF animation immediately,
+    // so we wait for `playing` (or `loadeddata` as a fallback) before
+    // assigning src and revealing it.
+    var overlay = document.querySelector('.about-hero-overlay');
+    if (overlay && overlay.dataset.src) {
+      var revealOverlay = function () {
+        if (overlay.src) return;
+        overlay.src = overlay.dataset.src;
+        overlay.addEventListener('load', function () {
+          overlay.classList.add('is-ready');
+        }, { once: true });
+      };
+      v.addEventListener('playing', revealOverlay, { once: true });
+      v.addEventListener('loadeddata', revealOverlay, { once: true });
+    }
   })();
 </script>
 

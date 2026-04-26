@@ -2368,16 +2368,30 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   object-position: center;
 }
 /* Animated overlay (e.g. signature/logo GIF) over the video.
-   40% down the section, centered horizontally. */
+   Centered horizontally; vertical anchor and width tuned per breakpoint.
+   Hidden until JS reveals it after the video begins playing, so the
+   GIF animation doesn't start (and finish silently) before the video
+   has even rendered. */
 .about-hero-overlay {
   position: absolute;
-  top: 40%;
   left: 50%;
+  top: 30%;
   transform: translate(-50%, -50%);
-  width: clamp(220px, 40vw, 460px);
+  width: min(60vw, 720px);
   height: auto;
   pointer-events: none;
   z-index: 2;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+}
+.about-hero-overlay.is-ready {
+  opacity: 1;
+}
+@media (max-width: 720px) {
+  .about-hero-overlay {
+    top: 40%;
+    width: min(75vw, 520px);
+  }
 }
 /* About page: override the mobile sticky-disable from .hero-stuck. The
    video section is exactly viewport-sized, so the iOS sticky bug doesn't
