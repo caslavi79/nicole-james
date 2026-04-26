@@ -3380,7 +3380,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
     gap: 4px;
     margin-bottom: 16px;
   }
-  .bldg-carousel { grid-auto-columns: 70vw; }
+  .bldg-carousel { grid-auto-columns: 78vw; }
   .bldg-carousel-arrow { display: none; }
   .bldg-carousel-track { width: clamp(80px, 28vw, 140px); }
   .bldg-carousel-counter { font-size: 10px; }
