@@ -2345,17 +2345,17 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   /* Fixed overlay that covers the ENTIRE screen — top to physical bottom,
      bleeding behind both the nav and the Safari URL-bar pill.
 
-     We extend the element well past the visible bottom (100lvh + 200px
-     cushion) so it definitively reaches behind the URL bar in every
-     state. overflow:hidden on the parent clips the excess; the video
-     inside (object-fit:cover) just fills the larger frame. */
+     iOS Safari "fixed" positioning anchors to the LAYOUT viewport, which
+     ends at the top of the URL bar. To bleed behind the URL bar we set
+     `bottom: -200px` — this pushes the element's bottom edge 200px past
+     the layout viewport, which on iOS extends behind the URL bar pill
+     and on every other browser is just clipped by overflow:hidden. */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  bottom: -200px;
   width: 100vw;
-  height: calc(100vh + 200px);                  /* legacy fallback */
-  height: calc(100lvh + 200px);                 /* large viewport + generous cushion to bleed behind URL bar */
   overflow: hidden;
   background: transparent;
   margin: 0;
@@ -2377,16 +2377,9 @@ body.about-cover-locked {
   overflow: hidden;
   overscroll-behavior: none;
 }
-/* While cover is up, kill nav's bone background so the video underneath
-   shows through the nav area. Applies on every viewport size — overrides
-   both the desktop translucent rule and the mobile opaque rule. */
-body.about-cover-locked .nav,
-body.about-cover-locked .nav.scrolled {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border-bottom-color: transparent !important;
-}
+/* Nav stays its normal opaque background even while the cover is up —
+   the video bleeds behind/under the white header by design (cover is
+   top:0, nav sits on top of it on z-index). */
 .about-cover-video {
   position: absolute;
   inset: 0;
