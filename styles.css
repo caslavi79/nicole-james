@@ -2393,6 +2393,15 @@ body.page-about #about {
   scroll-margin-top: var(--nav-h, 113px);
 }
 
+/* DEBUG: blue + black stripe at the top of #about so we can see exactly
+   where the section begins relative to the video. Remove when done. */
+body.page-about #about::before {
+  content: '';
+  display: block;
+  height: 16px;
+  background: linear-gradient(to bottom, blue 0 50%, black 50% 100%);
+}
+
 /* Wrapper around all sections after the cover. z-index 2 puts it above
    the sticky cover (z-index 1), and the bone background ensures the
    video underneath isn't visible through it. As the user scrolls, this
