@@ -2153,6 +2153,69 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   border-bottom-color: var(--terra-deep);
 }
 
+/* -- HOME: FEATURED BUILDINGS GRID --
+   3-column grid of building cards. Mirrors the svc-mini pattern but
+   each card has an image area on top and meta below. */
+.bldg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.5vw, 32px);
+}
+.bldg-item {
+  display: flex;
+  flex-direction: column;
+  background: var(--bone);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.bldg-item:hover { transform: translateY(-4px); }
+.bldg-img {
+  aspect-ratio: 4 / 5;
+  background: var(--bone-2);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 20px;
+}
+.bldg-img-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--smoke);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.bldg-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 4px;
+}
+.bldg-meta .title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(22px, 2.2vw, 28px);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.bldg-meta .teaser {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 32ch;
+}
+@media (max-width: 820px) {
+  .bldg-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(28px, 5vw, 40px);
+  }
+  .bldg-img { aspect-ratio: 5 / 4; }
+}
+
 /* -- HOME: CONDENSED SERVICES PREVIEW -- */
 .svc-mini {
   display: grid;
