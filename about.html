@@ -158,8 +158,9 @@
 
     // Defer loading the overlay GIF until the video actually starts
     // playing. Setting img.src kicks off the GIF animation immediately,
-    // so we wait for `playing` (or `loadeddata` as a fallback) before
-    // assigning src and revealing it.
+    // so we wait for the video before assigning src and revealing it.
+    // Multiple triggers + a 2s timeout fallback so the overlay always
+    // shows (mobile autoplay can be flaky and `playing` may not fire).
     var overlay = document.querySelector('.about-hero-overlay');
     if (overlay && overlay.dataset.src) {
       var revealOverlay = function () {
@@ -168,9 +169,13 @@
         overlay.addEventListener('load', function () {
           overlay.classList.add('is-ready');
         }, { once: true });
+        // If the GIF was already cached, `load` may not fire — reveal anyway.
+        if (overlay.complete) overlay.classList.add('is-ready');
       };
       v.addEventListener('playing', revealOverlay, { once: true });
       v.addEventListener('loadeddata', revealOverlay, { once: true });
+      v.addEventListener('canplay', revealOverlay, { once: true });
+      setTimeout(revealOverlay, 2000);
     }
   })();
 </script>
