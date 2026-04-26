@@ -17,22 +17,29 @@
     onScroll();
   }
 
-  // -- DEFER STICKY ACTIVATION (iOS Safari URL-bar fix)
-  // In-body `position: sticky` elements at first paint cause iOS Safari
-  // to keep the bottom URL bar in expanded opaque tab-bar mode instead
-  // of the floating translucent pill. The CSS uses
+  // -- STICKY GATING (iOS Safari URL-bar fix)
+  // In-body `position: sticky` elements cause iOS Safari to hold the URL
+  // bar in expanded opaque mode. The CSS uses
   // `position: var(--portrait-pos|--hero-pos, static)` for the home
-  // portrait + about hero so they're static at first paint. On the very
-  // first scroll input we flip them to `sticky` — which is also the
-  // moment the pin would visually engage anyway, so the behavior is
-  // indistinguishable from native sticky.
-  const activateSticky = () => {
-    const root = document.documentElement.style;
-    root.setProperty('--portrait-pos', 'sticky');
-    root.setProperty('--hero-pos', 'sticky');
+  // portrait + about hero. We flip them to `sticky` whenever the user
+  // is scrolled (scrollY > 0), and back to `static` whenever they're
+  // at the very top — so at every "rest" position (top of page, menu
+  // closed, etc.) iOS sees no in-body sticky elements and renders the
+  // minimal floating URL pill. The transition fires at scrollY=0 which
+  // is also the natural state where the sticky pin wouldn't be engaged
+  // anyway, so visual behavior is identical.
+  const root = document.documentElement.style;
+  let stickyOn = false;
+  const updateStickyState = () => {
+    const shouldBeOn = window.scrollY > 0;
+    if (shouldBeOn === stickyOn) return;
+    stickyOn = shouldBeOn;
+    const v = shouldBeOn ? 'sticky' : 'static';
+    root.setProperty('--portrait-pos', v);
+    root.setProperty('--hero-pos', v);
   };
-  window.addEventListener('scroll', activateSticky, { passive: true, once: true });
-  window.addEventListener('touchmove', activateSticky, { passive: true, once: true });
+  window.addEventListener('scroll', updateStickyState, { passive: true });
+  updateStickyState();
 
   // -- MOBILE PORTRAIT RELOCATE
   // On mobile, reparent the hero portrait out of .hero-grid and into
@@ -373,12 +380,37 @@
       }
     })();
 
+    // iOS Safari URL-bar workaround: the previous lock used
+    // `body { overflow: hidden }` which iOS reads as "page no longer
+    // scrollable" and pops the URL bar into expanded opaque mode (the
+    // bone strip behind the URL pill that lagged behind the menu
+    // animation). Switching to a position:fixed body lock with restored
+    // scroll position keeps iOS thinking the page is still scrollable.
+    let savedScrollY = 0;
+    const lockBody = () => {
+      savedScrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${savedScrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    };
+    const unlockBody = () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, savedScrollY);
+    };
+
     const openMenu = () => {
       navOverlay.hidden = false;
       // force reflow so the transition plays from the hidden state
       void navOverlay.offsetWidth;
       navOverlay.classList.add('open');
       document.body.classList.add('nav-open');
+      lockBody();
       navToggle.setAttribute('aria-expanded', 'true');
       navToggle.setAttribute('aria-label', 'Close menu');
       // move focus into the overlay for a11y
@@ -388,6 +420,7 @@
     const closeMenu = () => {
       navOverlay.classList.remove('open');
       document.body.classList.remove('nav-open');
+      unlockBody();
       navToggle.setAttribute('aria-expanded', 'false');
       navToggle.setAttribute('aria-label', 'Open menu');
       // wait for transition before hiding from a11y tree

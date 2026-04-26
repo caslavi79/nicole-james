@@ -499,7 +499,9 @@ body.chooser-open { overflow: hidden; }
 .nav-overlay-inquire:active { background: var(--ink-2); color: var(--bone); }
 
 /* Body scroll lock when overlay is open */
-body.nav-open { overflow: hidden; }
+/* nav-open scroll lock is now applied via position:fixed in JS
+   (lockBody/unlockBody) — body { overflow: hidden } made iOS Safari
+   pop the URL bar into expanded mode while the menu was opening. */
 
 @media (max-width: 720px) {
   .nav-links { gap: 20px; }
