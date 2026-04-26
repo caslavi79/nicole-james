@@ -36,7 +36,14 @@
 
 /* -- RESET -- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* iOS Safari with viewport-fit=cover: anything not painted by an
+     element shows through to <html>'s background. Without this the
+     URL-bar pill area shows the browser default (white), reading as a
+     "bone-on-white margin" near the bottom of every page. */
+  background: var(--ink);
+}
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -1622,7 +1629,10 @@ section .shell { position: relative; z-index: 1; }
 footer {
   background: var(--ink);
   color: var(--limestone);
-  padding: 80px 0 32px;
+  /* Bottom padding extends into the iOS Safari safe area so the dark
+     footer reaches behind the URL-bar pill at the bottom of every page
+     (no bone strip between footer and URL bar). */
+  padding: 80px 0 calc(32px + env(safe-area-inset-bottom));
   margin-top: 0;
 }
 .f-grid {
@@ -1689,7 +1699,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   .f-brand { grid-column: 1 / -1; }
 }
 @media (max-width: 540px) {
-  footer { padding: 56px 0 24px; }
+  footer { padding: 56px 0 calc(24px + env(safe-area-inset-bottom)); }
   .f-grid { grid-template-columns: 1fr; gap: 32px; }
   .f-brand .mark { font-size: 24px; }
   .f-brand .pair { margin-top: 20px; padding-top: 20px; font-size: 12px; }
