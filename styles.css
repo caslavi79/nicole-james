@@ -2342,20 +2342,35 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 720px) { :root { --nav-h: 93px; } }
 
 .about-cover {
-  /* In-flow block. Negative top margin pulls the cover up so its top edge
-     starts at the very top of the document (under the translucent sticky
-     nav). Height = 100lvh + the iOS home-indicator safe area, so the
-     video bleeds all the way to the literal screen bottom — no bone
-     strip showing below the URL bar pill on iPhones with home indicators. */
-  position: relative;
-  display: flow-root;            /* contains the negative margin */
-  margin-top: calc(-1 * var(--nav-h));
+  /* Fixed overlay. inset:0 + viewport-fit=cover stretches the cover edge-
+     to-edge of the visual viewport — including behind the iOS URL bar pill
+     and home-indicator safe area, so no bone strip anywhere. Page content
+     (hero, bio, etc.) lives in normal flow underneath; the slide-up dismiss
+     transforms the cover off the top of the screen, revealing it. The nav
+     (z-index 50) stays visible above the cover (z-index 40). */
+  position: fixed;
+  inset: 0;
   width: 100%;
-  height: calc(100lvh + env(safe-area-inset-bottom, 0px));
-  min-height: calc(100vh + env(safe-area-inset-bottom, 0px));
   overflow: hidden;
   background: transparent;
+  margin: 0;
   padding: 0;
+  z-index: 40;
+  transform: translateY(0);
+  transition: transform 700ms cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+}
+.about-cover.is-dismissed {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+/* Lock the page while the cover is up so the first scroll input fires the
+   dismiss instead of moving the body underneath. */
+html.about-cover-locked,
+body.about-cover-locked {
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 .about-cover-video {
   position: absolute;
