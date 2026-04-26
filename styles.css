@@ -2370,16 +2370,10 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   }
 }
 
-/* About page: scroll-snap so #about snaps fully under the nav on the
-   first scroll past the video hero (no slow slide-over). */
-body.page-about {
-  scroll-snap-type: y mandatory;
-}
-body.page-about .hero.hero-stuck { scroll-snap-align: start; }
-body.page-about #about {
-  scroll-snap-align: start;
-  scroll-margin-top: var(--nav-h, 113px);
-}
+/* No scroll-snap on body — mandatory scroll-snap on body is a known
+   iOS Safari trigger that keeps the URL bar in expanded mode (an opaque
+   tab bar covers the bottom of the viewport). The about page reads
+   fine without it. */
 
 /* -- ABOUT PAGE -- */
 .about-page {
