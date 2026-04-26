@@ -598,6 +598,13 @@ section .shell { position: relative; z-index: 1; }
   top: 113px; /* matches desktop nav height (76px logo + 36px padding + 1px border) */
   z-index: 1;
   background: var(--bone);
+  /* Force a new stacking context + GPU layer so the sticky hero and
+     #about (z-index 2) repaint reliably during the slide-up transition.
+     Without this, browsers occasionally paint #about's text on top of
+     the hero without repainting its bone background, so the hero text
+     bleeds through (intermittent — depends on scroll timing and GPU). */
+  isolation: isolate;
+  will-change: transform;
 }
 /* On mobile, don't sticky the full hero — it's taller than the viewport,
    which forces a negative `top` and hits a documented iOS WebKit bug
@@ -617,6 +624,11 @@ section .shell { position: relative; z-index: 1; }
   position: relative;
   z-index: 2;
   background: var(--bone);
+  /* See .hero.hero-stuck note above — both siblings need their own
+     compositing layers so the bone background paints over the sticky
+     hero reliably as #about scrolls up. */
+  isolation: isolate;
+  will-change: transform;
 }
 .hero-grid {
   display: grid;
