@@ -126,18 +126,22 @@
     var v = document.querySelector('.about-hero-video-el');
     if (!hero || !v) return;
 
-    // Size the hero section to the EXACT visible viewport minus the nav.
-    // window.innerHeight reaches behind the iOS URL bar pill where CSS
-    // 100lvh/100dvh stop short. Without this, the next section peeks into
-    // the pill area on first load.
+    // Size the hero section to the EXACT visible viewport minus the
+    // actual rendered nav height. Hardcoded values can be off by a few
+    // px depending on font loading / device, which leaves a strip of the
+    // next section visible at the bottom of the viewport on first load.
+    var nav = document.querySelector('.nav');
     function sizeHero() {
-      var isMobile = window.matchMedia('(max-width: 720px)').matches;
-      var navH = isMobile ? 93 : 113;
+      var navH = nav ? nav.offsetHeight : 93;
       hero.style.height = (window.innerHeight - navH) + 'px';
     }
     sizeHero();
     window.addEventListener('resize', sizeHero);
     window.addEventListener('orientationchange', sizeHero);
+    // Re-measure once fonts have loaded (nav height can shift slightly).
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(sizeHero);
+    }
 
     // Pick the right video source for this viewport
     var isMobile = window.matchMedia('(max-width: 720px)').matches;
