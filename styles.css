@@ -1078,6 +1078,12 @@ section .shell { position: relative; z-index: 1; }
   z-index: 1;
   background: var(--bone);
 }
+/* Pull the testimonials section in tighter than the rest of the page —
+   narrower hairlines, arrow buttons closer to center, quote lands more
+   centered on the page. Mobile keeps the full shell. */
+.testimonials-section > .shell {
+  max-width: 960px;
+}
 
 .blog-section {
   position: relative;
