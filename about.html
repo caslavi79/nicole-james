@@ -126,33 +126,23 @@
     var v = document.querySelector('.about-hero-video-el');
     if (!hero || !v) return;
 
-    // Size the hero section to the EXACT visible viewport minus the
-    // actual rendered nav height. Hardcoded values can be off by a few
-    // px depending on font loading / device, which leaves a strip of the
-    // next section visible at the bottom of the viewport on first load.
+    // Size the hero with calc(100lvh - <nav>). 100lvh is the *largest*
+    // viewport height (URL-bar collapsed) — using it means the hero is
+    // always sized for the full screen, so on first load (URL bar
+    // showing) the hero overflows past the URL-bar pill, and the video
+    // visibly fills behind it. Measuring nav.offsetHeight is more
+    // accurate than the hardcoded --nav-h.
     var nav = document.querySelector('.nav');
     function sizeHero() {
       var navH = nav ? nav.offsetHeight : 93;
-      // iOS Safari reports window.innerHeight as the layout viewport
-      // (stops at the URL-bar pill top), not the full visible area. Add
-      // a buffer on mobile so the hero overflows past that boundary;
-      // overflow:hidden on the section clips the excess.
-      var isMobile = window.matchMedia('(max-width: 720px)').matches;
-      var buffer = isMobile ? 120 : 0;
-      hero.style.height = (window.innerHeight - navH + buffer) + 'px';
+      hero.style.height = 'calc(100lvh - ' + navH + 'px)';
     }
     sizeHero();
-    // Don't listen to `resize`: iOS Safari fires it on every URL-bar
-    // transition (every scroll up, sometimes), and re-running sizeHero
-    // resizes the section mid-scroll = visible stutter/jump. Only react
-    // to orientation flips (real layout changes).
     window.addEventListener('orientationchange', sizeHero);
-    // Re-measure once fonts have loaded (nav height can shift slightly).
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(sizeHero);
     }
 
-    // Pick the right video source for this viewport
     var isMobile = window.matchMedia('(max-width: 720px)').matches;
     var src = isMobile ? v.dataset.srcMobile : v.dataset.srcDesktop;
     var source = document.createElement('source');
