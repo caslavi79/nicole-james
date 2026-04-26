@@ -164,11 +164,13 @@
     v.appendChild(source);
     v.load();
 
-    // Defer loading the overlay GIF until the video actually starts
-    // playing. Setting img.src kicks off the GIF animation immediately,
-    // so we wait for the video before assigning src and revealing it.
-    // Multiple triggers + a 2s timeout fallback so the overlay always
-    // shows (mobile autoplay can be flaky and `playing` may not fire).
+    // Reveal the overlay GIF as soon as the poster image is decoded,
+    // not the video. Setting img.src kicks off a GIF's animation
+    // immediately, so we want it to start the same moment the still
+    // frame appears in the hero. Preload the poster via `new Image()`
+    // to detect when it's ready (the <video>'s own poster has no
+    // dedicated load event). 2s timeout fallback in case the poster
+    // image fails to fire load (cache, etc.).
     var overlay = document.querySelector('.about-hero-overlay');
     if (overlay && overlay.dataset.src) {
       var revealOverlay = function () {
@@ -180,9 +182,14 @@
         // If the GIF was already cached, `load` may not fire — reveal anyway.
         if (overlay.complete) overlay.classList.add('is-ready');
       };
-      v.addEventListener('playing', revealOverlay, { once: true });
-      v.addEventListener('loadeddata', revealOverlay, { once: true });
-      v.addEventListener('canplay', revealOverlay, { once: true });
+      if (posterSrc) {
+        var posterImg = new Image();
+        posterImg.onload = revealOverlay;
+        posterImg.onerror = revealOverlay;
+        posterImg.src = posterSrc;
+        // If the browser already cached the poster, onload may not fire.
+        if (posterImg.complete) revealOverlay();
+      }
       setTimeout(revealOverlay, 2000);
     }
   })();
