@@ -2949,13 +2949,17 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .bldg-carousel {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: clamp(200px, 26vw, 300px);
+  grid-auto-columns: clamp(240px, 30vw, 340px);
   gap: clamp(16px, 1.5vw, 24px);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-left: var(--shell-pad);
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
+  /* Tell the browser horizontal panning is the primary gesture so swipe
+     reliably scrolls the carousel instead of being eaten by the <a>
+     children's tap target. */
+  touch-action: pan-x;
   scrollbar-width: none;
   padding: 8px var(--shell-pad);
   padding-right: clamp(80px, 12vw, 160px);
@@ -3000,9 +3004,21 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-@media (hover: hover) {
+/* Hover states scoped to true pointing devices only — iOS Safari can
+   report `hover: hover` on touch, leaving the scale "frozen" on the
+   last-tapped card. `pointer: fine` excludes touch. */
+@media (hover: hover) and (pointer: fine) {
   .bldg-card:hover { transform: scale(1.045); }
   .bldg-card:hover .bldg-card-meta strong { color: var(--terra); }
+}
+/* Belt-and-suspenders: explicitly clear any stuck transform on touch */
+@media (hover: none), (pointer: coarse) {
+  .bldg-card,
+  .bldg-card:hover,
+  .bldg-card:focus,
+  .bldg-card:active {
+    transform: none;
+  }
 }
 .bldg-card-meta {
   display: flex;
