@@ -133,7 +133,13 @@
     var nav = document.querySelector('.nav');
     function sizeHero() {
       var navH = nav ? nav.offsetHeight : 93;
-      hero.style.height = (window.innerHeight - navH) + 'px';
+      // iOS Safari reports window.innerHeight as the layout viewport
+      // (stops at the URL-bar pill top), not the full visible area. Add
+      // a buffer on mobile so the hero overflows past that boundary;
+      // overflow:hidden on the section clips the excess.
+      var isMobile = window.matchMedia('(max-width: 720px)').matches;
+      var buffer = isMobile ? 120 : 0;
+      hero.style.height = (window.innerHeight - navH + buffer) + 'px';
     }
     sizeHero();
     // Don't listen to `resize`: iOS Safari fires it on every URL-bar
