@@ -1089,6 +1089,12 @@ section .shell { position: relative; z-index: 1; }
   position: relative;
   z-index: 2;
   background: var(--bone);
+}
+/* Higher specificity to beat `.sticky-stage > section + section
+   { border-top: 0 }` which strips borders between siblings inside a
+   sticky stage. We want a hairline at the top edge of the blog section
+   to separate it from the testimonials above. */
+.sticky-stage > .blog-section {
   border-top: 1px solid var(--line);
 }
 
