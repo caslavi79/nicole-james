@@ -2215,6 +2215,12 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   }
   .bldg-img { aspect-ratio: 5 / 4; }
 }
+/* When the buildings grid sits directly above .svc-mini in the same
+   section (no separate heading between), put a comfortable gap between
+   the two row sets. */
+.bldg-grid + .svc-mini {
+  margin-top: clamp(40px, 5vw, 72px);
+}
 
 /* -- HOME: CONDENSED SERVICES PREVIEW -- */
 .svc-mini {
