@@ -136,7 +136,10 @@
       hero.style.height = (window.innerHeight - navH) + 'px';
     }
     sizeHero();
-    window.addEventListener('resize', sizeHero);
+    // Don't listen to `resize`: iOS Safari fires it on every URL-bar
+    // transition (every scroll up, sometimes), and re-running sizeHero
+    // resizes the section mid-scroll = visible stutter/jump. Only react
+    // to orientation flips (real layout changes).
     window.addEventListener('orientationchange', sizeHero);
     // Re-measure once fonts have loaded (nav height can shift slightly).
     if (document.fonts && document.fonts.ready) {
