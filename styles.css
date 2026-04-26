@@ -2561,7 +2561,17 @@ body.about-cover-locked .nav.scrolled {
 }
 @media (max-width: 820px) {
   .about-page-grid { grid-template-columns: 1fr; }
-  .about-page-portrait { position: static; aspect-ratio: 5 / 4; }
+  .about-page-portrait {
+    position: static;
+    aspect-ratio: 5 / 4;
+    /* Full-bleed on mobile: break out of the .shell padding so the
+       portrait runs edge-to-edge with the viewport. Negative side
+       margins equal to --shell-pad pull the element past the shell's
+       own padding. */
+    margin-left: calc(var(--shell-pad) * -1);
+    margin-right: calc(var(--shell-pad) * -1);
+    width: calc(100% + (var(--shell-pad) * 2));
+  }
 }
 
 /* -- SCROLL REVEAL -- */
