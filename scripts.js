@@ -380,19 +380,28 @@
       }
     })();
 
-    // iOS Safari URL-bar: do NOT lock body scroll at all.
-    // - body { overflow: hidden } and body { position: fixed } are both
-    //   documented iOS triggers that pop the URL bar into expanded mode.
-    // - The .nav-overlay is already position:fixed; inset:0 covering the
-    //   entire visible page, so even if the body scrolls behind it, the
-    //   user can't see anything.
-    // - Touchmove on the overlay backdrop is blocked so a swipe inside
-    //   the menu doesn't bleed scroll through to the page underneath.
-    // Trade-off: a thin sliver of page content may stay visible behind
-    // the translucent URL pill (matches the kumara/citrus pattern), but
-    // iOS keeps the URL pill minimal through the entire menu open/close.
-    const trapBackgroundTouch = (e) => {
-      if (e.target === navOverlay) e.preventDefault();
+    // iOS Safari URL-bar workaround: the previous lock used
+    // `body { overflow: hidden }` which iOS reads as "page no longer
+    // scrollable" and pops the URL bar into expanded opaque mode (the
+    // bone strip behind the URL pill that lagged behind the menu
+    // animation). Switching to a position:fixed body lock with restored
+    // scroll position keeps iOS thinking the page is still scrollable.
+    let savedScrollY = 0;
+    const lockBody = () => {
+      savedScrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${savedScrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    };
+    const unlockBody = () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, savedScrollY);
     };
 
     const openMenu = () => {
@@ -401,7 +410,7 @@
       void navOverlay.offsetWidth;
       navOverlay.classList.add('open');
       document.body.classList.add('nav-open');
-      navOverlay.addEventListener('touchmove', trapBackgroundTouch, { passive: false });
+      lockBody();
       navToggle.setAttribute('aria-expanded', 'true');
       navToggle.setAttribute('aria-label', 'Close menu');
       // move focus into the overlay for a11y
@@ -411,7 +420,7 @@
     const closeMenu = () => {
       navOverlay.classList.remove('open');
       document.body.classList.remove('nav-open');
-      navOverlay.removeEventListener('touchmove', trapBackgroundTouch);
+      unlockBody();
       navToggle.setAttribute('aria-expanded', 'false');
       navToggle.setAttribute('aria-label', 'Open menu');
       // wait for transition before hiding from a11y tree
