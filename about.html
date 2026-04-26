@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260425-51" />
+<link rel="stylesheet" href="styles.css?v=20260425-52" />
 </head>
 
 <body class="page-about">
@@ -128,16 +128,18 @@
     var v = document.querySelector('.about-hero-video-el');
     if (!hero || !v) return;
 
-    // Size the hero with calc(100lvh - <nav>). 100lvh is the *largest*
-    // viewport height (URL-bar collapsed) — using it means the hero is
-    // always sized for the full screen, so on first load (URL bar
-    // showing) the hero overflows past the URL-bar pill, and the video
-    // visibly fills behind it. Measuring nav.offsetHeight is more
-    // accurate than the hardcoded --nav-h.
+    // Size the hero to (screen.height - nav). screen.height is the full
+    // physical screen in CSS px; lvh on iOS only reaches the top of the
+    // URL-bar pill, leaving the home-indicator safe-area band below the
+    // pill uncovered (the next #about section was peeking through there
+    // at first paint). Using screen.height makes the hero overshoot
+    // into the safe-area; the section's overflow:hidden clips the
+    // excess and the video visibly fills behind the URL pill all the
+    // way to the bottom of the screen. #about is pushed below the fold.
     var nav = document.querySelector('.nav');
     function sizeHero() {
       var navH = nav ? nav.offsetHeight : 93;
-      hero.style.height = 'calc(100lvh - ' + navH + 'px)';
+      hero.style.height = (window.screen.height - navH) + 'px';
     }
     sizeHero();
     window.addEventListener('orientationchange', sizeHero);
