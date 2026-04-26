@@ -2368,8 +2368,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .about-hero-inner {
   position: relative;
   width: 100%;
-  height: calc(100vh - var(--nav-h));
-  height: calc(100lvh - var(--nav-h));
+  height: 100%;
 }
 .about-hero-video-el {
   display: block;
