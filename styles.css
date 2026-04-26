@@ -2405,7 +2405,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 720px) {
   .about-hero-overlay {
     top: 32vh;
-    width: min(75vw, 520px);
+    width: min(92vw, 640px);
   }
 }
 /* About page: override the mobile sticky-disable from .hero-stuck. The
