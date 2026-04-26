@@ -17,29 +17,37 @@
     onScroll();
   }
 
-  // -- STICKY GATING (iOS Safari URL-bar fix)
-  // In-body `position: sticky` elements cause iOS Safari to hold the URL
-  // bar in expanded opaque mode. The CSS uses
-  // `position: var(--portrait-pos|--hero-pos, static)` for the home
-  // portrait + about hero. We flip them to `sticky` whenever the user
-  // is scrolled (scrollY > 0), and back to `static` whenever they're
-  // at the very top — so at every "rest" position (top of page, menu
-  // closed, etc.) iOS sees no in-body sticky elements and renders the
-  // minimal floating URL pill. The transition fires at scrollY=0 which
-  // is also the natural state where the sticky pin wouldn't be engaged
-  // anyway, so visual behavior is identical.
+  // -- iOS SAFARI URL-BAR: scroll floor + sticky gating
+  // Two coordinated tricks to keep the URL pill minimal across the
+  // whole interaction:
+  //
+  // 1. Scroll floor — iOS Safari unconditionally expands the URL bar
+  //    when scrollY hits exactly 0 (it's a platform-level affordance,
+  //    not a layout bug). We push scrollY back to 1 any time it reaches
+  //    0 so iOS always sees "1px of content above the viewport" and
+  //    keeps the pill collapsed. The 1px is invisible.
+  //
+  // 2. Sticky gating — in-body `position: sticky` elements are also a
+  //    URL-bar expansion trigger. The hero portrait (home) and hero
+  //    video (about) are gated behind --portrait-pos / --hero-pos vars
+  //    which start as `static` and flip to `sticky` once scroll begins.
   const root = document.documentElement.style;
   let stickyOn = false;
-  const updateStickyState = () => {
-    const shouldBeOn = window.scrollY > 0;
-    if (shouldBeOn === stickyOn) return;
-    stickyOn = shouldBeOn;
-    const v = shouldBeOn ? 'sticky' : 'static';
-    root.setProperty('--portrait-pos', v);
-    root.setProperty('--hero-pos', v);
+  const updateState = () => {
+    if (window.scrollY < 1) {
+      window.scrollTo({ top: 1, behavior: 'instant' });
+    }
+    const shouldBeOn = window.scrollY > 1;
+    if (shouldBeOn !== stickyOn) {
+      stickyOn = shouldBeOn;
+      const v = shouldBeOn ? 'sticky' : 'static';
+      root.setProperty('--portrait-pos', v);
+      root.setProperty('--hero-pos', v);
+    }
   };
-  window.addEventListener('scroll', updateStickyState, { passive: true });
-  updateStickyState();
+  window.addEventListener('scroll', updateState, { passive: true });
+  // Run after layout settles so scrollTo lands.
+  requestAnimationFrame(updateState);
 
   // -- MOBILE PORTRAIT RELOCATE
   // On mobile, reparent the hero portrait out of .hero-grid and into
@@ -380,28 +388,14 @@
       }
     })();
 
-    // iOS Safari URL-bar workaround: the previous lock used
-    // `body { overflow: hidden }` which iOS reads as "page no longer
-    // scrollable" and pops the URL bar into expanded opaque mode (the
-    // bone strip behind the URL pill that lagged behind the menu
-    // animation). Switching to a position:fixed body lock with restored
-    // scroll position keeps iOS thinking the page is still scrollable.
-    let savedScrollY = 0;
-    const lockBody = () => {
-      savedScrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${savedScrollY}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.width = '100%';
-    };
-    const unlockBody = () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.width = '';
-      window.scrollTo(0, savedScrollY);
+    // iOS Safari URL-bar workaround: never lock the body. Both
+    // body { overflow: hidden } AND body { position: fixed } are
+    // documented iOS triggers that pop the URL bar into expanded
+    // opaque mode. Instead, the overlay is already position:fixed
+    // covering the whole viewport — we just trap touchmove on its
+    // backdrop so scroll can't bleed through to the page underneath.
+    const trapBackgroundTouch = (e) => {
+      if (e.target === navOverlay) e.preventDefault();
     };
 
     const openMenu = () => {
@@ -410,7 +404,7 @@
       void navOverlay.offsetWidth;
       navOverlay.classList.add('open');
       document.body.classList.add('nav-open');
-      lockBody();
+      navOverlay.addEventListener('touchmove', trapBackgroundTouch, { passive: false });
       navToggle.setAttribute('aria-expanded', 'true');
       navToggle.setAttribute('aria-label', 'Close menu');
       // move focus into the overlay for a11y
@@ -420,7 +414,7 @@
     const closeMenu = () => {
       navOverlay.classList.remove('open');
       document.body.classList.remove('nav-open');
-      unlockBody();
+      navOverlay.removeEventListener('touchmove', trapBackgroundTouch);
       navToggle.setAttribute('aria-expanded', 'false');
       navToggle.setAttribute('aria-label', 'Open menu');
       // wait for transition before hiding from a11y tree
