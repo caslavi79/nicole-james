@@ -2390,7 +2390,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
      (the percentage chain through 100%-on-static-parent is fragile
      at first paint). The hero section is sized to ~viewport height,
      so vh ≈ % of the visible hero — same visual result, but stable. */
-  top: 20vh;
+  top: 30vh;
   transform: translate(-50%, -50%);
   width: min(60vw, 720px);
   height: auto;
