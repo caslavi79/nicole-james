@@ -6,6 +6,29 @@
 (function () {
   'use strict';
 
+  // -- SCROLL TO TOP ON RELOAD / FRESH NAV
+  // Default Safari behavior on refresh is to restore the prior scroll
+  // position. Users were complaining that hitting refresh kept them
+  // mid-page instead of back at the top. We:
+  //   * Detect "reload" / "navigate" via PerformanceNavigationTiming
+  //     and immediately scroll to (0, 0) — overrides Safari's restore.
+  //   * Re-run the same logic on `pageshow` for any non-bfcache event.
+  //   * Skip both branches if the URL has a hash (anchor link), so
+  //     /services.html#carousel still scrolls to that anchor.
+  //   * Skip on bfcache restore (e.persisted === true) — that's a back
+  //     navigation, the user expects to land where they left off.
+  (function () {
+    const goTop = () => { if (!window.location.hash) window.scrollTo(0, 0); };
+    try {
+      const nav = performance.getEntriesByType('navigation')[0];
+      const t = nav ? nav.type : 'navigate';
+      if (t === 'reload' || t === 'navigate') goTop();
+    } catch (e) { goTop(); }
+    window.addEventListener('pageshow', (e) => {
+      if (!e.persisted) goTop();
+    });
+  })();
+
   // -- NAV scroll behavior
   const nav = document.getElementById('nav');
   if (nav) {
@@ -622,11 +645,24 @@
         return false;
       };
 
-      const anchorMiddle = () => {
-        if (setWidth > 0) {
-          driftPos = setWidth;
-          bldgCar.scrollLeft = driftPos;
-        }
+      // Persistence — sessionStorage keeps the carousel position across
+      // navigations within the same tab, so leaving services.html and
+      // coming back doesn't reset a 34-building drift to zero.
+      const STORAGE_KEY = 'njBldgCarMobile_v1';
+      const restoreOrAnchor = () => {
+        if (setWidth <= 0) return;
+        let pos = setWidth; // default: start of the middle (cloned) set
+        try {
+          const saved = parseFloat(sessionStorage.getItem(STORAGE_KEY));
+          if (!isNaN(saved) && saved > 0) {
+            pos = saved;
+            // If viewport changed since save, normalize into a valid band.
+            while (pos >= setWidth * 2.5) pos -= setWidth;
+            while (pos < setWidth * 0.5) pos += setWidth;
+          }
+        } catch (e) { /* sessionStorage may throw in private mode */ }
+        driftPos = pos;
+        bldgCar.scrollLeft = driftPos;
       };
 
       // Try to measure immediately; if not ready, keep retrying until cards
@@ -634,7 +670,7 @@
       // longer if images dictate layout).
       const tryStart = () => {
         if (measure()) {
-          anchorMiddle();
+          restoreOrAnchor();
           return true;
         }
         return false;
@@ -715,6 +751,19 @@
         if (touching) driftPos = bldgCar.scrollLeft;
         wrap();
       }, { passive: true });
+
+      // Save position periodically + on tab hide / page unload so it
+      // survives navigation. Interval keeps the saved value fresh
+      // for the case where the user kills the tab without an unload.
+      const persist = () => {
+        if (setWidth <= 0) return;
+        try { sessionStorage.setItem(STORAGE_KEY, String(driftPos)); } catch (e) {}
+      };
+      setInterval(persist, 1000);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') persist();
+      });
+      window.addEventListener('pagehide', persist);
     }
   } else if (bldgCar) {
     // True endless loop: as the leftmost card scrolls fully out of view,
@@ -751,6 +800,7 @@
     bldgCar.appendChild(track);
 
     let offset = 0;
+    let totalDrift = 0; // monotonic — total px drifted since first load. Used to persist position.
     const GAP = 24; // approximate gap; recomputed below per resize
     let gap = GAP;
     const computeGap = () => {
@@ -760,6 +810,34 @@
     computeGap();
     window.addEventListener('resize', computeGap, { passive: true });
 
+    // Persistence — restore position after navigation. We save totalDrift
+    // (modulo one full original-set cycle) and replay it on load by
+    // moving N cards from front to back, then setting the residual offset.
+    const STORAGE_KEY_DESK = 'njBldgCarDesk_v1';
+    let replayDone = false;
+    const replayDrift = () => {
+      if (replayDone) return true;
+      let saved = NaN;
+      try { saved = parseFloat(sessionStorage.getItem(STORAGE_KEY_DESK)); } catch (e) {}
+      // No saved value: nothing to replay; mark done so we move on.
+      if (isNaN(saved) || saved <= 0) { replayDone = true; return true; }
+      const card = track.firstElementChild;
+      if (!card) return false;
+      const cardW = card.getBoundingClientRect().width;
+      if (cardW <= 0) return false; // not laid out yet — caller will retry
+      const stride = cardW + gap;
+      const cardsToMove = Math.floor(saved / stride);
+      const moveN = Math.min(cardsToMove, track.children.length - 1);
+      for (let i = 0; i < moveN; i++) {
+        track.appendChild(track.firstElementChild);
+      }
+      offset = -(saved - moveN * stride);
+      totalDrift = saved;
+      track.style.transform = `translate3d(${offset}px, 0, 0)`;
+      replayDone = true;
+      return true;
+    };
+
     const SPEED = 28; // px/sec — gentle drift, pauses on hover
     let last = performance.now();
     let paused = false;
@@ -768,7 +846,9 @@
       const dt = Math.min(50, now - last) / 1000;
       last = now;
       if (!paused) {
-        offset -= SPEED * dt;
+        const delta = SPEED * dt;
+        offset -= delta;
+        totalDrift += delta;
         // While the leftmost card is fully off-screen on the left, recycle it.
         // First card position relative to viewport = offset + 0 to offset + cardWidth.
         // It's fully gone when offset + cardWidth + gap <= 0, i.e. offset <= -(cardWidth + gap)
@@ -785,7 +865,18 @@
       }
       requestAnimationFrame(tick);
     };
-    requestAnimationFrame((t) => { last = t; tick(t); });
+    // Try replay across up to 6 frames so cards have time to lay out.
+    // Once replay succeeds (or there's nothing to replay), kick off tick.
+    let replayAttempts = 0;
+    const startWhenReady = () => {
+      if (replayDrift() || ++replayAttempts > 6) {
+        last = performance.now();
+        requestAnimationFrame(tick);
+      } else {
+        requestAnimationFrame(startWhenReady);
+      }
+    };
+    startWhenReady();
 
     bldgCar.addEventListener('mouseenter', () => { paused = true; });
     bldgCar.addEventListener('mouseleave', () => { paused = false; });
@@ -828,6 +919,7 @@
 
       track.style.transition = 'transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1)';
       offset -= totalDelta;
+      totalDrift += totalDelta; // keep persistence in sync with arrow nudges
       track.style.transform = `translate3d(${offset}px, 0, 0)`;
 
       setTimeout(() => {
@@ -853,6 +945,26 @@
     };
     if (bldgPrev) bldgPrev.addEventListener('click', () => nudge(-1));
     if (bldgNext) bldgNext.addEventListener('click', () => nudge(1));
+
+    // Persist totalDrift so leaving and returning to the page doesn't
+    // reset the marquee. We modulo by one full cycle (numCards * stride)
+    // so the saved value stays bounded even after long sessions.
+    const persistDesk = () => {
+      const card = track.firstElementChild;
+      if (!card || originals.length === 0) return;
+      const cardW = card.getBoundingClientRect().width;
+      if (cardW <= 0) return;
+      const stride = cardW + gap;
+      const cycleW = stride * originals.length;
+      try {
+        sessionStorage.setItem(STORAGE_KEY_DESK, String(totalDrift % cycleW));
+      } catch (e) {}
+    };
+    setInterval(persistDesk, 1000);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') persistDesk();
+    });
+    window.addEventListener('pagehide', persistDesk);
   }
 
 })();
