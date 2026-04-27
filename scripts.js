@@ -551,11 +551,25 @@
     }
   });
 
-  // -- BUILDING CAROUSEL pager (services hero)
-  // Updates the "01–04 of 24" counter and the progress fill as the
-  // user scrolls the horizontal carousel.
+  // -- BUILDING CAROUSEL (services hero)
+  // Desktop: JS-driven endless auto-drift marquee with cloned cards
+  // and arrow nudges. The JS overrides overflow/display/snap and
+  // applies a CSS transform to a wrapper "track" element.
+  //
+  // Mobile (≤820px): the JS marquee is intentionally disabled.
+  // Reasons it broke touch UX:
+  //   - `overflow:hidden` + `scroll-snap-type:none` + `display:flex`
+  //     killed native scrolling; the only way to advance was the arrow
+  //     buttons, which are `display:none` on mobile.
+  //   - `flex: 0 0 clamp(200px, 26vw, 300px)` overrode the CSS mobile
+  //     `grid-auto-columns: 82vw`, so cards rendered tiny.
+  //   - `pointerenter` set `paused = true`, but `pointerleave` doesn't
+  //     fire reliably on iOS Safari after a tap, so the marquee froze
+  //     the moment a finger brushed any card.
+  // Solution: bail early on mobile and let the CSS native scroll-snap
+  // carousel take over (defined in styles.css under @media max-width:820px).
   const bldgCar = document.getElementById('bldgCarousel');
-  if (bldgCar) {
+  if (bldgCar && !window.matchMedia('(max-width: 820px)').matches) {
     // True endless loop: as the leftmost card scrolls fully out of view,
     // detach it and append to the end (and bump the offset by its width
     // so visually nothing changes). The card list is conceptually infinite.
