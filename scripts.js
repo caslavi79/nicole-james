@@ -570,10 +570,23 @@
   const bldgCar = document.getElementById('bldgCarousel');
   if (bldgCar && window.matchMedia('(max-width: 820px)').matches) {
     // -------- MOBILE CAROUSEL --------
+    // Implementation notes (lessons from earlier broken versions):
+    //   * iOS Safari sometimes returns 0 from getBoundingClientRect() on
+    //     the very first RAF if images are still resolving. We retry the
+    //     measurement until we get a non-zero card width.
+    //   * iOS Safari rounds the integer `scrollLeft` getter and can drop
+    //     fractional accumulation if you do `scrollLeft += SPEED*dt` per
+    //     frame. We track `driftPos` as a float, only WRITE to scrollLeft.
+    //   * `scroll-snap-type: proximity` can snap-back during a programmatic
+    //     scroll on iOS. We turn snap OFF during auto-drift and turn it
+    //     back ON only while the user's finger is on the carousel.
+    //   * `pointerleave` doesn't fire reliably on iOS Safari after a tap,
+    //     so we use `touchstart`/`touchend` only.
     const originals = Array.from(bldgCar.querySelectorAll('.bldg-card'));
     if (originals.length > 0) {
-      // Clone twice so we have 3 identical sets in a row.
-      // The user starts in the middle set; wrap by ±originalSetWidth at boundaries.
+      // Clone twice so we have 3 identical sets in a row: [A | B | C].
+      // The user starts in B. When auto-drift or finger-inertia carries
+      // them past [0.5×, 2.5×] setWidth, we silently jump by ±setWidth.
       for (let i = 0; i < 2; i++) {
         originals.forEach(c => {
           const clone = c.cloneNode(true);
@@ -584,71 +597,124 @@
         });
       }
 
-      // Measurement: width of one original set including inter-card gaps.
-      let setWidth = 0;
+      // Snap is only enabled while the user is touching. During auto-drift
+      // it's off, otherwise iOS may snap back to a fixed point each frame.
+      // setProperty('important') beats the !important in the mobile CSS
+      // safety-belt rule.
+      const setSnap = (val) => bldgCar.style.setProperty('scroll-snap-type', val, 'important');
+      setSnap('none');
+      bldgCar.style.scrollBehavior = 'auto'; // never smooth — kills drift
+
+      let setWidth = 0;       // width of one original set including gaps
+      let driftPos = 0;       // float scroll position we control
+      let touching = false;
+      let resumeAt = 0;
+      const SPEED = 28;       // px/sec — readable on a phone
+
       const measure = () => {
         const cs = getComputedStyle(bldgCar);
         const gap = parseFloat(cs.columnGap || cs.gap) || 0;
-        if (originals.length === 0) { setWidth = 0; return; }
         const cardW = originals[0].getBoundingClientRect().width;
-        setWidth = (cardW + gap) * originals.length;
+        if (cardW > 0) {
+          setWidth = (cardW + gap) * originals.length;
+          return true;
+        }
+        return false;
       };
 
-      // Initial position: start of the middle (cloned) set, so the user
-      // can scroll backwards into the first set without immediately wrapping.
-      const start = () => {
-        measure();
-        if (setWidth > 0) bldgCar.scrollLeft = setWidth;
-      };
-      requestAnimationFrame(() => {
-        // Wait one frame for layout to settle, then start.
-        start();
-      });
-      window.addEventListener('resize', () => {
-        measure();
-        // Re-anchor into the middle set after resize so wrap math stays sane.
-        if (setWidth > 0) bldgCar.scrollLeft = setWidth + (bldgCar.scrollLeft % setWidth);
-      }, { passive: true });
-
-      // Auto-drift: gentle px/sec scroll, paused while finger is down
-      // and for a beat after release so inertia + snap can settle.
-      const SPEED = 22; // px/sec — slower than desktop, easier to read
-      let last = performance.now();
-      let touching = false;
-      let resumeAt = 0;
-
-      const wrap = () => {
-        if (setWidth <= 0) return;
-        if (bldgCar.scrollLeft >= setWidth * 2) {
-          bldgCar.scrollLeft -= setWidth;
-        } else if (bldgCar.scrollLeft < setWidth * 0.5) {
-          bldgCar.scrollLeft += setWidth;
+      const anchorMiddle = () => {
+        if (setWidth > 0) {
+          driftPos = setWidth;
+          bldgCar.scrollLeft = driftPos;
         }
       };
 
+      // Try to measure immediately; if not ready, keep retrying until cards
+      // have non-zero width (typically resolves within a frame or two,
+      // longer if images dictate layout).
+      const tryStart = () => {
+        if (measure()) {
+          anchorMiddle();
+          return true;
+        }
+        return false;
+      };
+      if (!tryStart()) {
+        let attempts = 0;
+        const retry = () => {
+          if (tryStart() || ++attempts > 60) return;
+          requestAnimationFrame(retry);
+        };
+        requestAnimationFrame(retry);
+        // Final safety nets if RAF + image timing is weird.
+        window.addEventListener('load', tryStart, { once: true });
+        setTimeout(tryStart, 800);
+      }
+
+      window.addEventListener('resize', () => {
+        if (measure()) {
+          driftPos = setWidth + (bldgCar.scrollLeft % setWidth);
+          bldgCar.scrollLeft = driftPos;
+        }
+      }, { passive: true });
+
+      const wrap = () => {
+        if (setWidth <= 0) return;
+        if (driftPos >= setWidth * 2.5) {
+          driftPos -= setWidth;
+          bldgCar.scrollLeft = driftPos;
+        } else if (driftPos < setWidth * 0.5) {
+          driftPos += setWidth;
+          bldgCar.scrollLeft = driftPos;
+        }
+      };
+
+      let last = performance.now();
       const tick = (now) => {
         const dt = Math.min(50, now - last) / 1000;
         last = now;
-        const driftAllowed = !touching && now >= resumeAt && setWidth > 0;
-        if (driftAllowed) {
-          // Use scrollBy for smoother integration with native inertia
-          bldgCar.scrollLeft += SPEED * dt;
+        if (touching) {
+          // User is dragging — sync our float cursor to their position.
+          driftPos = bldgCar.scrollLeft;
+        } else if (now >= resumeAt && setWidth > 0) {
+          // Auto-drift: float math, single write to scrollLeft.
+          driftPos += SPEED * dt;
+          bldgCar.scrollLeft = driftPos;
+        } else {
+          // In the resume-grace window after touchend — don't fight inertia.
+          driftPos = bldgCar.scrollLeft;
         }
         wrap();
         requestAnimationFrame(tick);
       };
       requestAnimationFrame((t) => { last = t; tick(t); });
 
-      // Touch handling — pause auto-drift while the user is interacting,
-      // then resume 700ms after release so finger inertia + snap finish first.
-      const pauseFor = (ms) => { resumeAt = performance.now() + ms; };
-      bldgCar.addEventListener('touchstart', () => { touching = true; }, { passive: true });
-      const release = () => { touching = false; pauseFor(700); last = performance.now(); };
+      bldgCar.addEventListener('touchstart', () => {
+        touching = true;
+        // Re-enable snap so the lift snaps to the nearest card.
+        setSnap('x proximity');
+      }, { passive: true });
+      const release = () => {
+        touching = false;
+        driftPos = bldgCar.scrollLeft;
+        resumeAt = performance.now() + 900; // let inertia + snap finish
+        last = performance.now();
+        // Turn snap back off so our auto-drift isn't fought next tick.
+        // Wait a beat so the snap-on-release animation completes first.
+        setTimeout(() => {
+          if (!touching) setSnap('none');
+        }, 500);
+      };
       bldgCar.addEventListener('touchend', release, { passive: true });
       bldgCar.addEventListener('touchcancel', release, { passive: true });
 
-      // Wrap during user-driven scroll/inertia too — keep them in [0.5, 2.5] setWidth.
-      bldgCar.addEventListener('scroll', wrap, { passive: true });
+      // Also wrap on every native scroll event, so finger-flick inertia
+      // that crosses a boundary loops smoothly without waiting for the
+      // next tick.
+      bldgCar.addEventListener('scroll', () => {
+        if (touching) driftPos = bldgCar.scrollLeft;
+        wrap();
+      }, { passive: true });
     }
   } else if (bldgCar) {
     // True endless loop: as the leftmost card scrolls fully out of view,
