@@ -4,6 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EFE7" />
+<!-- INDEXING META -->
+<meta name="robots" content="noindex, follow" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-180.png" />
+<link rel="manifest" href="/site.webmanifest" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 <title>Brazos Lofts · Nicole James, Downtown Austin Condo Specialist</title>
@@ -15,7 +23,43 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="../styles.css?v=20260426-26" />
+<link rel="stylesheet" href="../styles.css?v=20260426-27" />
+
+<!-- Schema.org: ApartmentComplex + BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ApartmentComplex",
+      "@id": "https://nicolejamesaustin.com/buildings/brazoslofts.html#building",
+      "name": "Brazos Lofts",
+      "url": "https://nicolejamesaustin.com/buildings/brazoslofts.html",
+      "description": "Brazos Lofts is a downtown Austin condominium building in the Brazos district. Building profile by Nicole James, downtown Austin condo specialist.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Austin",
+        "addressRegion": "TX",
+        "postalCode": "78701",
+        "addressCountry": "US"
+      },
+      "containedInPlace": {
+        "@type": "Place",
+        "name": "Downtown Austin"
+      },
+      "broker": { "@id": "https://nicolejamesaustin.com/#nicole" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://nicolejamesaustin.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://nicolejamesaustin.com/services.html" },
+        { "@type": "ListItem", "position": 3, "name": "Brazos Lofts", "item": "https://nicolejamesaustin.com/buildings/brazoslofts.html" }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 
 <body>
@@ -97,8 +141,8 @@
     </div>
     <div class="chooser-stack">
       <a href="mailto:nicolej@christiesrealestatels.com" class="chooser-action">Default mail app</a>
-      <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=nicolej@christiesrealestatels.com" target="_blank" rel="noopener" class="chooser-action">Gmail</a>
-      <a href="https://outlook.live.com/mail/0/deeplink/compose?to=nicolej@christiesrealestatels.com" target="_blank" rel="noopener" class="chooser-action">Outlook</a>
+      <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=nicolej@christiesrealestatels.com" target="_blank" rel="noopener noreferrer" class="chooser-action">Gmail</a>
+      <a href="https://outlook.live.com/mail/0/deeplink/compose?to=nicolej@christiesrealestatels.com" target="_blank" rel="noopener noreferrer" class="chooser-action">Outlook</a>
       <button type="button" class="chooser-action chooser-copy" data-copy="nicolej@christiesrealestatels.com">Copy address</button>
     </div>
     <button type="button" class="chooser-cancel" data-close>Cancel</button>
@@ -111,7 +155,7 @@
     <a class="building-back" href="../services.html">&larr; All buildings</a>
     <div class="building-hero">
       <div class="building-hero-img">
-        <img src="../assets/bldg-brazoslofts.jpg" alt="Brazos Lofts, Brazos, downtown Austin" />
+        <img fetchpriority="high" loading="eager" decoding="async" src="../assets/bldg-brazoslofts.jpg" alt="Brazos Lofts, Brazos, downtown Austin" />
       </div>
       <div class="building-hero-meta">
         <span class="eyebrow">Brazos</span>
@@ -157,8 +201,8 @@
     <div>
       <h5>Legal</h5>
       <ul>
-        <li><a href="https://content.harstatic.com/pdf/TREC_CPN.pdf" target="_blank" rel="noopener">TREC Consumer Notice</a></li>
-        <li><a href="https://www.har.com/mhf/terms/dispBrokerInfo?sitetype=aws&cid=549414" target="_blank" rel="noopener">IABS disclosure</a></li>
+        <li><a href="https://content.harstatic.com/pdf/TREC_CPN.pdf" target="_blank" rel="noopener noreferrer">TREC Consumer Notice</a></li>
+        <li><a href="https://www.har.com/mhf/terms/dispBrokerInfo?sitetype=aws&cid=549414" target="_blank" rel="noopener noreferrer">IABS disclosure</a></li>
         <li><a href="../fair-housing.html">Fair Housing</a></li>
         <li><a href="../privacy.html">Privacy</a></li>
       </ul>

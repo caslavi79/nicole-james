@@ -1,10 +1,12 @@
 # Nicole James · nicolejamesaustin.com
-# Allow all reputable crawlers including AI search engines.
+# Allow all reputable crawlers, including AI search engines.
 
 User-agent: *
 Allow: /
+Disallow: /brand.html
+Disallow: /assets/ffmpeg2pass
 
-# OpenAI — ChatGPT search + training
+# OpenAI
 User-agent: OAI-SearchBot
 Allow: /
 User-agent: ChatGPT-User
@@ -12,7 +14,7 @@ Allow: /
 User-agent: GPTBot
 Allow: /
 
-# Anthropic — Claude search + training
+# Anthropic
 User-agent: Claude-SearchBot
 Allow: /
 User-agent: Claude-User
@@ -26,7 +28,7 @@ Allow: /
 User-agent: Perplexity-User
 Allow: /
 
-# Google Gemini / Vertex AI training (Google Search is always allowed via Googlebot)
+# Google Gemini training (Googlebot is always allowed)
 User-agent: Google-Extended
 Allow: /
 

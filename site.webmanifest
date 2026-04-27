@@ -1,0 +1,14 @@
+{
+  "name": "Nicole James",
+  "short_name": "Nicole James",
+  "description": "Downtown Austin condo specialist. Christie's International Real Estate Luxury Specialist.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4EFE7",
+  "theme_color": "#F4EFE7",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
