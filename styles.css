@@ -3387,46 +3387,48 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
     gap: 4px;
     margin-bottom: 16px;
   }
-  /* MOBILE CAROUSEL — pure CSS scroll-snap. The desktop JS marquee
-     (scripts.js → BUILDING CAROUSEL) is intentionally short-circuited
-     under this breakpoint. The !important rules below are belt-and-
-     suspenders: if the JS ever did run (e.g. user resizes from a wide
-     window down into mobile), they reverse every inline style the
-     marquee would have applied so finger-swipe still works. */
+  /* MOBILE CAROUSEL — native scroll + JS auto-drift + invisible wrap.
+     The mobile JS path (scripts.js → "MOBILE CAROUSEL") clones the
+     originals twice so the DOM is [SET-A | SET-B | SET-C], then drifts
+     scrollLeft and silently jumps by ±setWidth at the boundaries.
+     The !important rules below are belt-and-suspenders: if any inline
+     style somehow leaked from the desktop marquee path (e.g. a wide
+     window resized down), they snap the layout back so finger-swipe
+     and the wrap-around math keep working. */
   .bldg-carousel {
     display: grid !important;
     grid-auto-flow: column !important;
-    grid-auto-columns: 82vw !important;
-    gap: clamp(16px, 4vw, 24px) !important;
+    /* 68vw → on a 390px iPhone that's ~265px: premium-sized, with the
+       next card peeking ~117px so it's obvious there's more. Tweak
+       this number to taste — bigger = fewer cards visible. */
+    grid-auto-columns: 68vw !important;
+    gap: clamp(14px, 3.5vw, 20px) !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
-    /* Switch to proximity snap on touch — iOS Safari's mandatory snap
-       can fight inertial finger-drag and feel like swipe is broken. */
+    /* Proximity (not mandatory) so iOS inertia + auto-drift coexist. */
     scroll-snap-type: x proximity !important;
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior-x: contain !important;
     touch-action: pan-x !important;
     padding: 8px var(--shell-pad) !important;
-    padding-right: 18vw !important;
+    /* No huge right-padding needed: the wrap loops infinitely, so the
+       last card never has to be the visual end. */
+    padding-right: var(--shell-pad) !important;
   }
   .bldg-card {
     flex: unset !important;
     scroll-snap-align: start !important;
     transform: none !important;
   }
-  /* Marquee track wrapper (only exists if desktop JS ran first).
-     `display:contents` makes it transparent to layout, so its
-     children become direct grid items of .bldg-carousel. */
+  /* Marquee track wrapper (desktop-only DOM). On the off-chance it
+     exists at this breakpoint after a window resize, neutralize it. */
   .bldg-marquee-track {
     display: contents !important;
     transform: none !important;
   }
-  /* Hide the cloned cards the desktop marquee added for looping —
-     on mobile we don't need them. */
-  .bldg-card[aria-hidden="true"] { display: none !important; }
 
-  /* On mobile drop the right-edge fade gradient so the parent viewport
-     doesn't visually compete with the simple finger-scroll. */
+  /* Drop the right-edge fade gradient so the parent viewport doesn't
+     visually compete with the finger-scroll. */
   .bldg-carousel-viewport { overflow: visible; }
   .bldg-carousel-viewport::after { display: none; }
   .bldg-carousel-arrow { display: none; }

@@ -552,24 +552,105 @@
   });
 
   // -- BUILDING CAROUSEL (services hero)
-  // Desktop: JS-driven endless auto-drift marquee with cloned cards
-  // and arrow nudges. The JS overrides overflow/display/snap and
-  // applies a CSS transform to a wrapper "track" element.
   //
-  // Mobile (≤820px): the JS marquee is intentionally disabled.
-  // Reasons it broke touch UX:
-  //   - `overflow:hidden` + `scroll-snap-type:none` + `display:flex`
-  //     killed native scrolling; the only way to advance was the arrow
-  //     buttons, which are `display:none` on mobile.
-  //   - `flex: 0 0 clamp(200px, 26vw, 300px)` overrode the CSS mobile
-  //     `grid-auto-columns: 82vw`, so cards rendered tiny.
-  //   - `pointerenter` set `paused = true`, but `pointerleave` doesn't
-  //     fire reliably on iOS Safari after a tap, so the marquee froze
-  //     the moment a finger brushed any card.
-  // Solution: bail early on mobile and let the CSS native scroll-snap
-  // carousel take over (defined in styles.css under @media max-width:820px).
+  // MOBILE PATH (≤820px) — native-scroll auto-drift with infinite wrap.
+  //   - Drives `carousel.scrollLeft += dt * SPEED` each frame.
+  //   - Originals are cloned twice so the DOM is [SET-A | SET-B | SET-C],
+  //     three identical copies in a row. The user lives in SET-B.
+  //   - When auto-drift or user-inertia carries scrollLeft past the
+  //     [0.5x, 2.5x] originalWidth band, we silently jump by ±originalWidth.
+  //     The seam is invisible because the sets look identical.
+  //   - touchstart pauses; touchend resumes after a short debounce
+  //     so finger-flick inertia + scroll-snap settle first.
+  //   - No `transform`, no track wrapper, no pointerleave dependency,
+  //     so iOS Safari can't get stuck in a frozen state.
+  //
+  // DESKTOP PATH (>820px) — original transform-based marquee with
+  //   cloned cards and arrow-button nudges. Untouched from before.
   const bldgCar = document.getElementById('bldgCarousel');
-  if (bldgCar && !window.matchMedia('(max-width: 820px)').matches) {
+  if (bldgCar && window.matchMedia('(max-width: 820px)').matches) {
+    // -------- MOBILE CAROUSEL --------
+    const originals = Array.from(bldgCar.querySelectorAll('.bldg-card'));
+    if (originals.length > 0) {
+      // Clone twice so we have 3 identical sets in a row.
+      // The user starts in the middle set; wrap by ±originalSetWidth at boundaries.
+      for (let i = 0; i < 2; i++) {
+        originals.forEach(c => {
+          const clone = c.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          // Clones must NOT be focusable — would double-tab through links.
+          clone.setAttribute('tabindex', '-1');
+          bldgCar.appendChild(clone);
+        });
+      }
+
+      // Measurement: width of one original set including inter-card gaps.
+      let setWidth = 0;
+      const measure = () => {
+        const cs = getComputedStyle(bldgCar);
+        const gap = parseFloat(cs.columnGap || cs.gap) || 0;
+        if (originals.length === 0) { setWidth = 0; return; }
+        const cardW = originals[0].getBoundingClientRect().width;
+        setWidth = (cardW + gap) * originals.length;
+      };
+
+      // Initial position: start of the middle (cloned) set, so the user
+      // can scroll backwards into the first set without immediately wrapping.
+      const start = () => {
+        measure();
+        if (setWidth > 0) bldgCar.scrollLeft = setWidth;
+      };
+      requestAnimationFrame(() => {
+        // Wait one frame for layout to settle, then start.
+        start();
+      });
+      window.addEventListener('resize', () => {
+        measure();
+        // Re-anchor into the middle set after resize so wrap math stays sane.
+        if (setWidth > 0) bldgCar.scrollLeft = setWidth + (bldgCar.scrollLeft % setWidth);
+      }, { passive: true });
+
+      // Auto-drift: gentle px/sec scroll, paused while finger is down
+      // and for a beat after release so inertia + snap can settle.
+      const SPEED = 22; // px/sec — slower than desktop, easier to read
+      let last = performance.now();
+      let touching = false;
+      let resumeAt = 0;
+
+      const wrap = () => {
+        if (setWidth <= 0) return;
+        if (bldgCar.scrollLeft >= setWidth * 2) {
+          bldgCar.scrollLeft -= setWidth;
+        } else if (bldgCar.scrollLeft < setWidth * 0.5) {
+          bldgCar.scrollLeft += setWidth;
+        }
+      };
+
+      const tick = (now) => {
+        const dt = Math.min(50, now - last) / 1000;
+        last = now;
+        const driftAllowed = !touching && now >= resumeAt && setWidth > 0;
+        if (driftAllowed) {
+          // Use scrollBy for smoother integration with native inertia
+          bldgCar.scrollLeft += SPEED * dt;
+        }
+        wrap();
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame((t) => { last = t; tick(t); });
+
+      // Touch handling — pause auto-drift while the user is interacting,
+      // then resume 700ms after release so finger inertia + snap finish first.
+      const pauseFor = (ms) => { resumeAt = performance.now() + ms; };
+      bldgCar.addEventListener('touchstart', () => { touching = true; }, { passive: true });
+      const release = () => { touching = false; pauseFor(700); last = performance.now(); };
+      bldgCar.addEventListener('touchend', release, { passive: true });
+      bldgCar.addEventListener('touchcancel', release, { passive: true });
+
+      // Wrap during user-driven scroll/inertia too — keep them in [0.5, 2.5] setWidth.
+      bldgCar.addEventListener('scroll', wrap, { passive: true });
+    }
+  } else if (bldgCar) {
     // True endless loop: as the leftmost card scrolls fully out of view,
     // detach it and append to the end (and bump the offset by its width
     // so visually nothing changes). The card list is conceptually infinite.
