@@ -2658,6 +2658,13 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   max-width: 58ch;
   margin-bottom: clamp(20px, 2.2vw, 28px);
 }
+/* Inline italic accents inside about body text — Cormorant at the same
+   point size reads visually smaller than Manrope, so bump it slightly. */
+.about-page-body .body-text .serif-italic {
+  font-size: 1.18em;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
 .about-page-body-marker {
   font-family: var(--font-sans);
   font-size: 10px;
