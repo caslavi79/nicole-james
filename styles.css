@@ -2678,12 +2678,13 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 720px) { .br-mobile { display: block; } }
 
 /* Three equal-column variant — used for services § 01 (For sellers) where
-   we have three offer tiles instead of the default two. */
-.svc-offer-grid--three {
+   we have three offer tiles instead of the default two. Doubled selector
+   so it beats the base .svc-offer-grid rule that comes later in the file. */
+.svc-offer-grid.svc-offer-grid--three {
   grid-template-columns: repeat(3, 1fr);
 }
 @media (max-width: 820px) {
-  .svc-offer-grid--three { grid-template-columns: 1fr; }
+  .svc-offer-grid.svc-offer-grid--three { grid-template-columns: 1fr; }
 }
 /* Closing CTA lede — sub-line under the H2, above the button. */
 .svc-page-cta-lede {
