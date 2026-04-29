@@ -2202,14 +2202,15 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   box-shadow: 0 6px 18px rgba(18, 16, 14, 0.08), 0 2px 4px rgba(18, 16, 14, 0.04);
   transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
 }
+/* Doubled selector beats [data-animate].in's transform: translateY(0) */
 @media (hover: hover) and (pointer: fine) {
-  .bldg-item:hover {
+  .bldg-item.bldg-item:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 20px 44px rgba(18, 16, 14, 0.14), 0 6px 12px rgba(18, 16, 14, 0.08);
   }
 }
 @media (hover: none), (pointer: coarse) {
-  .bldg-item:active {
+  .bldg-item.bldg-item:active {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 20px 44px rgba(18, 16, 14, 0.14), 0 6px 12px rgba(18, 16, 14, 0.08);
   }
