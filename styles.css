@@ -2758,9 +2758,9 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
    ABOUT page · § 01 IN PARTNERSHIP — editorial logo pairing + pillars
    ============================================================ */
 .partner-logos {
-  padding: clamp(40px, 5vw, 72px) 0 clamp(48px, 5.5vw, 80px);
+  padding: clamp(40px, 5vw, 72px) 0 clamp(20px, 2.5vw, 32px);
   border-top: 1px solid var(--line);
-  margin-bottom: clamp(40px, 5vw, 64px);
+  margin-bottom: clamp(12px, 1.5vw, 20px);
 }
 .partner-pairing {
   display: flex;
