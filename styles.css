@@ -2673,11 +2673,31 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 .reach-section .s-head { margin-bottom: clamp(48px, 5vw, 72px); }
 .reach-section .stat-row { margin-bottom: clamp(48px, 6vw, 80px); }
-.svc-offer-grid--three {
-  grid-template-columns: repeat(3, 1fr);
+/* Asymmetric "magazine spread" — one feature card spans both rows on the
+   left, two regular cards stack on the right. */
+.svc-offer-grid--feature {
+  grid-template-columns: 1.45fr 1fr;
+  grid-template-rows: auto auto;
+}
+.svc-offer-grid--feature > :first-child {
+  grid-row: 1 / span 2;
+}
+.svc-offer--feature .svc-offer-title {
+  font-size: clamp(28px, 3.2vw, 42px);
+  line-height: 1.1;
+}
+.svc-offer--feature .svc-offer-body {
+  font-size: clamp(15px, 1.15vw, 17px);
+  max-width: 38ch;
 }
 @media (max-width: 820px) {
-  .svc-offer-grid--three { grid-template-columns: 1fr; }
+  .svc-offer-grid--feature {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .svc-offer-grid--feature > :first-child {
+    grid-row: auto;
+  }
 }
 @media (max-width: 720px) {
   .reach-section .stat-row {
