@@ -2690,6 +2690,15 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   font-size: clamp(15px, 1.15vw, 17px);
   max-width: 38ch;
 }
+/* Feature card pushes its link to the bottom of the spanned area. */
+.svc-offer--feature {
+  display: flex;
+  flex-direction: column;
+}
+.svc-offer--feature .svc-offer-link {
+  margin-top: auto;
+  padding-top: clamp(28px, 3vw, 40px);
+}
 @media (max-width: 820px) {
   .svc-offer-grid--feature {
     grid-template-columns: 1fr;
