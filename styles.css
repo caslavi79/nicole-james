@@ -2785,6 +2785,10 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   width: auto;
   display: block;
 }
+/* Per-logo sizing — the Christie's lockup is wide and short, Nicole's mark is
+   close to square, so equal max-heights make Nicole's logo read tiny. Bump it. */
+.partner-logo--brokerage img { max-height: clamp(56px, 6vw, 80px); }
+.partner-logo--agent img { max-height: clamp(120px, 13vw, 168px); }
 .partner-logo-placeholder {
   font-family: var(--font-serif);
   font-size: clamp(20px, 2.5vw, 28px);
