@@ -2764,16 +2764,26 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 .partner-pairing {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0;
-  max-width: 540px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 2.5vw, 32px);
+  max-width: 720px;
+  margin: 0 auto;
 }
 .partner-logo {
-  padding: clamp(18px, 2vw, 26px) 0;
-  min-height: 72px;
+  padding: 0;
+  min-height: 56px;
   display: flex;
   align-items: center;
+  flex: 0 1 auto;
+}
+.partner-logo--brokerage { justify-content: flex-end; }
+.partner-logo--agent { justify-content: flex-start; }
+.partner-logo img {
+  max-height: clamp(40px, 5vw, 64px);
+  width: auto;
+  display: block;
 }
 .partner-logo-placeholder {
   font-family: var(--font-serif);
@@ -2786,15 +2796,19 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .partner-sep {
   display: flex;
   align-items: center;
-  gap: 16px;
-  width: 100%;
-  padding: 4px 0;
+  gap: 12px;
+  flex: 0 0 auto;
+  padding: 0;
 }
 .partner-sep-line {
-  flex: 0 0 48px;
+  flex: 0 0 32px;
   height: 1px;
   background: var(--line);
   display: block;
+}
+@media (max-width: 560px) {
+  .partner-pairing { flex-direction: column; gap: 4px; }
+  .partner-sep-line { flex: 0 0 48px; }
 }
 .partner-sep-glyph {
   font-size: clamp(14px, 1.5vw, 18px);
