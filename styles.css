@@ -3001,6 +3001,23 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   animation: none;
   background-image: none;
 }
+/* Photo-pending placeholder for buildings without a photo yet */
+.bldg-card-img--coming {
+  animation: none;
+  background-image: none;
+  background-color: var(--bone-2);
+  display: grid;
+  place-items: center;
+}
+.bldg-card-img--coming::after {
+  content: 'Photo coming';
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  color: var(--smoke);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
 .bldg-card-img img {
   display: block;
   width: 100%;
@@ -3510,6 +3527,21 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   width: 100%;
   height: auto;
   display: block;
+}
+/* Photo-pending placeholder for building hero */
+.building-hero-img--coming {
+  aspect-ratio: 4 / 5;
+  display: grid;
+  place-items: center;
+}
+.building-hero-img--coming::after {
+  content: 'Photo coming';
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--smoke);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 .building-hero-meta {
   padding-top: 8px;
