@@ -2673,6 +2673,10 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 .reach-section .s-head { margin-bottom: clamp(48px, 5vw, 72px); }
 .reach-section .stat-row { margin-bottom: clamp(48px, 6vw, 80px); }
+/* Mobile-only line break utility. Renders a hard break only on narrow widths. */
+.br-mobile { display: none; }
+@media (max-width: 720px) { .br-mobile { display: block; } }
+
 /* Three equal-column variant — used for services § 01 (For sellers) where
    we have three offer tiles instead of the default two. */
 .svc-offer-grid--three {
