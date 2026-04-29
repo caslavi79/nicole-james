@@ -2599,8 +2599,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .about-page-portrait {
   aspect-ratio: 4 / 5;
   background: var(--bone-2);
-  border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
   position: sticky;
   top: 100px;
   margin: 0;
@@ -2611,6 +2610,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 8px;
 }
 .about-page-portrait-placeholder {
   width: 100%;
