@@ -2216,7 +2216,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   }
 }
 .bldg-img {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   background: var(--bone-2);
   overflow: hidden;
   position: relative;
@@ -2722,11 +2722,11 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 /* Asymmetric "magazine spread" — one feature card spans both rows on the
    left, two regular cards stack on the right. */
-.svc-offer-grid--feature {
+.svc-offer-grid.svc-offer-grid--feature {
   grid-template-columns: 1.45fr 1fr;
   grid-template-rows: auto auto;
 }
-.svc-offer-grid--feature > :first-child {
+.svc-offer-grid.svc-offer-grid--feature > :first-child {
   grid-row: 1 / span 2;
 }
 .svc-offer--feature .svc-offer-title {
@@ -2753,11 +2753,11 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   align-items: flex-start;
 }
 @media (max-width: 820px) {
-  .svc-offer-grid--feature {
+  .svc-offer-grid.svc-offer-grid--feature {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
   }
-  .svc-offer-grid--feature > :first-child {
+  .svc-offer-grid.svc-offer-grid--feature > :first-child {
     grid-row: auto;
   }
 }
@@ -2892,7 +2892,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   display: block;
 }
 @media (max-width: 560px) {
-  .partner-pairing { flex-direction: column; gap: 4px; }
+  .partner-pairing { grid-template-columns: 1fr; gap: 16px; }
   .partner-sep-line { flex: 0 0 48px; }
 }
 .partner-sep-glyph {
