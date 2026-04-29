@@ -2795,10 +2795,9 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   margin-bottom: clamp(12px, 1.5vw, 20px);
 }
 .partner-pairing {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
   gap: clamp(16px, 2.5vw, 32px);
   max-width: 720px;
   margin: 0 auto;
