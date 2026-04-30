@@ -2713,6 +2713,19 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 820px) {
   .svc-offer-grid.svc-offer-grid--three { grid-template-columns: 1fr; }
 }
+/* Services § 03 For buyers: 2-column layout — prose + testimonial on left,
+   FAQ push-link aside on the right, vertically centered with the left. */
+.buyers-split {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(40px, 5vw, 80px);
+  align-items: center;
+}
+.buyers-split-aside { margin: 0; }
+@media (max-width: 820px) {
+  .buyers-split { grid-template-columns: 1fr; gap: clamp(40px, 6vw, 64px); }
+}
+
 /* Closing CTA lede — sub-line under the H2, above the button. */
 .svc-page-cta-lede {
   max-width: 56ch;
