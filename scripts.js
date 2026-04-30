@@ -137,7 +137,7 @@
   function setTestimonial(i) {
     testimonials.forEach((t, k) => t.classList.toggle('active', k === i));
     dots.forEach((d, k) => d.classList.toggle('active', k === i));
-    if (counter) counter.textContent = `${String(i + 1).padStart(2, '0')} / 0${testimonials.length}`;
+    if (counter) counter.textContent = `${String(i + 1).padStart(2, '0')} / ${String(testimonials.length).padStart(2, '0')}`;
     tIdx = i;
   }
 
@@ -171,7 +171,7 @@
 
     // Update indicators
     dots.forEach((d, k) => d.classList.toggle('active', k === newIdx));
-    if (counter) counter.textContent = `${String(newIdx + 1).padStart(2, '0')} / 0${testimonials.length}`;
+    if (counter) counter.textContent = `${String(newIdx + 1).padStart(2, '0')} / ${String(testimonials.length).padStart(2, '0')}`;
     tIdx = newIdx;
   }
 

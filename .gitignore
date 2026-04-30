@@ -12,3 +12,7 @@ Thumbs.db
 
 # Internal brand spec — not for public repo
 brand.html
+
+# Internal source documents (testimonials export, etc.) — not for public repo
+TestimonialTree_*.xlsx
+*.xlsx
