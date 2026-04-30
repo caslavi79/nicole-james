@@ -608,43 +608,44 @@
   const bldgViewMap = document.getElementById('bldgViewMap');
   const bldgMapEl = document.getElementById('bldgMap');
   if (bldgViewSwitch && bldgViewCarousel && bldgViewMap && bldgMapEl) {
-    // Approximate coordinates for each downtown Austin condominium
-    // building. These are a first pass — accurate enough to read the
-    // district at a glance, but worth refining against authoritative
-    // addresses before final delivery.
+    // Verified coordinates for each downtown Austin condominium
+    // building. Sources: each building's official site (where one
+    // exists), Wikipedia, Highrises.com, and OpenStreetMap Nominatim,
+    // cross-checked. Earlier first-pass values were off by anywhere
+    // from 250m to 1.8km on 17 of the 32 buildings.
     const BUILDINGS = [
-      { name: 'The Loren',                 district: 'Lady Bird Lake Edge',       href: 'buildings/loren.html',         lat: 30.2576, lng: -97.7592 },
-      { name: 'Four Seasons Residences',   district: 'Downtown Core',             href: 'buildings/fourseasons.html',   lat: 30.2618, lng: -97.7419 },
-      { name: 'Austin Proper Residences',  district: 'Market District',           href: 'buildings/proper.html',        lat: 30.2654, lng: -97.7505 },
-      { name: 'The Austonian',             district: 'Downtown Core',             href: 'buildings/austonian.html',     lat: 30.2629, lng: -97.7431 },
-      { name: 'The Independent',           district: 'Market District',           href: 'buildings/independent.html',   lat: 30.2700, lng: -97.7531 },
-      { name: 'W Austin Residences',       district: 'Downtown Core',             href: 'buildings/wresidences.html',   lat: 30.2654, lng: -97.7470 },
-      { name: 'The Shore',                 district: 'Rainey District',           href: 'buildings/shore.html',         lat: 30.2589, lng: -97.7385 },
-      { name: '70 Rainey',                 district: 'Rainey District',           href: 'buildings/70rainey.html',      lat: 30.2602, lng: -97.7384 },
-      { name: '44 East Avenue',            district: 'Rainey District',           href: 'buildings/44east.html',        lat: 30.2596, lng: -97.7384 },
-      { name: 'Vesper ATX',                district: 'Rainey District',           href: 'buildings/vesper.html',        lat: 30.2598, lng: -97.7378 },
-      { name: 'The Modern Austin',         district: 'Rainey District',           href: 'buildings/modern.html',        lat: 30.2599, lng: -97.7376 },
-      { name: 'Natiivo Austin',            district: 'Rainey District',           href: 'buildings/natiivo.html',       lat: 30.2596, lng: -97.7378 },
-      { name: 'Bridges on The Park',       district: 'Lady Bird Lake Edge',       href: 'buildings/bridges.html',       lat: 30.2606, lng: -97.7383 },
-      { name: 'Barton Place',              district: 'Lady Bird Lake Edge',       href: 'buildings/bartonplace.html',   lat: 30.2602, lng: -97.7674 },
-      { name: 'Milago',                    district: 'Lady Bird Lake Edge',       href: 'buildings/milago.html',        lat: 30.2603, lng: -97.7370 },
-      { name: 'Fifth & West',              district: 'Market District',           href: 'buildings/fifthwest.html',     lat: 30.2693, lng: -97.7531 },
-      { name: 'Seaholm Residences',        district: 'Market District',           href: 'buildings/seaholm.html',       lat: 30.2667, lng: -97.7494 },
-      { name: '360 Condominiums',          district: 'Second Street District',    href: 'buildings/360.html',           lat: 30.2671, lng: -97.7497 },
-      { name: 'Spring Condominiums',       district: 'Market District',           href: 'buildings/spring.html',        lat: 30.2696, lng: -97.7507 },
-      { name: 'The Ashton',                district: 'Downtown Core',             href: 'buildings/ashton.html',        lat: 30.2682, lng: -97.7456 },
-      { name: 'The Linden',                district: 'Downtown Core',             href: 'buildings/linden.html',        lat: 30.2680, lng: -97.7340 },
-      { name: 'Sabine on 5th',             district: 'Downtown Core',             href: 'buildings/sabine.html',        lat: 30.2655, lng: -97.7369 },
-      { name: 'Penthouse Condominiums',    district: 'Downtown Core',             href: 'buildings/penthouse.html',     lat: 30.2741, lng: -97.7407 },
-      { name: 'The Nokonah',               district: 'Market District',           href: 'buildings/nokonah.html',       lat: 30.2790, lng: -97.7517 },
-      { name: '5 Fifty Five',              district: 'Downtown Core',             href: 'buildings/555.html',           lat: 30.2625, lng: -97.7363 },
-      { name: "Celia's Court",             district: 'Old West Austin',           href: 'buildings/celiascourt.html',   lat: 30.2750, lng: -97.7600 },
-      { name: 'Austin City Lofts',         district: 'Market District',           href: 'buildings/citylofts.html',     lat: 30.2723, lng: -97.7583 },
-      { name: '904 West',                  district: 'Market District',           href: 'buildings/904west.html',       lat: 30.2750, lng: -97.7510 },
-      { name: '1010 W. 10th',              district: 'Clarksville/Old West Austin', href: 'buildings/1010w10th.html',  lat: 30.2772, lng: -97.7531 },
-      { name: 'The Colorfield',            district: 'Clarksville/Old West Austin', href: 'buildings/colorfield.html', lat: 30.2780, lng: -97.7600 },
-      { name: 'The Belvedere',             district: 'Clarksville/Old West Austin', href: 'buildings/belvedere.html',  lat: 30.2785, lng: -97.7610 },
-      { name: 'Brazos Place',              district: 'Downtown Core',             href: 'buildings/brazosplace.html',   lat: 30.2754, lng: -97.7430 },
+      { name: 'The Loren',                 district: 'Lady Bird Lake Edge',         href: 'buildings/loren.html',         lat: 30.2641, lng: -97.7567 },
+      { name: 'Four Seasons Residences',   district: 'Downtown Core',               href: 'buildings/fourseasons.html',   lat: 30.2617, lng: -97.7423 },
+      { name: 'Austin Proper Residences',  district: 'Market District',             href: 'buildings/proper.html',        lat: 30.2661, lng: -97.7501 },
+      { name: 'The Austonian',             district: 'Downtown Core',               href: 'buildings/austonian.html',     lat: 30.2646, lng: -97.7444 },
+      { name: 'The Independent',           district: 'Market District',             href: 'buildings/independent.html',   lat: 30.2678, lng: -97.7512 },
+      { name: 'W Austin Residences',       district: 'Downtown Core',               href: 'buildings/wresidences.html',   lat: 30.2656, lng: -97.7470 },
+      { name: 'The Shore',                 district: 'Rainey District',             href: 'buildings/shore.html',         lat: 30.2596, lng: -97.7393 },
+      { name: '70 Rainey',                 district: 'Rainey District',             href: 'buildings/70rainey.html',      lat: 30.2586, lng: -97.7392 },
+      { name: '44 East Avenue',            district: 'Rainey District',             href: 'buildings/44east.html',        lat: 30.2560, lng: -97.7390 },
+      { name: 'Vesper ATX',                district: 'Rainey District',             href: 'buildings/vesper.html',        lat: 30.2580, lng: -97.7381 },
+      { name: 'The Modern Austin',         district: 'Rainey District',             href: 'buildings/modern.html',        lat: 30.2604, lng: -97.7390 },
+      { name: 'Natiivo Austin',            district: 'Rainey District',             href: 'buildings/natiivo.html',       lat: 30.2564, lng: -97.7389 },
+      { name: 'Bridges on The Park',       district: 'Lady Bird Lake Edge',         href: 'buildings/bridges.html',       lat: 30.2632, lng: -97.7572 },
+      { name: 'Barton Place',              district: 'Lady Bird Lake Edge',         href: 'buildings/bartonplace.html',   lat: 30.2622, lng: -97.7613 },
+      { name: 'Milago',                    district: 'Lady Bird Lake Edge',         href: 'buildings/milago.html',        lat: 30.2574, lng: -97.7394 },
+      { name: 'Fifth & West',              district: 'Market District',             href: 'buildings/fifthwest.html',     lat: 30.2694, lng: -97.7508 },
+      { name: 'Seaholm Residences',        district: 'Market District',             href: 'buildings/seaholm.html',       lat: 30.2672, lng: -97.7521 },
+      { name: '360 Condominiums',          district: 'Second Street District',      href: 'buildings/360.html',           lat: 30.2674, lng: -97.7497 },
+      { name: 'Spring Condominiums',       district: 'Market District',             href: 'buildings/spring.html',        lat: 30.2690, lng: -97.7541 },
+      { name: 'The Ashton',                district: 'Downtown Core',               href: 'buildings/ashton.html',        lat: 30.2639, lng: -97.7454 },
+      { name: 'The Linden',                district: 'Downtown Core',               href: 'buildings/linden.html',        lat: 30.2794, lng: -97.7421 },
+      { name: 'Sabine on 5th',             district: 'Downtown Core',               href: 'buildings/sabine.html',        lat: 30.2655, lng: -97.7361 },
+      { name: 'Penthouse Condominiums',    district: 'Downtown Core',               href: 'buildings/penthouse.html',     lat: 30.2741, lng: -97.7429 },
+      { name: 'The Nokonah',               district: 'Market District',             href: 'buildings/nokonah.html',       lat: 30.2735, lng: -97.7523 },
+      { name: '5 Fifty Five',              district: 'Downtown Core',               href: 'buildings/555.html',           lat: 30.2655, lng: -97.7379 },
+      { name: "Celia's Court",             district: 'Market District',             href: 'buildings/celiascourt.html',   lat: 30.2726, lng: -97.7474 },
+      { name: 'Austin City Lofts',         district: 'Market District',             href: 'buildings/citylofts.html',     lat: 30.2697, lng: -97.7514 },
+      { name: '904 West',                  district: 'Market District',             href: 'buildings/904west.html',       lat: 30.2737, lng: -97.7498 },
+      { name: '1010 W. 10th',              district: 'Clarksville/Old West Austin', href: 'buildings/1010w10th.html',     lat: 30.2755, lng: -97.7529 },
+      { name: 'The Colorfield',            district: 'Clarksville/Old West Austin', href: 'buildings/colorfield.html',    lat: 30.2761, lng: -97.7532 },
+      { name: 'The Belvedere',             district: 'Clarksville/Old West Austin', href: 'buildings/belvedere.html',     lat: 30.2718, lng: -97.7614 },
+      { name: 'Brazos Place',              district: 'Downtown Core',               href: 'buildings/brazosplace.html',   lat: 30.2699, lng: -97.7408 },
     ];
 
     let mapInstance = null;
