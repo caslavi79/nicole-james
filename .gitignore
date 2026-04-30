@@ -1,6 +1,14 @@
 # Local-only assets (too large for GitHub or not needed in repo)
 drone reel landscape.mp4
 .DS_Store
+**/.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# OS noise
+Thumbs.db
 
 # Internal brand spec — not for public repo
 brand.html
