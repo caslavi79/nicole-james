@@ -2071,7 +2071,12 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .entry-body {
   max-width: 680px;
   margin: 0 auto;
-  padding: 40px 0 72px;
+  /* Top/bottom only — left/right padding is supplied by the .shell
+     class on the same element (the shorthand `padding: x 0 y` was
+     overriding .shell's horizontal padding and pinning text to the
+     screen edge on mobile). */
+  padding-top: 40px;
+  padding-bottom: 72px;
 }
 .entry-body p {
   font-size: 17px;
@@ -2100,7 +2105,9 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 .entry-next {
   max-width: 760px;
   margin: 0 auto;
-  padding: 48px 0;
+  /* Top/bottom only — see .entry-body note above. */
+  padding-top: 48px;
+  padding-bottom: 48px;
   border-top: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
@@ -2169,6 +2176,24 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   line-height: 1.4;
 }
 .contact-item .v a:hover { color: var(--terra); }
+/* Chooser-trigger buttons (phone/email) look like the previous tel:/
+   mailto: links but open the same call/text + mail-app sheet that the
+   nav overlay uses, so users can pick instead of being shoved into one
+   handler. */
+.contact-item-trigger {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-fast);
+}
+.contact-item-trigger:hover,
+.contact-item-trigger:focus-visible { color: var(--terra); }
 
 .contact-map {
   margin-top: 48px;
@@ -2809,6 +2834,19 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   .reach-section .stat-row {
     grid-template-columns: 1fr;
   }
+  /* Feature card link absolute-positioning works on desktop where the
+     body text is short and the card has fixed padding-bottom to clear
+     it. On mobile the body wraps to many lines and the absolutely-
+     positioned link overlaps the closing paragraph. Switch to static
+     flow, right-aligned below the body. */
+  .svc-offer--feature {
+    padding-bottom: clamp(28px, 4vw, 44px);
+  }
+  .svc-offer--feature .svc-offer-link {
+    position: static;
+    margin-top: clamp(20px, 4vw, 32px);
+    align-items: flex-end;
+  }
 }
 
 .about-page-body-marker {
@@ -2938,6 +2976,15 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 @media (max-width: 560px) {
   .partner-pairing { grid-template-columns: 1fr; gap: 16px; }
   .partner-sep-line { flex: 0 0 48px; }
+  /* When the pairing collapses to a single column, the brokerage and
+     agent rows inherit their desktop justification (right-aligned and
+     left-aligned respectively against the auto-column seam). Center
+     both so the stack reads as one tidy column. */
+  .partner-logo--brokerage,
+  .partner-logo--agent {
+    justify-content: center;
+  }
+  .partner-sep { justify-content: center; }
 }
 .partner-sep-glyph {
   font-size: clamp(14px, 1.5vw, 18px);
