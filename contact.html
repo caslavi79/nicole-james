@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260429-38" />
+<link rel="stylesheet" href="styles.css?v=20260430-1" />
 
 <!-- Schema.org: ContactPage + BreadcrumbList -->
 <script type="application/ld+json">
@@ -174,7 +174,7 @@
 
     <div class="contact-grid">
       <!-- Form -->
-      <form class="contact-form" action="#" method="POST">
+      <form class="contact-form" id="contactForm" novalidate>
         <div class="form-field">
           <label for="f-name">Name</label>
           <input type="text" id="f-name" name="name" autocomplete="name" required />
@@ -205,6 +205,13 @@
           <label for="f-message">Message</label>
           <textarea id="f-message" name="message" rows="4" placeholder="A building, a timeframe, or a question." required></textarea>
         </div>
+        <!-- Honeypot — bots fill it; real users never see it. Server rejects
+             any submission where this field is non-empty. -->
+        <div class="form-honeypot" aria-hidden="true">
+          <label>Website (leave blank)
+            <input type="text" name="website" tabindex="-1" autocomplete="off" />
+          </label>
+        </div>
 
         <div class="form-optins">
           <label class="form-optin">
@@ -225,8 +232,9 @@
           </label>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="margin-top:16px">Send inquiry →</button>
+        <button type="submit" class="btn btn-primary" id="contactSubmit" style="margin-top:16px">Send inquiry &rarr;</button>
         <p class="meta" style="margin-top:16px">Responses within one business day.</p>
+        <div class="form-status" id="contactStatus" role="status" aria-live="polite"></div>
       </form>
 
       <!-- Direct contact -->
@@ -315,7 +323,7 @@
   </div>
 </footer>
 
-<script src="scripts.js?v=20260429-8" defer></script>
+<script src="scripts.js?v=20260430-1" defer></script>
 
 </body>
 </html>

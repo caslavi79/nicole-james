@@ -1812,6 +1812,56 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 .form-field textarea { resize: none; min-height: 80px; overflow: hidden; }
 
+/* Honeypot — invisible to humans, irresistible to bots. Server rejects
+   any submission where the "website" field is non-empty. */
+.form-honeypot {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Submit-status line under the button (validation errors, server errors). */
+.form-status {
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 1em;
+}
+.form-status[data-kind="error"] {
+  color: #b04a3b;
+  font-style: italic;
+}
+
+/* Success panel that replaces the form on a successful submit. */
+.form-success {
+  padding: 8px 0;
+}
+.form-success-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 16px;
+}
+.form-success-line {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+.form-success-sub {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  margin: 0;
+}
+
 /* -- FORM OPT-IN CHECKBOXES -- */
 .form-optins {
   display: flex;

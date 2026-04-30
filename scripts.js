@@ -362,6 +362,91 @@
     fit();
   });
 
+  // -- CONTACT FORM submit (POST to Supabase Edge Function)
+  // The function inserts a row into the submissions table, fires an
+  // auto-reply to the client, and a notification to Nicole. We treat
+  // any 2xx as success — the function returns ok:true even if the
+  // email step fails, since the lead is already captured in the DB.
+  const contactForm = document.getElementById('contactForm');
+  const contactStatus = document.getElementById('contactStatus');
+  const contactSubmit = document.getElementById('contactSubmit');
+  if (contactForm && contactStatus && contactSubmit) {
+    const FUNCTION_URL = 'https://vizhefudqydsgsepsqlg.supabase.co/functions/v1/submit-contact';
+    // The anon key is required by the Supabase Functions gateway, but the
+    // function itself doesn't trust it — all auth/validation happens
+    // server-side using the service_role key.
+    const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpemhlZnVkcXlkc2dzZXBzcWxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NzQ4NzUsImV4cCI6MjA5MzE1MDg3NX0.4Or7mliBEkkwicsy5ubM-QMRcmFoV3j1M6VIrRUaW_w';
+
+    const setStatus = (text, kind) => {
+      contactStatus.textContent = text || '';
+      contactStatus.dataset.kind = kind || '';
+    };
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (contactSubmit.disabled) return;
+
+      const fd = new FormData(contactForm);
+      const payload = {
+        name: (fd.get('name') || '').toString().trim(),
+        email: (fd.get('email') || '').toString().trim(),
+        phone: (fd.get('phone') || '').toString().trim(),
+        interest: (fd.get('interest') || '').toString().trim(),
+        building: (fd.get('building') || '').toString().trim(),
+        message: (fd.get('message') || '').toString().trim(),
+        optin_blog: fd.get('optin-blog') === 'yes',
+        optin_listings: fd.get('optin-listings') === 'yes',
+        website: (fd.get('website') || '').toString(), // honeypot
+      };
+
+      // Lightweight client-side validation; the server validates again.
+      if (!payload.name)    { setStatus('Please add your name.', 'error'); return; }
+      if (!payload.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+        setStatus('Please add a valid email.', 'error'); return;
+      }
+      if (!payload.message) { setStatus('A short message helps Nicole respond.', 'error'); return; }
+
+      const original = contactSubmit.textContent;
+      contactSubmit.disabled = true;
+      contactSubmit.textContent = 'Sending…';
+      setStatus('', '');
+
+      try {
+        const res = await fetch(FUNCTION_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${ANON_KEY}`,
+            'apikey': ANON_KEY,
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || `http_${res.status}`);
+        }
+        // Success — replace the form with a confirmation panel.
+        contactForm.innerHTML = `
+          <div class="form-success">
+            <div class="form-success-eyebrow">Sent</div>
+            <p class="form-success-line">Thank you, ${escapeForHtml(payload.name.split(/\s+/)[0])}. Your message has come straight to Nicole.</p>
+            <p class="form-success-sub">A confirmation is on its way to ${escapeForHtml(payload.email)}. Responses within one business day.</p>
+          </div>
+        `;
+      } catch (err) {
+        console.error('contact submit failed', err);
+        contactSubmit.disabled = false;
+        contactSubmit.textContent = original;
+        setStatus("Sorry — something went wrong. Try again, or email Nicole directly at nicolej@christiesrealestatels.com.", 'error');
+      }
+    });
+  }
+  function escapeForHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+  }
+
   // -- FAQ accordion (on blog page)
   // ARIA wiring is done in JS (rather than the HTML) so the 21 question
   // items don't need hand-numbered IDs in markup. Each .faq-q gets
