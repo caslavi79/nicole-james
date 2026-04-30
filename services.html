@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260429-35" />
+<link rel="stylesheet" href="styles.css?v=20260429-36" />
 
 <!-- Schema.org: WebPage + Service + BreadcrumbList -->
 <script type="application/ld+json">
@@ -135,8 +135,9 @@
   </div>
 </div>
 
-<!-- ========== HERO · BUILDING CAROUSEL ========== -->
-<section class="bldg-carousel-section" aria-label="Buildings carousel">
+<!-- ========== HERO · BUILDING VIEWS (CAROUSEL ↔ MAP) ========== -->
+<section class="bldg-carousel-section" aria-label="Buildings">
+  <div class="bldg-view bldg-view--carousel" id="bldgViewCarousel">
   <div class="bldg-carousel-viewport">
     <button class="bldg-carousel-arrow bldg-carousel-arrow--prev bldg-carousel-arrow--floating" id="bldgArrowPrev" aria-label="Previous buildings">&larr;</button>
     <div class="bldg-carousel" id="bldgCarousel" tabindex="0" aria-label="Buildings">
@@ -270,6 +271,33 @@
       </a>
     </div>
     <button class="bldg-carousel-arrow bldg-carousel-arrow--next bldg-carousel-arrow--floating" id="bldgArrowNext" aria-label="Next buildings">&rarr;</button>
+  </div>
+  </div><!-- /.bldg-view--carousel -->
+
+  <!-- Map view (placeholder for now — interactive map to follow) -->
+  <div class="bldg-view bldg-view--map" id="bldgViewMap" hidden>
+    <div class="shell">
+      <div class="bldg-map-placeholder">
+        <span class="bldg-map-placeholder-eyebrow">Map &middot; Coming soon</span>
+        <p class="bldg-map-placeholder-text">An interactive map of every downtown building, plotted by district.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- View switch (right-aligned, always visible) -->
+  <div class="bldg-view-toggle shell">
+    <button type="button" class="bldg-view-switch" id="bldgViewSwitch" aria-pressed="false" aria-controls="bldgViewMap bldgViewCarousel">
+      <span class="bldg-view-switch-label">
+        <span class="bldg-view-switch-eyebrow">View as</span>
+        <span class="bldg-view-switch-state">
+          <span data-state="off">Map</span>
+          <span data-state="on">Carousel</span>
+        </span>
+      </span>
+      <span class="bldg-view-switch-track" aria-hidden="true">
+        <span class="bldg-view-switch-thumb"></span>
+      </span>
+    </button>
   </div>
 </section>
 
@@ -425,7 +453,7 @@
   </div>
 </footer>
 
-<script src="scripts.js?v=20260429-2" defer></script>
+<script src="scripts.js?v=20260429-3" defer></script>
 
 </body>
 </html>

@@ -598,6 +598,22 @@
     }
   });
 
+  // -- BUILDING VIEW SWITCH (services page · carousel ↔ map)
+  // Simple binary toggle: pressing the switch swaps which view is
+  // hidden. The map view is a placeholder until we wire up the
+  // interactive map.
+  const bldgViewSwitch = document.getElementById('bldgViewSwitch');
+  const bldgViewCarousel = document.getElementById('bldgViewCarousel');
+  const bldgViewMap = document.getElementById('bldgViewMap');
+  if (bldgViewSwitch && bldgViewCarousel && bldgViewMap) {
+    bldgViewSwitch.addEventListener('click', () => {
+      const goMap = bldgViewSwitch.getAttribute('aria-pressed') !== 'true';
+      bldgViewSwitch.setAttribute('aria-pressed', goMap ? 'true' : 'false');
+      bldgViewCarousel.hidden = goMap;
+      bldgViewMap.hidden = !goMap;
+    });
+  }
+
   // -- BUILDING CAROUSEL (services hero)
   //
   // MOBILE PATH (≤820px) — native-scroll auto-drift with infinite wrap.
