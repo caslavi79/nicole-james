@@ -3563,42 +3563,52 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
    MOBILE DESIGN PASS for the new sections
    ============================================================ */
 @media (max-width: 720px) {
-  /* § 01 partnership — compact stack + horizontal pillar scroll */
+  /* § 01 partnership — compact stack + vertical pillar list */
   .partner-pairing { max-width: 100%; }
   .partner-sep-line { flex: 0 0 32px; }
+  /* Pillars stack vertically on mobile, almost-touching, each one
+     a single text row with value left + label right (was a horizontal
+     scrollable carousel of pills, which read as a side-quest on a
+     phone). */
   .partner-pillars {
     display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    gap: 10px;
-    padding-bottom: 4px;
-    border: none;
-    margin-left: calc(-1 * var(--shell-pad));
-    margin-right: calc(-1 * var(--shell-pad));
-    padding-left: var(--shell-pad);
-    padding-right: var(--shell-pad);
-  }
-  .partner-pillars::-webkit-scrollbar { display: none; }
-  .partner-pillar {
-    scroll-snap-align: start;
-    flex: 0 0 auto;
-    display: flex;
     flex-direction: column;
-    justify-content: center;
-    min-width: 160px;
-    padding: 16px 18px;
+    gap: 6px;
+    border: none;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+  }
+  .partner-pillar {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
     border: 1px solid var(--line);
     background: var(--bone-2);
+    min-width: 0;
   }
+  /* Reset the desktop sibling rule that adds a left border + extra
+     padding to the second/third pill (horizontal-row treatment). */
   .partner-pillar + .partner-pillar {
     padding-left: 18px;
     border-left: 1px solid var(--line);
   }
-  .partner-pillar .lb { font-size: 10px; letter-spacing: 0.2em; }
-  .partner-pillar .v  { font-size: 16px; line-height: 1.2; }
+  .partner-pillar .v {
+    font-size: 16px;
+    line-height: 1.2;
+    /* Long URL ("christiesrealestate.com") shouldn't push the label
+       off the row — let it shrink first. */
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .partner-pillar .lb {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    flex-shrink: 0;
+  }
 
   /* § 02 stats — keep 2x2, never 1-col */
   .stat-row {
