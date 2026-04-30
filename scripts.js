@@ -363,11 +363,23 @@
   });
 
   // -- FAQ accordion (on blog page)
+  // ARIA wiring is done in JS (rather than the HTML) so the 21 question
+  // items don't need hand-numbered IDs in markup. Each .faq-q gets
+  // aria-expanded + aria-controls pointing at its sibling .faq-a, which
+  // gets a generated id. Toggling the open class also flips aria-expanded
+  // so screen readers announce the state correctly.
   const faqItems = document.querySelectorAll('.faq-item');
-  faqItems.forEach((item) => {
+  faqItems.forEach((item, idx) => {
     const q = item.querySelector('.faq-q');
-    if (q) {
-      q.addEventListener('click', () => item.classList.toggle('open'));
+    const a = item.querySelector('.faq-a');
+    if (q && a) {
+      if (!a.id) a.id = `faq-a-${idx}`;
+      q.setAttribute('aria-expanded', 'false');
+      q.setAttribute('aria-controls', a.id);
+      q.addEventListener('click', () => {
+        const isOpen = item.classList.toggle('open');
+        q.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
     }
   });
 
@@ -386,6 +398,9 @@
   const navToggle = document.getElementById('navToggle');
   const navOverlay = document.getElementById('navOverlay');
   const navClose = document.getElementById('navClose');
+  // Hoisted so the chooser-trigger handler below can close the menu
+  // before opening a chooser launched from inside the overlay.
+  let closeMenuFn = null;
 
   if (navToggle && navOverlay) {
     const overlayLinks = navOverlay.querySelectorAll('a');
@@ -462,6 +477,8 @@
       else openMenu();
     });
 
+    closeMenuFn = closeMenu;
+
     if (navClose) navClose.addEventListener('click', closeMenu);
 
     // close on link tap
@@ -515,6 +532,13 @@
   chooserTriggers.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      // If the trigger lives inside the open mobile nav overlay, close
+      // the overlay first so the chooser doesn't open on top of it.
+      // Otherwise dismissing the chooser drops the user back into a
+      // still-open menu instead of the page they were reading.
+      if (navOverlay && navOverlay.classList.contains('open') && btn.closest('#navOverlay') && closeMenuFn) {
+        closeMenuFn();
+      }
       const target = btn.dataset.chooser === 'phone' ? 'phoneChooser' : 'emailChooser';
       openChooser(target);
     });

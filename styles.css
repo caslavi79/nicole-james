@@ -137,7 +137,12 @@ h3.title {
 .shell {
   max-width: var(--shell-max);
   margin: 0 auto;
-  padding: 0 var(--shell-pad);
+  /* env(safe-area-inset-*) adds the notched iPhone landscape inset on
+     top of the standard horizontal padding so content can't slide
+     under the notch or home-indicator pill. Falls back to 0 on
+     non-notched browsers. */
+  padding-left: max(var(--shell-pad), env(safe-area-inset-left));
+  padding-right: max(var(--shell-pad), env(safe-area-inset-right));
 }
 
 section {
@@ -1262,6 +1267,15 @@ section .shell { position: relative; z-index: 1; }
   opacity: 0.3;
   transition: opacity var(--dur-fast), background var(--dur-fast);
   cursor: pointer;
+  position: relative;
+}
+/* Invisible 44×44 hit target around each dot so they're tappable on
+   mobile without enlarging the visible dot. */
+.testimonial-dot::after {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
 }
 .testimonial-dot.active { opacity: 1; background: var(--ink); }
 .testimonial-arrows { display: flex; gap: 6px; }
@@ -1736,13 +1750,26 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   .f-brand .mark { font-size: 24px; }
   .f-brand .pair { margin-top: 20px; padding-top: 20px; font-size: 12px; }
   footer h5 { margin-bottom: 14px; }
-  footer ul { gap: 8px; }
+  footer ul { gap: 4px; }
   /* Long emails/URLs wrap cleanly rather than overflow the 1-col track */
   footer address,
   footer address a,
   footer ul a { word-break: break-word; overflow-wrap: anywhere; }
   /* Lift legal/util link contrast on the dark footer for smaller sizes */
   footer ul a, footer address a { color: var(--bone-2, var(--limestone)); }
+  /* Hit-target padding on each footer link — meets Apple HIG 44×44
+     minimum without affecting visual rhythm. */
+  footer ul a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 4px 0;
+  }
+  footer address a {
+    display: inline-block;
+    padding: 8px 0;
+    min-height: 32px;
+  }
   .f-bottom {
     margin-top: 40px;
     padding-top: 20px;
@@ -1963,6 +1990,10 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   line-height: 1.25;
   letter-spacing: -0.01em;
   color: var(--ink);
+  /* Apple HIG min 44px tap target — without this the button itself is
+     just text height, leaving the row hard to tap precisely on mobile. */
+  padding: 14px 0;
+  min-height: 44px;
 }
 .faq-q .mark { font-size: 16px; color: var(--smoke); transition: transform var(--dur-fast); margin-left: 20px; flex-shrink: 0; }
 .faq-item.open .faq-q .mark { transform: rotate(45deg); }
@@ -2254,7 +2285,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   margin: 0;
 }
 .bldg-meta .teaser {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.55;
   color: var(--ink-2);
   max-width: 32ch;
@@ -2679,7 +2710,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 .about-page-body .body-text {
   font-family: var(--font-sans);
-  font-size: clamp(14.5px, 1.2vw, 16px);
+  font-size: clamp(15.5px, 1.2vw, 16px);
   line-height: 1.75;
   color: var(--ink-2);
   max-width: 58ch;
@@ -2992,7 +3023,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 .stat-l {
   font-family: var(--font-sans);
-  font-size: clamp(11px, 1vw, 13px);
+  font-size: clamp(12px, 1vw, 13px);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--smoke);
@@ -3043,8 +3074,14 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   text-decoration: none;
   transition: color var(--dur-fast), opacity var(--dur-fast);
   white-space: nowrap;
+  /* Generous mobile hit target — push-links are the editorial nav
+     between sections; we want them comfortable to tap. */
+  display: inline-block;
+  padding: 8px 4px;
+  min-height: 44px;
 }
 .push-link a:hover { color: var(--terra-deep); }
+.push-link a:active { color: var(--terra-deep); opacity: 0.7; }
 
 /* ============================================================
    SERVICES page · HERO building carousel — polished
@@ -3611,7 +3648,10 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
 }
 @media (max-width: 820px) {
   /* § 03 off-market — stack prose then bullets, hairline divider */
-  .svc-prose-grid { grid-template-columns: 1fr; }
+  .svc-prose-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(20px, 4vw, 32px);
+  }
   .svc-prose-grid > .svc-prose { padding-right: 0; }
   .svc-prose-grid > .advisory-bullets {
     border-left: none;
