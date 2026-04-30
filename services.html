@@ -8,7 +8,7 @@
 <!-- INDEXING META -->
 <meta name="robots" content="index, follow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' https://unpkg.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-180.png" />
@@ -34,7 +34,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="styles.css?v=20260429-36" />
+<link rel="stylesheet" href="styles.css?v=20260429-37" />
+<!-- Leaflet (loaded only on services.html for the buildings map) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin="" defer></script>
 
 <!-- Schema.org: WebPage + Service + BreadcrumbList -->
 <script type="application/ld+json">
@@ -274,13 +281,10 @@
   </div>
   </div><!-- /.bldg-view--carousel -->
 
-  <!-- Map view (placeholder for now — interactive map to follow) -->
+  <!-- Map view (Leaflet — initialized on first toggle) -->
   <div class="bldg-view bldg-view--map" id="bldgViewMap" hidden>
     <div class="shell">
-      <div class="bldg-map-placeholder">
-        <span class="bldg-map-placeholder-eyebrow">Map &middot; Coming soon</span>
-        <p class="bldg-map-placeholder-text">An interactive map of every downtown building, plotted by district.</p>
-      </div>
+      <div class="bldg-map" id="bldgMap" aria-label="Downtown Austin condominium buildings, plotted by location."></div>
     </div>
   </div>
 
@@ -453,7 +457,7 @@
   </div>
 </footer>
 
-<script src="scripts.js?v=20260429-3" defer></script>
+<script src="scripts.js?v=20260429-4" defer></script>
 
 </body>
 </html>

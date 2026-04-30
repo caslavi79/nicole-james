@@ -599,18 +599,115 @@
   });
 
   // -- BUILDING VIEW SWITCH (services page · carousel ↔ map)
-  // Simple binary toggle: pressing the switch swaps which view is
-  // hidden. The map view is a placeholder until we wire up the
-  // interactive map.
+  // Toggle hides one view, reveals the other. The Leaflet map is
+  // lazy-initialized the first time the user switches to map view —
+  // we don't want to pay the tile/fonts cost until it's needed, and
+  // Leaflet needs to measure a visible container to compute its layout.
   const bldgViewSwitch = document.getElementById('bldgViewSwitch');
   const bldgViewCarousel = document.getElementById('bldgViewCarousel');
   const bldgViewMap = document.getElementById('bldgViewMap');
-  if (bldgViewSwitch && bldgViewCarousel && bldgViewMap) {
+  const bldgMapEl = document.getElementById('bldgMap');
+  if (bldgViewSwitch && bldgViewCarousel && bldgViewMap && bldgMapEl) {
+    // Approximate coordinates for each downtown Austin condominium
+    // building. These are a first pass — accurate enough to read the
+    // district at a glance, but worth refining against authoritative
+    // addresses before final delivery.
+    const BUILDINGS = [
+      { name: 'The Loren',                 district: 'Lady Bird Lake Edge',       href: 'buildings/loren.html',         lat: 30.2576, lng: -97.7592 },
+      { name: 'Four Seasons Residences',   district: 'Downtown Core',             href: 'buildings/fourseasons.html',   lat: 30.2618, lng: -97.7419 },
+      { name: 'Austin Proper Residences',  district: 'Market District',           href: 'buildings/proper.html',        lat: 30.2654, lng: -97.7505 },
+      { name: 'The Austonian',             district: 'Downtown Core',             href: 'buildings/austonian.html',     lat: 30.2629, lng: -97.7431 },
+      { name: 'The Independent',           district: 'Market District',           href: 'buildings/independent.html',   lat: 30.2700, lng: -97.7531 },
+      { name: 'W Austin Residences',       district: 'Downtown Core',             href: 'buildings/wresidences.html',   lat: 30.2654, lng: -97.7470 },
+      { name: 'The Shore',                 district: 'Rainey District',           href: 'buildings/shore.html',         lat: 30.2589, lng: -97.7385 },
+      { name: '70 Rainey',                 district: 'Rainey District',           href: 'buildings/70rainey.html',      lat: 30.2602, lng: -97.7384 },
+      { name: '44 East Avenue',            district: 'Rainey District',           href: 'buildings/44east.html',        lat: 30.2596, lng: -97.7384 },
+      { name: 'Vesper ATX',                district: 'Rainey District',           href: 'buildings/vesper.html',        lat: 30.2598, lng: -97.7378 },
+      { name: 'The Modern Austin',         district: 'Rainey District',           href: 'buildings/modern.html',        lat: 30.2599, lng: -97.7376 },
+      { name: 'Natiivo Austin',            district: 'Rainey District',           href: 'buildings/natiivo.html',       lat: 30.2596, lng: -97.7378 },
+      { name: 'Bridges on The Park',       district: 'Lady Bird Lake Edge',       href: 'buildings/bridges.html',       lat: 30.2606, lng: -97.7383 },
+      { name: 'Barton Place',              district: 'Lady Bird Lake Edge',       href: 'buildings/bartonplace.html',   lat: 30.2602, lng: -97.7674 },
+      { name: 'Milago',                    district: 'Lady Bird Lake Edge',       href: 'buildings/milago.html',        lat: 30.2603, lng: -97.7370 },
+      { name: 'Fifth & West',              district: 'Market District',           href: 'buildings/fifthwest.html',     lat: 30.2693, lng: -97.7531 },
+      { name: 'Seaholm Residences',        district: 'Market District',           href: 'buildings/seaholm.html',       lat: 30.2667, lng: -97.7494 },
+      { name: '360 Condominiums',          district: 'Second Street District',    href: 'buildings/360.html',           lat: 30.2671, lng: -97.7497 },
+      { name: 'Spring Condominiums',       district: 'Market District',           href: 'buildings/spring.html',        lat: 30.2696, lng: -97.7507 },
+      { name: 'The Ashton',                district: 'Downtown Core',             href: 'buildings/ashton.html',        lat: 30.2682, lng: -97.7456 },
+      { name: 'The Linden',                district: 'Downtown Core',             href: 'buildings/linden.html',        lat: 30.2680, lng: -97.7340 },
+      { name: 'Sabine on 5th',             district: 'Downtown Core',             href: 'buildings/sabine.html',        lat: 30.2655, lng: -97.7369 },
+      { name: 'Penthouse Condominiums',    district: 'Downtown Core',             href: 'buildings/penthouse.html',     lat: 30.2741, lng: -97.7407 },
+      { name: 'The Nokonah',               district: 'Market District',           href: 'buildings/nokonah.html',       lat: 30.2790, lng: -97.7517 },
+      { name: '5 Fifty Five',              district: 'Downtown Core',             href: 'buildings/555.html',           lat: 30.2625, lng: -97.7363 },
+      { name: "Celia's Court",             district: 'Old West Austin',           href: 'buildings/celiascourt.html',   lat: 30.2750, lng: -97.7600 },
+      { name: 'Austin City Lofts',         district: 'Market District',           href: 'buildings/citylofts.html',     lat: 30.2723, lng: -97.7583 },
+      { name: '904 West',                  district: 'Market District',           href: 'buildings/904west.html',       lat: 30.2750, lng: -97.7510 },
+      { name: '1010 W. 10th',              district: 'Clarksville/Old West Austin', href: 'buildings/1010w10th.html',  lat: 30.2772, lng: -97.7531 },
+      { name: 'The Colorfield',            district: 'Clarksville/Old West Austin', href: 'buildings/colorfield.html', lat: 30.2780, lng: -97.7600 },
+      { name: 'The Belvedere',             district: 'Clarksville/Old West Austin', href: 'buildings/belvedere.html',  lat: 30.2785, lng: -97.7610 },
+      { name: 'Brazos Place',              district: 'Downtown Core',             href: 'buildings/brazosplace.html',   lat: 30.2754, lng: -97.7430 },
+    ];
+
+    let mapInstance = null;
+    const initMap = () => {
+      if (mapInstance || typeof L === 'undefined') return;
+      mapInstance = L.map(bldgMapEl, {
+        center: [30.2680, -97.7475],
+        zoom: 14,
+        scrollWheelZoom: false, // user enables via click; avoids hijacking page scroll
+        zoomControl: true,
+      });
+      // CARTO Voyager — warm cream tones that sit well next to bone (#F4EFE7)
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19,
+      }).addTo(mapInstance);
+
+      // Re-enable scroll-wheel zoom only after the user has clicked the map,
+      // so casual scrolling past the map doesn't trap the page.
+      mapInstance.on('focus', () => mapInstance.scrollWheelZoom.enable());
+      mapInstance.on('blur', () => mapInstance.scrollWheelZoom.disable());
+
+      const pinIcon = L.divIcon({
+        className: '',
+        html: '<div class="bldg-map-pin"></div>',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7],
+      });
+
+      // Slight jitter when buildings share a coordinate (Rainey cluster, etc.)
+      // so pins don't stack invisibly on top of each other.
+      const seen = {};
+      BUILDINGS.forEach((b) => {
+        const key = `${b.lat.toFixed(4)},${b.lng.toFixed(4)}`;
+        const dup = seen[key] || 0;
+        const lat = b.lat + dup * 0.00018;
+        const lng = b.lng + dup * 0.00022;
+        seen[key] = dup + 1;
+
+        const popup = `
+          <div class="bldg-popup-name">${b.name}</div>
+          <div class="bldg-popup-district">${b.district}</div>
+          <a class="bldg-popup-link" href="${b.href}">Open building &rarr;</a>
+        `;
+        L.marker([lat, lng], { icon: pinIcon, title: b.name })
+          .bindPopup(popup, { maxWidth: 280, autoPan: true, closeButton: true })
+          .addTo(mapInstance);
+      });
+    };
+
     bldgViewSwitch.addEventListener('click', () => {
       const goMap = bldgViewSwitch.getAttribute('aria-pressed') !== 'true';
       bldgViewSwitch.setAttribute('aria-pressed', goMap ? 'true' : 'false');
       bldgViewCarousel.hidden = goMap;
       bldgViewMap.hidden = !goMap;
+      if (goMap) {
+        initMap();
+        // Map needs a re-measure once its container is visible, otherwise
+        // tiles render against a 0×0 box and the layout is empty until
+        // the user pans.
+        setTimeout(() => { if (mapInstance) mapInstance.invalidateSize(); }, 60);
+      }
     });
   }
 
