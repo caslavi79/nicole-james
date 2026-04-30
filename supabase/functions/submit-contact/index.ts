@@ -102,6 +102,23 @@ async function sendResend(payload: {
   return res.json();
 }
 
+// HTML email layout notes:
+// - Both emails are full HTML documents (DOCTYPE + html/head/body) so
+//   Resend doesn't wrap and email clients have no rendering ambiguity.
+// - Layout uses <table role="presentation"> nested inside another
+//   <table> — the universal email-client compatible pattern.
+// - Critical: Gmail will collapse content into a "Show trimmed content
+//   ..." button if it sees a styled "header" element above a paragraph
+//   break — its heuristic mistakes the pattern for a quote attribution.
+//   We avoid that by:
+//     (a) keeping all body content inside a SINGLE <td> cell, with
+//         <br><br> for paragraph spacing rather than nested elements,
+//     (b) NOT putting a styled brand eyebrow above the greeting (the
+//         brand info now lives at the bottom of the auto-reply, and on
+//         the notification email the lead's NAME is the first thing —
+//         the "new inquiry" eyebrow sits below the name),
+//     (c) including a hidden preheader span so inbox preview is
+//         intentional and the email body doesn't start with metadata.
 function notificationEmail(p: Payload) {
   const interestLabel: Record<string, string> = {
     buyer: "Buyer representation",
@@ -110,14 +127,10 @@ function notificationEmail(p: Payload) {
     general: "General conversation",
   };
   const interest = p.interest ? interestLabel[p.interest] ?? p.interest : "—";
-  // Show each opt-in as its own row with explicit Yes/No so Nicole can
-  // see at a glance whether the client wants blog updates and/or listing
-  // alerts (matters for follow-up emails she may want to send).
   const blogOptin = p.optin_blog ? "✓ Yes — wants blog updates" : "— No";
   const listingsOptin = p.optin_listings ? "✓ Yes — wants new listing alerts" : "— No";
 
   const rows: [string, string][] = [
-    ["Name", p.name],
     ["Email", p.email],
     ["Phone", p.phone || "—"],
     ["Interest", interest],
@@ -127,7 +140,7 @@ function notificationEmail(p: Payload) {
   ];
 
   const text = [
-    "New inquiry from nicolejamesaustin.com",
+    `New inquiry from ${p.name}`,
     "",
     ...rows.map(([k, v]) => `${k}: ${v}`),
     "",
@@ -137,32 +150,50 @@ function notificationEmail(p: Payload) {
     "Reply directly to this email to respond to the client.",
   ].join("\n");
 
-  const html = `
-    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.55;color:#1a1814;max-width:560px;margin:0 auto;padding:24px">
-      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#7e7367;margin-bottom:12px">New inquiry &middot; nicolejamesaustin.com</div>
-      <h1 style="font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:22px;letter-spacing:-0.01em;margin:0 0 24px">${escapeHtml(p.name)}</h1>
-      <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin-bottom:24px">
-        ${rows.map(([k, v]) => `
-          <tr>
-            <td style="padding:6px 12px 6px 0;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#7e7367;vertical-align:top;width:140px">${escapeHtml(k)}</td>
-            <td style="padding:6px 0;color:#1a1814;font-size:14px">${escapeHtml(v)}</td>
-          </tr>
-        `).join("")}
-      </table>
-      <div style="border-top:1px solid #e5e0d6;padding-top:18px">
-        <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#7e7367;margin-bottom:8px">Message</div>
-        <div style="white-space:pre-wrap;color:#1a1814;font-size:15px;line-height:1.6">${escapeHtml(p.message)}</div>
-      </div>
-      <p style="margin:32px 0 0;color:#7e7367;font-size:12px">Reply to this email to respond directly to ${escapeHtml(p.name)}.</p>
-    </div>
-  `.trim();
+  const tableRows = rows.map(([k, v]) => `
+    <tr>
+      <td style="padding:6px 12px 6px 0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#7e7367;vertical-align:top;width:140px">${escapeHtml(k)}</td>
+      <td style="padding:6px 0;font-family:Helvetica,Arial,sans-serif;color:#1a1814;font-size:14px;line-height:1.5">${escapeHtml(v)}</td>
+    </tr>
+  `).join("");
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="x-apple-disable-message-reformatting" />
+<title>New inquiry from ${escapeHtml(p.name)}</title>
+</head>
+<body style="margin:0;padding:0;background:#ffffff;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%">
+<span style="display:none;font-size:0;line-height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;visibility:hidden">New inquiry from ${escapeHtml(p.name)} via the website. Reply directly to respond.</span>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background:#ffffff">
+<tr><td align="center" style="padding:32px 16px">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px;border-collapse:collapse">
+<tr><td style="font-family:Helvetica,Arial,sans-serif;color:#1a1814">
+<div style="font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:24px;letter-spacing:-0.01em;color:#1a1814;margin-bottom:4px">${escapeHtml(p.name)}</div>
+<div style="font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#7e7367;margin-bottom:24px">New inquiry &middot; nicolejamesaustin.com</div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;border-top:1px solid #e5e0d6;border-bottom:1px solid #e5e0d6;margin-bottom:20px">
+${tableRows}
+</table>
+<div style="font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#7e7367;margin-bottom:8px">Message</div>
+<div style="font-family:Helvetica,Arial,sans-serif;white-space:pre-wrap;color:#1a1814;font-size:15px;line-height:1.6">${escapeHtml(p.message)}</div>
+<div style="margin-top:32px;padding-top:18px;border-top:1px solid #e5e0d6;font-family:Helvetica,Arial,sans-serif;color:#7e7367;font-size:12px;line-height:1.5">Reply to this email to respond directly to ${escapeHtml(p.name)}.</div>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
 
   return { text, html };
 }
 
 function autoReplyEmail(p: Payload) {
+  const firstName = p.name.split(/\s+/)[0];
+
   const text = [
-    `Hi ${p.name.split(/\s+/)[0]},`,
+    `Hi ${firstName},`,
     "",
     "Thank you for reaching out. Your message has come straight to me, and I'll get back to you within one business day.",
     "",
@@ -174,20 +205,37 @@ function autoReplyEmail(p: Payload) {
     "nicolejamesaustin.com",
   ].join("\n");
 
-  const html = `
-    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.65;color:#1a1814;max-width:560px;margin:0 auto;padding:32px 24px;background:#f4efe7">
-      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#7e7367;margin-bottom:24px">Nicole James &middot; Downtown Austin</div>
-      <p style="margin:0 0 16px">Hi ${escapeHtml(p.name.split(/\s+/)[0])},</p>
-      <p style="margin:0 0 16px">Thank you for reaching out. Your message has come <em style="font-family:Georgia,'Times New Roman',serif">straight to me</em>, and I&rsquo;ll get back to you within one business day.</p>
-      <p style="margin:0 0 24px">If anything is time-sensitive, you can also reach me at <a href="tel:+15124664608" style="color:#9c7e66;text-decoration:none;border-bottom:1px solid #9c7e66">512&middot;466&middot;4608</a>.</p>
-      <p style="margin:32px 0 4px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;font-size:18px;color:#1a1814">— Nicole James</p>
-      <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#7e7367">
-        Christie&rsquo;s International Real Estate Luxury Specialist<br>
-        @properties Lone Star
-      </div>
-      <div style="margin-top:24px;font-size:11px;color:#9c7e66"><a href="https://nicolejamesaustin.com" style="color:#9c7e66;text-decoration:none">nicolejamesaustin.com</a></div>
-    </div>
-  `.trim();
+  // The entire body lives in ONE <td> cell with <br><br> for paragraph
+  // spacing — not nested <p> or <div> elements. This prevents Gmail
+  // from finding a structural break point and inserting a "..." trim
+  // button (which it was doing previously when the styled brand eyebrow
+  // sat above the greeting paragraph).
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="x-apple-disable-message-reformatting" />
+<title>A note from Nicole James</title>
+</head>
+<body style="margin:0;padding:0;background:#f4efe7;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%">
+<span style="display:none;font-size:0;line-height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;visibility:hidden">Your message reached Nicole. She&rsquo;ll get back to you within one business day.</span>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background:#f4efe7">
+<tr><td align="center" style="padding:48px 16px">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px;border-collapse:collapse">
+<tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.7;color:#1a1814">
+Hi ${escapeHtml(firstName)},<br><br>
+Thank you for reaching out. Your message has come <em style="font-family:Georgia,'Times New Roman',serif;font-style:italic">straight to me</em>, and I&rsquo;ll get back to you within one business day.<br><br>
+If anything is time-sensitive, you can also reach me at <a href="tel:+15124664608" style="color:#9c7e66;text-decoration:none;border-bottom:1px solid #9c7e66">512&middot;466&middot;4608</a>.<br><br>
+<span style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:18px;color:#1a1814;line-height:1.4">&mdash;&nbsp;Nicole James</span><br>
+<span style="font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#7e7367;line-height:1.7">Christie&rsquo;s International Real Estate Luxury Specialist<br>@properties Lone Star</span><br><br>
+<a href="https://nicolejamesaustin.com" style="font-family:Helvetica,Arial,sans-serif;font-size:11px;color:#9c7e66;text-decoration:none">nicolejamesaustin.com</a>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
 
   return { text, html };
 }
