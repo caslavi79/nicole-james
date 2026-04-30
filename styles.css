@@ -3583,15 +3583,16 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
     display: flex;
     flex-direction: row;
     align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
+    gap: 10px;
     padding: 14px 18px;
     border: 1px solid var(--line);
     background: var(--bone-2);
+    border-radius: 4px;
     min-width: 0;
+    margin: 0;
   }
-  /* Reset the desktop sibling rule that adds a left border + extra
-     padding to the second/third pill (horizontal-row treatment). */
+  /* Override the desktop sibling rule that adds a left border + padding
+     when pillars are arranged horizontally. */
   .partner-pillar + .partner-pillar {
     padding-left: 18px;
     border-left: 1px solid var(--line);
@@ -3599,7 +3600,8 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   .partner-pillar .v {
     font-size: 16px;
     line-height: 1.2;
-    /* Long URL ("christiesrealestate.com") shouldn't push the label
+    margin: 0;
+    /* Long URL ("christiesrealestate.com") shouldn't shove the label
        off the row — let it shrink first. */
     min-width: 0;
     overflow-wrap: anywhere;
@@ -3608,6 +3610,17 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
     font-size: 10px;
     letter-spacing: 0.2em;
     flex-shrink: 0;
+  }
+  /* Pipe divider between value and label, both visually left-aligned
+     in a single text line: "~50 countries | GLOBAL NETWORK". */
+  .partner-pillar .lb::before {
+    content: '|';
+    display: inline-block;
+    margin-right: 10px;
+    color: var(--smoke);
+    opacity: 0.45;
+    letter-spacing: 0;
+    font-weight: 400;
   }
 
   /* § 02 stats — keep 2x2, never 1-col */
