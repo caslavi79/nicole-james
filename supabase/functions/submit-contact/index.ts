@@ -110,10 +110,11 @@ function notificationEmail(p: Payload) {
     general: "General conversation",
   };
   const interest = p.interest ? interestLabel[p.interest] ?? p.interest : "—";
-  const optins = [
-    p.optin_blog ? "Blog updates" : null,
-    p.optin_listings ? "New listing alerts" : null,
-  ].filter(Boolean).join(", ") || "—";
+  // Show each opt-in as its own row with explicit Yes/No so Nicole can
+  // see at a glance whether the client wants blog updates and/or listing
+  // alerts (matters for follow-up emails she may want to send).
+  const blogOptin = p.optin_blog ? "✓ Yes — wants blog updates" : "— No";
+  const listingsOptin = p.optin_listings ? "✓ Yes — wants new listing alerts" : "— No";
 
   const rows: [string, string][] = [
     ["Name", p.name],
@@ -121,7 +122,8 @@ function notificationEmail(p: Payload) {
     ["Phone", p.phone || "—"],
     ["Interest", interest],
     ["Building or area", p.building || "—"],
-    ["Opt-ins", optins],
+    ["Blog updates", blogOptin],
+    ["Listing alerts", listingsOptin],
   ];
 
   const text = [

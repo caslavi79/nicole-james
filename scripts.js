@@ -319,8 +319,11 @@
 
       // Re-run scripts.js so the entry page's nav hamburger, FAQ accordion
       // etc. attach to the new DOM. Cache-bust so the browser re-executes it.
+      // Use a root-relative path because history.pushState() above changed
+      // the document URL; a bare 'scripts.js' would resolve against the
+      // entry's directory (e.g., /blog/) and 404.
       const s = document.createElement('script');
-      s.src = 'scripts.js?r=' + Date.now();
+      s.src = '/scripts.js?r=' + Date.now();
       document.body.appendChild(s);
 
       // Wait TWO paint frames so the entry DOM is laid out before we fade
