@@ -368,6 +368,8 @@
   // aria-expanded + aria-controls pointing at its sibling .faq-a, which
   // gets a generated id. Toggling the open class also flips aria-expanded
   // so screen readers announce the state correctly.
+  // Single-open behavior: opening any question closes all others, so
+  // the user always has at most one expanded answer at a time.
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item, idx) => {
     const q = item.querySelector('.faq-q');
@@ -377,8 +379,17 @@
       q.setAttribute('aria-expanded', 'false');
       q.setAttribute('aria-controls', a.id);
       q.addEventListener('click', () => {
-        const isOpen = item.classList.toggle('open');
-        q.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        const willOpen = !item.classList.contains('open');
+        // Close every other open item first.
+        faqItems.forEach((other) => {
+          if (other !== item && other.classList.contains('open')) {
+            other.classList.remove('open');
+            const otherQ = other.querySelector('.faq-q');
+            if (otherQ) otherQ.setAttribute('aria-expanded', 'false');
+          }
+        });
+        item.classList.toggle('open', willOpen);
+        q.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
       });
     }
   });
