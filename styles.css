@@ -2719,7 +2719,7 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: clamp(40px, 5vw, 80px);
-  align-items: center;
+  align-items: start;
 }
 .buyers-split-aside { margin: 0; }
 @media (max-width: 820px) {
