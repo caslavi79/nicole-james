@@ -644,7 +644,6 @@
       { name: 'Seaholm Residences',        district: 'Market District',             href: 'buildings/seaholm.html',       lat: 30.2672, lng: -97.7521 },
       { name: '360 Condominiums',          district: 'Second Street District',      href: 'buildings/360.html',           lat: 30.2674, lng: -97.7497 },
       { name: 'Spring Condominiums',       district: 'Market District',             href: 'buildings/spring.html',        lat: 30.2690, lng: -97.7541 },
-      { name: 'The Ashton',                district: 'Downtown Core',               href: 'buildings/ashton.html',        lat: 30.2639, lng: -97.7454 },
       { name: 'The Linden',                district: 'Downtown Core',               href: 'buildings/linden.html',        lat: 30.2794, lng: -97.7421 },
       { name: 'Sabine on 5th',             district: 'Downtown Core',               href: 'buildings/sabine.html',        lat: 30.2655, lng: -97.7361 },
       { name: 'Penthouse Condominiums',    district: 'Downtown Core',               href: 'buildings/penthouse.html',     lat: 30.2751, lng: -97.7442 },
