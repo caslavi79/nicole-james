@@ -16,3 +16,6 @@ brand.html
 # Internal source documents (testimonials export, etc.) — not for public repo
 TestimonialTree_*.xlsx
 *.xlsx
+
+# Master reference document — contains live API keys, never commit
+MASTER.md
