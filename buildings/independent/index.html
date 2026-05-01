@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#F4EFE7" />
 <script>(function(){try{var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'){if('scrollRestoration'in history)history.scrollRestoration='manual';window.scrollTo(0,0);}}catch(e){}})();</script>
 <!-- INDEXING META -->
+<meta name="robots" content="noindex, follow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -14,28 +15,54 @@
 <link rel="manifest" href="/site.webmanifest" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<title>Page Not Found · Nicole James · Downtown Austin Condo Specialist</title>
-<meta name="description" content="The page you&rsquo;re looking for has moved or doesn&rsquo;t exist. Nicole James is downtown Austin&rsquo;s leading condo specialist." />
-<meta name="robots" content="noindex, follow" />
+<title>The Independent · Nicole James, Downtown Austin Condo Specialist</title>
+<meta name="description" content="The Independent, 2nd &amp; West, downtown Austin. Building profile coming soon. Recent comparables, HOA history, floor lines, and what to know before buying or selling." />
 
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Page not found · Nicole James" />
-<meta property="og:description" content="The page you&rsquo;re looking for has moved or doesn&rsquo;t exist." />
-<meta property="og:url" content="https://nicolejamesaustin.com/404" />
-<meta property="og:image" content="https://nicolejamesaustin.com/assets/og-home.jpg" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Page not found · Nicole James" />
-<meta name="twitter:description" content="The page you&rsquo;re looking for has moved or doesn&rsquo;t exist." />
-<meta name="twitter:image" content="https://nicolejamesaustin.com/assets/og-home.jpg" />
+<link rel="canonical" href="https://nicolejamesaustin.com/buildings/independent" />
 
-<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="/styles.css?v=20260501-4" />
 
+<!-- Schema.org: ApartmentComplex + BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ApartmentComplex",
+      "@id": "https://nicolejamesaustin.com/buildings/independent#building",
+      "name": "The Independent",
+      "url": "https://nicolejamesaustin.com/buildings/independent",
+      "description": "The Independent is a downtown Austin condominium building in the 2nd & West district. Building profile by Nicole James, downtown Austin condo specialist.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Austin",
+        "addressRegion": "TX",
+        "postalCode": "78701",
+        "addressCountry": "US"
+      },
+      "containedInPlace": {
+        "@type": "Place",
+        "name": "Downtown Austin"
+      },
+      "broker": { "@id": "https://nicolejamesaustin.com/#nicole" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://nicolejamesaustin.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://nicolejamesaustin.com/services" },
+        { "@type": "ListItem", "position": 3, "name": "The Independent", "item": "https://nicolejamesaustin.com/buildings/independent" }
+      ]
+    }
+  ]
+}
+</script>
 </head>
+
 <body>
 
 <!-- ========== NAV ========== -->
@@ -73,7 +100,7 @@
     <div class="nav-overlay-stack">
       <a href="/" data-page="home" class="nav-overlay-link">Home</a>
       <a href="/about" data-page="about" class="nav-overlay-link">About</a>
-      <a href="/services" data-page="services" class="nav-overlay-link">Services</a>
+      <a href="/services" data-page="services" class="nav-overlay-link is-active">Services</a>
       <a href="/blog/" data-page="blog" class="nav-overlay-link">Blog</a>
       <a href="/contact" data-page="contact" class="nav-overlay-link">Contact</a>
     </div>
@@ -123,42 +150,35 @@
   </div>
 </div>
 
-<!-- ========== 404 CONTENT ========== -->
-<main>
-  <section class="error-404">
-    <div class="shell">
-      <div class="error-404-inner">
-        <div class="eyebrow">404</div>
-        <h1 class="display">
-          This page has<br>
-          <em class="serif-italic">moved on.</em>
-        </h1>
-        <p class="lede">
-          The address you followed no longer exists, or perhaps it never did.
-          Here are a few places to continue.
-        </p>
-        <nav class="error-404-links" aria-label="Main pages">
-          <a href="/" class="error-404-link">Home</a>
-          <a href="/about" class="error-404-link">About</a>
-          <a href="/services" class="error-404-link">Services</a>
-          <a href="/blog/" class="error-404-link">Blog</a>
-          <a href="/contact" class="error-404-link">Contact</a>
-        </nav>
+<!-- ========== BUILDING PAGE ========== -->
+<section class="building-page">
+  <div class="shell">
+    <a class="building-back" href="/services">&larr; All buildings</a>
+    <div class="building-hero">
+      <div class="building-hero-img">
+        <img fetchpriority="high" loading="eager" decoding="async" src="/assets/bldg-independent.webp" alt="The Independent, 2nd &amp; West, downtown Austin" />
+      </div>
+      <div class="building-hero-meta">
+        <span class="eyebrow">Market District</span>
+        <h1 class="display">The Independent</h1>
+        <p class="building-coming-soon">Building profile <em class="serif-italic">coming soon.</em></p>
+        <p class="lede">A detailed profile of The Independent (recent comparables, HOA history, floor lines, and what to know before buying or selling) is in progress.</p>
+        <a href="/contact" class="btn btn-primary">Begin a conversation &rarr;</a>
       </div>
     </div>
-  </section>
-</main>
+  </div>
+</section>
 
 <!-- ========== FOOTER ========== -->
 <footer>
   <div class="shell f-grid">
     <div class="f-brand">
       <div class="mark">Nicole James</div>
-      <div class="tag">Downtown Austin · Condo Specialist</div>
+      <div class="tag">Downtown Austin &middot; Condo Specialist</div>
       <div class="pair">
         @properties Lone Star<br>
         Christie&rsquo;s International Real Estate<br>
-        Licensed Real Estate Agent · Texas
+        Licensed Real Estate Agent &middot; Texas
       </div>
     </div>
     <div>
@@ -175,7 +195,7 @@
       <address>
         1105 N. Lamar Blvd, Suite 100<br>
         Austin, TX 78703<br><br>
-        <a href="tel:+15124664608">512·466·4608</a><br>
+        <a href="tel:+15124664608">512&middot;466&middot;4608</a><br>
         <a href="mailto:nicolej@christiesrealestatels.com">nicolej@christiesrealestatels.com</a>
       </address>
     </div>
@@ -190,8 +210,8 @@
     </div>
   </div>
   <div class="f-bottom shell">
-    <span>© 2026 Nicole James · All rights reserved</span>
-    <span>Equal Housing Opportunity · Member ABoR</span>
+    <span>&copy; 2026 Nicole James &middot; All rights reserved</span>
+    <span>Equal Housing Opportunity &middot; Member ABoR</span>
   </div>
 </footer>
 

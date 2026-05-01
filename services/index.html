@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#F4EFE7" />
+<script>(function(){try{var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'){if('scrollRestoration'in history)history.scrollRestoration='manual';window.scrollTo(0,0);}}catch(e){}})();</script>
+<!-- INDEXING META -->
+<meta name="robots" content="index, follow" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' https://unpkg.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-180.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<title>Services · Nicole James, Downtown Austin Condo Specialist</title>
+<meta name="description" content="Seller, buyer, and off-market representation for downtown Austin condominiums. Building-level pricing, private buyer list, Christie&rsquo;s reach." />
+
+<link rel="canonical" href="https://nicolejamesaustin.com/services" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Services · Nicole James" />
+<meta property="og:description" content="Seller, buyer, and off-market representation in downtown Austin." />
+<meta property="og:url" content="https://nicolejamesaustin.com/services" />
+<meta property="og:image" content="https://nicolejamesaustin.com/assets/og-home.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Services · Nicole James" />
+<meta name="twitter:description" content="Seller, buyer, and off-market representation in downtown Austin." />
+<meta name="twitter:image" content="https://nicolejamesaustin.com/assets/og-home.jpg" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="/styles.css?v=20260501-4" />
+<!-- Leaflet (loaded only on services.html for the buildings map) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin="" defer></script>
+
+<!-- Schema.org: WebPage + Service + BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://nicolejamesaustin.com/services#page",
+      "url": "https://nicolejamesaustin.com/services",
+      "name": "Services · Nicole James",
+      "description": "Seller representation, buyer representation, and off-market advisory across 30+ downtown Austin condominium buildings.",
+      "inLanguage": "en-US",
+      "mainEntity": { "@id": "https://nicolejamesaustin.com/services#service" }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://nicolejamesaustin.com/services#service",
+      "name": "Downtown Austin Condominium Real Estate Services",
+      "serviceType": "Real estate brokerage, downtown Austin condominium specialty",
+      "provider": { "@id": "https://nicolejamesaustin.com/#nicole" },
+      "areaServed": {
+        "@type": "Place",
+        "name": "Downtown Austin, Texas"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Downtown Austin condo services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Seller representation" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Buyer representation" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Off-market advisory" } }
+        ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://nicolejamesaustin.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://nicolejamesaustin.com/services" }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+
+<body>
+
+<nav class="nav" id="nav">
+  <div class="shell nav-inner">
+    <a href="/" class="nav-logo" aria-label="Nicole James, home">
+      <img src="/assets/nj-signature.png" alt="Nicole James" />
+    </a>
+    <div class="nav-links">
+      <a href="/about">About</a>
+      <a href="/services">Services</a>
+      <a href="/blog/">Blog</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navOverlay">
+      <span class="nav-toggle-lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-overlay" id="navOverlay" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+  <div class="nav-overlay-inner">
+    <div class="nav-overlay-top">
+      <span class="nav-overlay-eyebrow">&sect; MENU</span>
+      <button class="nav-close" id="navClose" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="nav-overlay-stack">
+      <a href="/" data-page="home" class="nav-overlay-link">Home</a>
+      <a href="/about" data-page="about" class="nav-overlay-link">About</a>
+      <a href="/services" data-page="services" class="nav-overlay-link is-active">Services</a>
+      <a href="/blog/" data-page="blog" class="nav-overlay-link">Blog</a>
+      <a href="/contact" data-page="contact" class="nav-overlay-link">Contact</a>
+    </div>
+    <div class="nav-overlay-contact">
+      <button type="button" class="nav-overlay-contact-item" data-chooser="phone">
+        <span class="nav-overlay-contact-label">Call or text</span>
+        <span class="nav-overlay-contact-value">512 &middot; 466 &middot; 4608</span>
+      </button>
+      <button type="button" class="nav-overlay-contact-item" data-chooser="email">
+        <span class="nav-overlay-contact-label">Email</span>
+        <span class="nav-overlay-contact-value">nicolej@christiesrealestatels.com</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== HERO · BUILDING VIEWS (CAROUSEL ↔ MAP) ========== -->
+<section class="bldg-carousel-section" aria-label="Buildings">
+  <div class="bldg-view bldg-view--carousel" id="bldgViewCarousel">
+  <div class="bldg-carousel-viewport">
+    <button class="bldg-carousel-arrow bldg-carousel-arrow--prev bldg-carousel-arrow--floating" id="bldgArrowPrev" aria-label="Previous buildings">&larr;</button>
+    <div class="bldg-carousel" id="bldgCarousel" tabindex="0" aria-label="Buildings">
+      <a class="bldg-card" href="/buildings/loren">
+        <div class="bldg-card-img"><img src="/assets/bldg-loren.jpg" alt="The Loren, Lady Bird Lake Edge, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>The Loren</strong><span>Lady Bird Lake Edge</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/fourseasons">
+        <div class="bldg-card-img"><img src="/assets/bldg-fourseasons.jpeg" alt="Four Seasons Residences, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Four Seasons Residences</strong><span>Downtown Core</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/proper">
+        <div class="bldg-card-img"><img src="/assets/bldg-proper.jpg" alt="Austin Proper Residences, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Austin Proper Residences</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/austonian">
+        <div class="bldg-card-img"><img src="/assets/bldg-austonian.jpg" alt="The Austonian, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>The Austonian</strong><span>Downtown Core</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/independent">
+        <div class="bldg-card-img"><img src="/assets/bldg-independent.webp" alt="The Independent, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>The Independent</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/wresidences">
+        <div class="bldg-card-img"><img src="/assets/bldg-wresidences.jpg" alt="W Residences, Downtown Core, downtown Austin" loading="lazy" style="object-position: 70% center;" /></div>
+        <div class="bldg-card-meta"><strong>W Residences</strong><span>Downtown Core</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/44east">
+        <div class="bldg-card-img"><img src="/assets/bldg-44east.jpg" alt="44 East Avenue, Rainey District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>44 East Avenue</strong><span>Rainey District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/70rainey">
+        <div class="bldg-card-img"><img src="/assets/bldg-70rainey.jpg" alt="70 Rainey, Rainey District, downtown Austin" loading="lazy" style="object-position: 70% center;" /></div>
+        <div class="bldg-card-meta"><strong>70 Rainey</strong><span>Rainey District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/modern">
+        <div class="bldg-card-img"><img src="/assets/bldg-modern.jpg" alt="The Modern Austin, Rainey District, downtown Austin" loading="lazy" style="object-position: 75% center;" /></div>
+        <div class="bldg-card-meta"><strong>The Modern Austin</strong><span>Rainey District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/vesper">
+        <div class="bldg-card-img"><img src="/assets/bldg-vesper.jpg" alt="Vesper ATX, Rainey District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Vesper ATX</strong><span>Rainey District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/bridges">
+        <div class="bldg-card-img"><img src="/assets/bldg-bridges.webp" alt="Bridges on The Park, Lady Bird Lake Edge, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Bridges on The Park</strong><span>Lady Bird Lake Edge</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/linden">
+        <div class="bldg-card-img"><img src="/assets/bldg-linden.jpg" alt="The Linden, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>The Linden</strong><span>Downtown Core</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/seaholm">
+        <div class="bldg-card-img"><img src="/assets/bldg-seaholm.jpg" alt="Seaholm Residences, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Seaholm Residences</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/fifthwest">
+        <div class="bldg-card-img"><img src="/assets/bldg-fifthwest.jpg" alt="Fifth &amp; West Residences, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Fifth &amp; West</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/shore">
+        <div class="bldg-card-img"><img src="/assets/bldg-shore.jpg" alt="The Shore, Rainey District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>The Shore</strong><span>Rainey District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/colorfield">
+        <div class="bldg-card-img"><img src="/assets/bldg-colorfield.jpg" alt="The Colorfield, Clarksville / Old West Austin, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>The Colorfield</strong><span>Clarksville / Old West Austin</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/belvedere">
+        <div class="bldg-card-img"><img src="/assets/bldg-belvedere.jpg" alt="The Belvedere, Clarksville / Old West Austin, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>The Belvedere</strong><span>Clarksville / Old West Austin</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/sabine">
+        <div class="bldg-card-img"><img src="/assets/bldg-sabine.jpg" alt="Sabine on 5th, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Sabine on 5th</strong><span>Downtown Core</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/spring">
+        <div class="bldg-card-img"><img src="/assets/bldg-spring.jpeg" alt="Spring Condominiums, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Spring</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/nokonah">
+        <div class="bldg-card-img"><img src="/assets/bldg-nokonah.jpeg" alt="The Nokonah, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>The Nokonah</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/bartonplace">
+        <div class="bldg-card-img"><img src="/assets/bldg-bartonplace.jpg" alt="Barton Place, Lady Bird Lake Edge, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Barton Place</strong><span>Lady Bird Lake Edge</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/555">
+        <div class="bldg-card-img"><img src="/assets/bldg-555.jpg" alt="5 Fifty Five, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>5 Fifty Five</strong><span>Downtown Core</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/natiivo">
+        <div class="bldg-card-img"><img src="/assets/bldg-natiivo.jpg" alt="Natiivo, Rainey District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Natiivo</strong><span>Rainey District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/1010w10th">
+        <div class="bldg-card-img"><img src="/assets/bldg-1010w10th.jpg" alt="1010 W. 10th, Clarksville / Old West Austin, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>1010 W. 10th</strong><span>Clarksville / Old West Austin</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/360">
+        <div class="bldg-card-img"><img src="/assets/bldg-360.webp" alt="360 Condos, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>360 Condos</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/penthouse">
+        <div class="bldg-card-img"><img src="/assets/bldg-penthouse.jpg" alt="Penthouse Condominiums, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Penthouse Condominiums</strong><span>Downtown Core</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/celiascourt">
+        <div class="bldg-card-img"><img src="/assets/bldg-celiascourt.jpg" alt="Celia&rsquo;s Court, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Celia&rsquo;s Court</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/citylofts">
+        <div class="bldg-card-img"><img src="/assets/bldg-citylofts.jpeg" alt="Austin City Lofts, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Austin City Lofts</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/milago">
+        <div class="bldg-card-img"><img src="/assets/bldg-milago.jpg" alt="Milago, Rainey District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Milago</strong><span>Rainey District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/904west">
+        <div class="bldg-card-img"><img src="/assets/bldg-904west.jpg" alt="904 West, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>904 West</strong><span>Market District</span></div>
+      </a>
+      <a class="bldg-card" href="/buildings/brazosplace">
+        <div class="bldg-card-img"><img src="/assets/bldg-brazosplace.jpg" alt="Brazos Place, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-meta"><strong>Brazos Place</strong><span>Downtown Core</span></div>
+      </a>
+    </div>
+    <button class="bldg-carousel-arrow bldg-carousel-arrow--next bldg-carousel-arrow--floating" id="bldgArrowNext" aria-label="Next buildings">&rarr;</button>
+  </div>
+  </div><!-- /.bldg-view--carousel -->
+
+  <!-- Map view (Leaflet — initialized on first toggle) -->
+  <div class="bldg-view bldg-view--map" id="bldgViewMap" hidden>
+    <div class="shell">
+      <div class="bldg-map" id="bldgMap" aria-label="Downtown Austin condominium buildings, plotted by location."></div>
+    </div>
+  </div>
+
+  <!-- View switch (right-aligned, always visible) -->
+  <div class="bldg-view-toggle shell">
+    <button type="button" class="bldg-view-switch" id="bldgViewSwitch" aria-pressed="false" aria-controls="bldgViewMap bldgViewCarousel">
+      <span class="bldg-view-switch-label">
+        <span class="bldg-view-switch-eyebrow">View as</span>
+        <span class="bldg-view-switch-state">
+          <span data-state="off">Map</span>
+          <span data-state="on">Carousel</span>
+        </span>
+      </span>
+      <span class="bldg-view-switch-track" aria-hidden="true">
+        <span class="bldg-view-switch-thumb"></span>
+      </span>
+    </button>
+  </div>
+</section>
+
+<!-- ========== § 01 · THE PRACTICE ========== -->
+<section class="svc-page">
+  <div class="shell">
+    <div class="s-head">
+      <h1 class="display" data-animate>
+        Countless buildings.<br class="br-mobile"> <em class="serif-italic">One specialty.</em>
+      </h1>
+      <p class="lede" style="max-width: 78ch;">A constantly growing supply of condominium towers across downtown Austin. One agent who has worked them all. Floor by floor, HOA by HOA, cycle by cycle.</p>
+    </div>
+    <div class="svc-prose" data-animate>
+      <p class="body-text">The practice is building-deep, not market-wide. Each downtown tower is its own micro-market. Bridges on The Park&rsquo;s lake-view tier prices differently from its courtyard tier. The Independent&rsquo;s east face from its west. The Austonian&rsquo;s lower stack from its upper bands.</p>
+      <p class="body-text">When a unit comes up at Fifth &amp; West, 70 Rainey, or Four Seasons Residences, the comps, the HOA history, and the likely buyer are already known. The real diligence on a downtown condo is the building, not the listing. That&rsquo;s where this practice starts.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== § 02 · FOR SELLERS ========== -->
+<section id="seller" class="svc-page">
+  <div class="shell">
+    <div class="s-head">
+      <span class="eyebrow" data-animate>§ 01 &middot; For sellers</span>
+      <h2 class="display" data-animate>
+        What I bring to <em class="serif-italic">a listing.</em>
+      </h2>
+    </div>
+    <div class="svc-offer-grid svc-offer-grid--three">
+      <div class="svc-offer" data-animate>
+        <div class="svc-offer-numeral">i</div>
+        <h3 class="svc-offer-title">Staging <em class="serif-italic">and photography.</em></h3>
+        <p class="svc-offer-body">Prepared and shot to hold its own against new construction. The first showing happens on a screen.</p>
+      </div>
+      <div class="svc-offer" data-animate>
+        <div class="svc-offer-numeral">ii</div>
+        <h3 class="svc-offer-title">Christie&rsquo;s <em class="serif-italic">buyer network.</em></h3>
+        <p class="svc-offer-body">Global luxury reach beyond the local MLS: relocators, second-home buyers, affiliate-network agents.</p>
+      </div>
+      <div class="svc-offer" data-animate>
+        <div class="svc-offer-numeral">iii</div>
+        <h3 class="svc-offer-title">Comps from <em class="serif-italic">inside the building.</em></h3>
+        <p class="svc-offer-body">Pricing drawn from your stack, your line, your view tier. Not a half-mile radius around the front door.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== § 03 · OFF-MARKET ========== -->
+<section id="advisory" class="svc-page">
+  <div class="shell">
+    <div class="s-head">
+      <span class="eyebrow" data-animate>§ 02 &middot; Off-market</span>
+      <h2 class="display" data-animate>
+        Quiet <em class="serif-italic">conversations.</em>
+      </h2>
+    </div>
+    <div class="svc-prose-grid">
+      <div class="svc-prose" data-animate>
+        <p class="body-text">Discreet consultations and pre-market matching, before anything reaches the public market. The right introduction, quietly arranged.</p>
+        <p class="body-text">A meaningful share of downtown&rsquo;s best units transact without a sign, a listing, or an open house.</p>
+      </div>
+      <ul class="advisory-bullets" data-animate>
+        <li><span class="ab-num">i</span><span class="ab-label">Discreet seller consultations</span></li>
+        <li><span class="ab-num">ii</span><span class="ab-label">Pre-market buyer matching</span></li>
+        <li><span class="ab-num">iii</span><span class="ab-label">No signs, no portals, no public exposure</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========== § 04 · FOR BUYERS ========== -->
+<section id="buyer" class="svc-page">
+  <div class="shell">
+    <div class="s-head">
+      <span class="eyebrow" data-animate>§ 03 &middot; For buyers</span>
+      <h2 class="display" data-animate>
+        All of it, <em class="serif-italic">working for you.</em>
+      </h2>
+    </div>
+    <div class="buyers-split">
+      <div class="buyers-split-main">
+        <div class="svc-prose" data-animate>
+          <p class="body-text">Building knowledge, the off-market network, and Christie&rsquo;s reach work the other direction too. The shortlist starts with towers that actually fit. Showings cover the public market, the units being quietly shopped, and occasionally the ones an owner hasn&rsquo;t decided to sell yet.</p>
+          <p class="body-text">Diligence is where this earns its keep. HOA financials read line by line. Floor-line analysis on which stacks catch the capitol view corridor and which lose afternoon sun to the next tower over. Negotiation anchored to the building&rsquo;s actual closed comps.</p>
+        </div>
+        <blockquote class="closing-thought" data-animate>
+          <p><em class="serif-italic">&ldquo;Knowledge of the Austin market, particularly the downtown condo market.&rdquo;</em></p>
+          <cite>Ryan Crossland &middot; Repeat client</cite>
+        </blockquote>
+      </div>
+      <aside class="buyers-split-aside" data-animate>
+        <p class="push-link push-link--right">
+          <a href="/blog/#downtown-faq">General questions about downtown Austin? Read the FAQ &rarr;</a>
+        </p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CLOSING CTA ========== -->
+<section class="svc-page-cta">
+  <div class="shell">
+    <h2 class="display">Begin a <em class="serif-italic">conversation.</em></h2>
+    <p class="lede svc-page-cta-lede">Sellers, buyers, the merely curious about a particular tower. Phone, text, or email.</p>
+    <a href="/contact" class="btn btn-primary">Begin a conversation &rarr;</a>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="shell f-grid">
+    <div class="f-brand">
+      <div class="mark">Nicole James</div>
+      <div class="tag">Downtown Austin · Condo Specialist</div>
+      <div class="pair">
+        @properties Lone Star<br>
+        Christie&rsquo;s International Real Estate<br>
+        Licensed Real Estate Agent · Texas
+      </div>
+    </div>
+    <div>
+      <h5>Site</h5>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Office</h5>
+      <address>
+        1105 N. Lamar Blvd, Suite 100<br>
+        Austin, TX 78703<br><br>
+        <a href="tel:+15124664608">512·466·4608</a><br>
+        <a href="mailto:nicolej@christiesrealestatels.com">nicolej@christiesrealestatels.com</a>
+      </address>
+    </div>
+    <div>
+      <h5>Legal</h5>
+      <ul>
+        <li><a href="https://content.harstatic.com/pdf/TREC_CPN.pdf" target="_blank" rel="noopener noreferrer">TREC Consumer Notice</a></li>
+        <li><a href="https://www.har.com/mhf/terms/dispBrokerInfo?sitetype=aws&cid=549414" target="_blank" rel="noopener noreferrer">IABS disclosure</a></li>
+        <li><a href="/fair-housing">Fair Housing</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="f-bottom shell">
+    <span>© 2026 Nicole James · All rights reserved</span>
+    <span>Equal Housing Opportunity · Member ABoR</span>
+  </div>
+</footer>
+
+<script src="/scripts.js?v=20260501-4" defer></script>
+
+</body>
+</html>
