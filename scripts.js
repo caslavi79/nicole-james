@@ -737,7 +737,7 @@
       { name: 'Penthouse Condominiums',    district: 'Downtown Core',               href: '/buildings/penthouse',     lat: 30.2751, lng: -97.7442 },
       { name: 'The Nokonah',               district: 'Market District',             href: '/buildings/nokonah',       lat: 30.2735, lng: -97.7523 },
       { name: '5 Fifty Five',              district: 'Downtown Core',               href: '/buildings/555',           lat: 30.2654, lng: -97.7378 },
-      { name: "Celia's Court",             district: 'Market District',             href: '/buildings/celiascourt',   lat: 30.2726, lng: -97.7474 },
+      { name: 'Celia’s Court',        district: 'Market District',             href: '/buildings/celiascourt',   lat: 30.2726, lng: -97.7474 },
       { name: 'Austin City Lofts',         district: 'Market District',             href: '/buildings/citylofts',     lat: 30.2697, lng: -97.7514 },
       { name: '904 West',                  district: 'Market District',             href: '/buildings/904west',       lat: 30.2737, lng: -97.7498 },
       { name: '1010 W. 10th',              district: 'Clarksville/Old West Austin', href: '/buildings/1010w10th',     lat: 30.2755, lng: -97.7529 },
