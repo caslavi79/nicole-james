@@ -195,47 +195,40 @@ function autoReplyEmail(p: Payload) {
   const text = [
     `Hi ${firstName},`,
     "",
-    "Thank you for reaching out. Your message has come straight to me, and I'll get back to you within one business day.",
+    "So glad you reached out. Your message has come directly to me, and I'll follow up within one business day.",
     "",
-    "If anything is time-sensitive, you can also reach me at 512·466·4608.",
+    "If anything is time-sensitive, feel free to call or text me at 512·466·4608.",
     "",
-    "— Nicole James",
+    "I focus on a select group of downtown condominium buildings, happy to share what's currently available, including opportunities that aren't publicly listed.",
+    "",
+    "Talk soon,",
+    "Nicole",
+    "",
     "Christie's International Real Estate Luxury Specialist",
     "@properties Lone Star",
     "nicolejamesaustin.com",
   ].join("\n");
 
-  // The entire body lives in ONE <td> cell with <br><br> for paragraph
-  // spacing — not nested <p> or <div> elements. This prevents Gmail
-  // from finding a structural break point and inserting a "..." trim
-  // button (which it was doing previously when the styled brand eyebrow
-  // sat above the greeting paragraph).
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="x-apple-disable-message-reformatting" />
-<title>A note from Nicole James</title>
-</head>
-<body style="margin:0;padding:0;background:#f4efe7;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%">
-<span style="display:none;font-size:0;line-height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;visibility:hidden">Your message reached Nicole. She&rsquo;ll get back to you within one business day.</span>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background:#f4efe7">
-<tr><td align="center" style="padding:48px 16px">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px;border-collapse:collapse">
-<tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.7;color:#1a1814">
-Hi ${escapeHtml(firstName)},<br><br>
-Thank you for reaching out. Your message has come <em style="font-family:Georgia,'Times New Roman',serif;font-style:italic">straight to me</em>, and I&rsquo;ll get back to you within one business day.<br><br>
-If anything is time-sensitive, you can also reach me at <a href="tel:+15124664608" style="color:#9c7e66;text-decoration:none;border-bottom:1px solid #9c7e66">512&middot;466&middot;4608</a>.<br><br>
-<span style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:18px;color:#1a1814;line-height:1.4">&mdash;&nbsp;Nicole James</span><br>
-<span style="font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#7e7367;line-height:1.7">Christie&rsquo;s International Real Estate Luxury Specialist<br>@properties Lone Star</span><br><br>
-<a href="https://nicolejamesaustin.com" style="font-family:Helvetica,Arial,sans-serif;font-size:11px;color:#9c7e66;text-decoration:none">nicolejamesaustin.com</a>
-</td></tr>
-</table>
-</td></tr>
-</table>
-</body>
-</html>`;
+  // Reverting to the proven working structure (cream <div> wrapper, eyebrow
+  // div, separate <p> elements). The earlier table-based "fix" caused Gmail
+  // to fully collapse the body under a "..." button. The original structure
+  // rendered the email cleanly when sent yesterday — restoring it here with
+  // Nicole's new copy.
+  const html = `
+    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.65;color:#1a1814;max-width:560px;margin:0 auto;padding:32px 24px;background:#f4efe7">
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#7e7367;margin-bottom:24px">Nicole James &middot; Downtown Austin</div>
+      <p style="margin:0 0 16px">Hi ${escapeHtml(firstName)},</p>
+      <p style="margin:0 0 16px">So glad you reached out. Your message has come <em style="font-family:Georgia,'Times New Roman',serif">directly to me</em>, and I&rsquo;ll follow up within one business day.</p>
+      <p style="margin:0 0 16px">If anything is time-sensitive, feel free to call or text me at <a href="tel:+15124664608" style="color:#9c7e66;text-decoration:none;border-bottom:1px solid #9c7e66">512&middot;466&middot;4608</a>.</p>
+      <p style="margin:0 0 24px">I focus on a select group of downtown condominium buildings, happy to share what&rsquo;s currently available, including opportunities that aren&rsquo;t publicly listed.</p>
+      <p style="margin:32px 0 4px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;font-size:18px;color:#1a1814;line-height:1.3">Talk soon,<br>Nicole</p>
+      <div style="margin-top:18px;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#7e7367;line-height:1.7">
+        Christie&rsquo;s International Real Estate Luxury Specialist<br>
+        @properties Lone Star
+      </div>
+      <div style="margin-top:24px;font-size:11px;color:#9c7e66"><a href="https://nicolejamesaustin.com" style="color:#9c7e66;text-decoration:none">nicolejamesaustin.com</a></div>
+    </div>
+  `.trim();
 
   return { text, html };
 }
