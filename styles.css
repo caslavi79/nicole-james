@@ -2161,6 +2161,105 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   color: var(--ink);
   margin-bottom: 10px;
 }
+.entry-body ol { padding-left: 24px; margin-bottom: 24px; }
+.entry-body ol li {
+  list-style: decimal;
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+
+/* Fee-comparison table on the HOA-fees post.
+   Rendered as a card on desktop; on narrow screens it switches to
+   horizontal scroll so columns don't crush. */
+.entry-body .fee-table-wrap {
+  margin: 28px 0 40px;
+  border: 1px solid var(--line);
+  background: var(--bone-2, #EFE9DD);
+  border-radius: 2px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.entry-body table.fee-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--ink);
+  min-width: 640px;
+}
+.entry-body table.fee-table caption {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  padding: 16px 20px 0;
+  caption-side: top;
+}
+.entry-body table.fee-table th,
+.entry-body table.fee-table td {
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.entry-body table.fee-table thead th {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+}
+.entry-body table.fee-table tbody th {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.entry-body table.fee-table tbody tr:last-child th,
+.entry-body table.fee-table tbody tr:last-child td { border-bottom: 0; }
+.entry-body table.fee-table td.num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Author-link card under the FAQ — single line of attribution
+   pointing readers at the about page rather than duplicating bio copy. */
+.entry-author {
+  max-width: 820px;
+  margin: 48px auto 0;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.entry-author .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  display: block;
+  margin-bottom: 10px;
+}
+.entry-author p {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0;
+}
+.entry-author a {
+  color: var(--terra);
+  border-bottom: 1px solid var(--terra);
+  padding-bottom: 1px;
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+}
+.entry-author a:hover { color: var(--terra-deep); border-bottom-color: var(--terra-deep); }
 
 .entry-next {
   max-width: 760px;
