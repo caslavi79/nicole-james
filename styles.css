@@ -2143,6 +2143,16 @@ footer address { font-style: normal; font-size: 13px; line-height: 1.7; color: v
   margin: 48px 0 20px;
 }
 .entry-body h2 em { color: var(--terra); font-weight: 300; }
+.entry-body h3 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 36px 0 14px;
+  color: var(--ink);
+}
+.entry-body h3 em { color: var(--terra); font-weight: 300; }
 .entry-body ul { padding-left: 24px; margin-bottom: 24px; }
 .entry-body ul li {
   list-style: disc;
