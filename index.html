@@ -33,7 +33,10 @@
 <meta name="twitter:description" content="Nineteen years representing condo buyers and sellers in downtown Austin." />
 <meta name="twitter:image" content="https://nicolejamesaustin.com/assets/og-home.jpg" />
 
-<!-- Fonts -->
+<!-- Preload the LCP image so it kicks off in parallel with CSS, not after.
+     The home hero portrait is the largest above-the-fold element on mobile. -->
+<link rel="preload" as="image" href="/assets/nicole-james.jpg" fetchpriority="high" />
+
 <link rel="stylesheet" href="/styles.css?v=20260501-9" />
 
 <!-- Schema.org: Person + RealEstateAgent -->
