@@ -436,6 +436,17 @@
             <p class="form-success-sub">A confirmation is on its way to ${escapeForHtml(payload.email)}. Responses within one business day.</p>
           </div>
         `;
+        // GA4 conversion event. Marked as a Key Event in GA4 admin so it
+        // shows up under Conversions / Reports. Guarded in case gtag.js
+        // is blocked by the visitor's browser or ad blocker.
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'contact_form_submit', {
+            interest: payload.interest || 'unspecified',
+            has_building: !!payload.building,
+            optin_blog: !!payload.optin_blog,
+            optin_listings: !!payload.optin_listings
+          });
+        }
       } catch (err) {
         console.error('contact submit failed', err);
         contactSubmit.disabled = false;

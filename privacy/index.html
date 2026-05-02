@@ -4,7 +4,7 @@
 <!-- INDEXING META -->
 <meta name="robots" content="index, follow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-180.png" />
@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20260501-7">
+<link rel="stylesheet" href="/styles.css?v=20260501-8">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,6 +36,15 @@
     { "@type": "ListItem", "position": 2, "name": "Privacy", "item": "https://nicolejamesaustin.com/privacy" }
   ]
 }
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RD6M0QFZGQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RD6M0QFZGQ');
 </script>
 </head><body>
 
@@ -126,9 +135,10 @@
   <h1 class="display"><em class="serif-italic">Privacy.</em></h1>
   <div class="entry-body" style="margin-top:40px">
     <p>This website collects only the information you voluntarily provide through the contact form (name, email, phone, inquiry details). That information is used solely to respond to your inquiry and is not sold, rented, or shared with third parties for marketing purposes.</p>
-    <p>This site does not use third-party analytics or tracking. No personally identifying information is retained beyond what is necessary to respond to your message.</p>
+    <p>This site uses Google Analytics 4 to understand aggregate site traffic and how visitors interact with content. Google Analytics may set cookies (such as <code>_ga</code>) in your browser to recognize visitors across sessions. The data collected is aggregated and used solely for site optimization. It is not sold or shared with third parties for marketing.</p>
+    <p>No personally identifying information is retained beyond what is necessary to respond to your message.</p>
     <p>Questions about this policy can be sent to <a href="mailto:nicolej@christiesrealestatels.com" style="border-bottom:1px solid var(--ink)">nicolej@christiesrealestatels.com</a>.</p>
-    <p class="meta" style="margin-top:40px">Last updated: April 2026.</p>
+    <p class="meta" style="margin-top:40px">Last updated: May 2026.</p>
   </div>
 </section>
 
@@ -177,5 +187,5 @@
   </div>
 </footer>
 
-<script src="/scripts.js?v=20260501-7" defer></script>
+<script src="/scripts.js?v=20260501-8" defer></script>
 </body></html>
