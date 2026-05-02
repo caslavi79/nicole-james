@@ -440,7 +440,7 @@
         console.error('contact submit failed', err);
         contactSubmit.disabled = false;
         contactSubmit.textContent = original;
-        setStatus("Sorry — something went wrong. Try again, or email Nicole directly at nicolej@christiesrealestatels.com.", 'error');
+        setStatus("Sorry, something went wrong. Try again, or email Nicole directly at nicolej@christiesrealestatels.com.", 'error');
       }
     });
   }
