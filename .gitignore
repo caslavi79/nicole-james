@@ -19,3 +19,6 @@ TestimonialTree_*.xlsx
 
 # Master reference document — contains live API keys, never commit
 MASTER.md
+
+# Internal research artifacts — not for public repo
+compass_artifact_*.md
