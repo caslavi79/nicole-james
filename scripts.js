@@ -29,40 +29,57 @@
     });
   })();
 
-  // -- NAV scroll behavior
+  // -- NAV scroll behavior + STICKY GATING (combined, rAF-batched)
+  //
+  // Both the nav-shadow toggle and the iOS Safari URL-bar fix
+  // (see "STICKY GATING" comment below) need to react to scrollY. We
+  // run them off a SINGLE scroll listener that schedules at most one
+  // rAF callback per frame — multiple scroll events between frames
+  // collapse to one read, which kept Lighthouse from attributing
+  // ~700ms of forced-reflow time to the scroll handler on mobile.
+  //
+  // STICKY GATING (iOS Safari URL-bar fix): in-body `position: sticky`
+  // elements cause iOS Safari to hold the URL bar in expanded opaque
+  // mode. The CSS uses `position: var(--portrait-pos|--hero-pos, static)`
+  // for the home portrait + about hero. We flip them to `sticky` when
+  // scrolled (scrollY > 0) and back to `static` at scrollY=0 — at every
+  // "rest" position iOS sees no in-body sticky elements and renders the
+  // minimal floating URL pill. The transition at scrollY=0 is also the
+  // natural state where the sticky pin wouldn't be engaged anyway, so
+  // visual behavior is identical.
   const nav = document.getElementById('nav');
-  if (nav) {
-    const onScroll = () => {
-      if (window.scrollY > 40) nav.classList.add('scrolled');
-      else nav.classList.remove('scrolled');
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
-
-  // -- STICKY GATING (iOS Safari URL-bar fix)
-  // In-body `position: sticky` elements cause iOS Safari to hold the URL
-  // bar in expanded opaque mode. The CSS uses
-  // `position: var(--portrait-pos|--hero-pos, static)` for the home
-  // portrait + about hero. We flip them to `sticky` whenever the user
-  // is scrolled (scrollY > 0), and back to `static` whenever they're
-  // at the very top — so at every "rest" position (top of page, menu
-  // closed, etc.) iOS sees no in-body sticky elements and renders the
-  // minimal floating URL pill. The transition fires at scrollY=0 which
-  // is also the natural state where the sticky pin wouldn't be engaged
-  // anyway, so visual behavior is identical.
   const root = document.documentElement.style;
   let stickyOn = false;
-  const updateStickyState = () => {
-    const shouldBeOn = window.scrollY > 0;
-    if (shouldBeOn === stickyOn) return;
-    stickyOn = shouldBeOn;
-    const v = shouldBeOn ? 'sticky' : 'static';
-    root.setProperty('--portrait-pos', v);
-    root.setProperty('--hero-pos', v);
+  let scrolledOn = false;
+  let scrollScheduled = false;
+  const handleScroll = () => {
+    scrollScheduled = false;
+    const y = window.scrollY;
+    // Nav-shadow toggle
+    if (nav) {
+      const shouldScroll = y > 40;
+      if (shouldScroll !== scrolledOn) {
+        scrolledOn = shouldScroll;
+        if (shouldScroll) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+      }
+    }
+    // Sticky gating
+    const shouldBeOn = y > 0;
+    if (shouldBeOn !== stickyOn) {
+      stickyOn = shouldBeOn;
+      const v = shouldBeOn ? 'sticky' : 'static';
+      root.setProperty('--portrait-pos', v);
+      root.setProperty('--hero-pos', v);
+    }
   };
-  window.addEventListener('scroll', updateStickyState, { passive: true });
-  updateStickyState();
+  const onScroll = () => {
+    if (scrollScheduled) return;
+    scrollScheduled = true;
+    requestAnimationFrame(handleScroll);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  handleScroll();
 
   // -- MOBILE PORTRAIT RELOCATE
   // On mobile, reparent the hero portrait out of .hero-grid and into
