@@ -83,13 +83,27 @@
 }
 </script>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RD6M0QFZGQ"></script>
+<!-- Google tag (gtag.js) — deferred until first interaction or post-load. -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-RD6M0QFZGQ');
+  (function(){
+    var loaded = false;
+    function load(){
+      if (loaded) return; loaded = true;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-RD6M0QFZGQ';
+      document.head.appendChild(s);
+      gtag('config', 'G-RD6M0QFZGQ');
+    }
+    ['scroll','click','touchstart','keydown','mousemove'].forEach(function(e){
+      window.addEventListener(e, load, { once: true, passive: true });
+    });
+    if (document.readyState === 'complete') setTimeout(load, 3000);
+    else window.addEventListener('load', function(){ setTimeout(load, 3000); });
+  })();
 </script>
 </head>
 
@@ -204,7 +218,7 @@
         <div class="bldg-card-meta"><strong>Seaholm Residences</strong><span>Market District</span></div>
       </a>
       <a class="bldg-card" href="/buildings/fifthwest">
-        <div class="bldg-card-img"><img width="1583" height="817" src="/assets/bldg-fifthwest.jpg" alt="Fifth &amp; West Residences, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="1583" height="817" src="/assets/bldg-fifthwest.webp" alt="Fifth &amp; West Residences, Market District, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>Fifth &amp; West</strong><span>Market District</span></div>
       </a>
       <a class="bldg-card" href="/buildings/shore">
@@ -456,7 +470,7 @@
   </div>
 </footer>
 
-<script src="/scripts.js?v=20260501-9" defer></script>
+<script src="/scripts.js?v=20260504-1" defer></script>
 
 </body>
 </html>
