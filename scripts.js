@@ -823,17 +823,45 @@
       });
     };
 
+    // Lazy-load Leaflet only when the user actually switches to map view.
+    // Saves ~40 KB of unused JS + the CSS on initial page load — most
+    // visitors never toggle the map.
+    let leafletLoading = null;
+    const loadLeaflet = () => {
+      if (typeof L !== 'undefined') return Promise.resolve();
+      if (leafletLoading) return leafletLoading;
+      leafletLoading = new Promise((resolve, reject) => {
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        css.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+        css.crossOrigin = '';
+        document.head.appendChild(css);
+
+        const js = document.createElement('script');
+        js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        js.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+        js.crossOrigin = '';
+        js.onload = () => resolve();
+        js.onerror = reject;
+        document.head.appendChild(js);
+      });
+      return leafletLoading;
+    };
+
     bldgViewSwitch.addEventListener('click', () => {
       const goMap = bldgViewSwitch.getAttribute('aria-pressed') !== 'true';
       bldgViewSwitch.setAttribute('aria-pressed', goMap ? 'true' : 'false');
       bldgViewCarousel.hidden = goMap;
       bldgViewMap.hidden = !goMap;
       if (goMap) {
-        initMap();
-        // Map needs a re-measure once its container is visible, otherwise
-        // tiles render against a 0×0 box and the layout is empty until
-        // the user pans.
-        setTimeout(() => { if (mapInstance) mapInstance.invalidateSize(); }, 60);
+        loadLeaflet().then(() => {
+          initMap();
+          // Map needs a re-measure once its container is visible, otherwise
+          // tiles render against a 0×0 box and the layout is empty until
+          // the user pans.
+          setTimeout(() => { if (mapInstance) mapInstance.invalidateSize(); }, 60);
+        });
       }
     });
   }

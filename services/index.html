@@ -4528,13 +4528,10 @@ footer a:focus-visible,
 }
 
 </style>
-<!-- Leaflet (loaded only on services.html for the buildings map) -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-  crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin="" defer></script>
+<!-- Leaflet is now lazy-loaded by scripts.js the first time the user
+     toggles to map view. The static <link> + <script> were removing
+     ~40 KB of unused JS + the CSS from initial page load on every
+     mobile visit, even though most visitors never open the map. -->
 
 <!-- Schema.org: WebPage + Service + BreadcrumbList -->
 <script type="application/ld+json">
@@ -4664,11 +4661,11 @@ footer a:focus-visible,
     <button class="bldg-carousel-arrow bldg-carousel-arrow--prev bldg-carousel-arrow--floating" id="bldgArrowPrev" aria-label="Previous buildings">&larr;</button>
     <div class="bldg-carousel" id="bldgCarousel" tabindex="0" aria-label="Buildings">
       <a class="bldg-card" href="/buildings/loren">
-        <div class="bldg-card-img"><img width="1499" height="1123" src="/assets/bldg-loren.jpg" alt="The Loren, Lady Bird Lake Edge, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="1499" height="1123" src="/assets/bldg-loren.webp" alt="The Loren, Lady Bird Lake Edge, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>The Loren</strong><span>Lady Bird Lake Edge</span></div>
       </a>
       <a class="bldg-card" href="/buildings/fourseasons">
-        <div class="bldg-card-img"><img width="644" height="844" src="/assets/bldg-fourseasons.jpeg" alt="Four Seasons Residences, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="644" height="844" src="/assets/bldg-fourseasons.webp" alt="Four Seasons Residences, Downtown Core, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>Four Seasons Residences</strong><span>Downtown Core</span></div>
       </a>
       <a class="bldg-card" href="/buildings/proper">
@@ -4708,11 +4705,11 @@ footer a:focus-visible,
         <div class="bldg-card-meta"><strong>Bridges on The Park</strong><span>Lady Bird Lake Edge</span></div>
       </a>
       <a class="bldg-card" href="/buildings/linden">
-        <div class="bldg-card-img"><img width="1024" height="536" src="/assets/bldg-linden.jpg" alt="The Linden, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="1024" height="536" src="/assets/bldg-linden.webp" alt="The Linden, Downtown Core, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>The Linden</strong><span>Downtown Core</span></div>
       </a>
       <a class="bldg-card" href="/buildings/seaholm">
-        <div class="bldg-card-img"><img width="1240" height="826" src="/assets/bldg-seaholm.jpg" alt="Seaholm Residences, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="1240" height="826" src="/assets/bldg-seaholm.webp" alt="Seaholm Residences, Market District, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>Seaholm Residences</strong><span>Market District</span></div>
       </a>
       <a class="bldg-card" href="/buildings/fifthwest">
@@ -4724,7 +4721,7 @@ footer a:focus-visible,
         <div class="bldg-card-meta"><strong>The Shore</strong><span>Rainey District</span></div>
       </a>
       <a class="bldg-card" href="/buildings/colorfield">
-        <div class="bldg-card-img"><img width="1280" height="958" src="/assets/bldg-colorfield.jpg" alt="The Colorfield, Clarksville / Old West Austin, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="1280" height="958" src="/assets/bldg-colorfield.webp" alt="The Colorfield, Clarksville / Old West Austin, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>The Colorfield</strong><span>Clarksville / Old West Austin</span></div>
       </a>
       <a class="bldg-card" href="/buildings/belvedere">
@@ -4732,7 +4729,7 @@ footer a:focus-visible,
         <div class="bldg-card-meta"><strong>The Belvedere</strong><span>Clarksville / Old West Austin</span></div>
       </a>
       <a class="bldg-card" href="/buildings/sabine">
-        <div class="bldg-card-img"><img width="1024" height="682" src="/assets/bldg-sabine.jpg" alt="Sabine on 5th, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="1024" height="682" src="/assets/bldg-sabine.webp" alt="Sabine on 5th, Downtown Core, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>Sabine on 5th</strong><span>Downtown Core</span></div>
       </a>
       <a class="bldg-card" href="/buildings/spring">
@@ -4748,11 +4745,11 @@ footer a:focus-visible,
         <div class="bldg-card-meta"><strong>Barton Place</strong><span>Lady Bird Lake Edge</span></div>
       </a>
       <a class="bldg-card" href="/buildings/555">
-        <div class="bldg-card-img"><img width="1240" height="826" src="/assets/bldg-555.jpg" alt="5 Fifty Five, Downtown Core, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="1240" height="826" src="/assets/bldg-555.webp" alt="5 Fifty Five, Downtown Core, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>5 Fifty Five</strong><span>Downtown Core</span></div>
       </a>
       <a class="bldg-card" href="/buildings/natiivo">
-        <div class="bldg-card-img"><img width="1152" height="1492" src="/assets/bldg-natiivo.jpg" alt="Natiivo, Rainey District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="1152" height="1492" src="/assets/bldg-natiivo.webp" alt="Natiivo, Rainey District, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>Natiivo</strong><span>Rainey District</span></div>
       </a>
       <a class="bldg-card" href="/buildings/1010w10th">
@@ -4772,7 +4769,7 @@ footer a:focus-visible,
         <div class="bldg-card-meta"><strong>Celia&rsquo;s Court</strong><span>Market District</span></div>
       </a>
       <a class="bldg-card" href="/buildings/citylofts">
-        <div class="bldg-card-img"><img width="640" height="674" src="/assets/bldg-citylofts.jpeg" alt="Austin City Lofts, Market District, downtown Austin" loading="lazy" /></div>
+        <div class="bldg-card-img"><img width="640" height="674" src="/assets/bldg-citylofts.webp" alt="Austin City Lofts, Market District, downtown Austin" loading="lazy" /></div>
         <div class="bldg-card-meta"><strong>Austin City Lofts</strong><span>Market District</span></div>
       </a>
       <a class="bldg-card" href="/buildings/milago">
@@ -4968,7 +4965,7 @@ footer a:focus-visible,
   </div>
 </footer>
 
-<script src="/scripts.js?v=20260504-1" defer></script>
+<script src="/scripts.js?v=20260504-2" defer></script>
 
 </body>
 </html>
